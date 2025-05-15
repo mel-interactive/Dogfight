@@ -1,0 +1,111 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwhncf7xhe0tc"]
+
+[ext_resource type="Script" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
+
+[node name="FightScene" type="Node2D"]
+script = ExtResource("1_wqnb5")
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1157.0
+offset_bottom = 651.0
+
+[node name="Positions" type="Node2D" parent="."]
+
+[node name="Player1Position" type="Marker2D" parent="Positions"]
+position = Vector2(300, 500)
+
+[node name="Player2Position" type="Marker2D" parent="Positions"]
+position = Vector2(900, 500)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Player1HealthBar" type="ProgressBar" parent="UI"]
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 450.0
+offset_bottom = 80.0
+show_percentage = false
+
+[node name="Player1SpecialMeter" type="ProgressBar" parent="UI"]
+offset_left = 50.0
+offset_top = 90.0
+offset_right = 350.0
+offset_bottom = 117.0
+show_percentage = false
+
+[node name="Player1UltimateMeter" type="ProgressBar" parent="UI"]
+offset_left = 50.0
+offset_top = 125.0
+offset_right = 350.0
+offset_bottom = 152.0
+show_percentage = false
+
+[node name="Player2HealthBar" type="ProgressBar" parent="UI"]
+offset_left = 700.0
+offset_top = 50.0
+offset_right = 1100.0
+offset_bottom = 80.0
+show_percentage = false
+
+[node name="Player2SpecialMeter" type="ProgressBar" parent="UI"]
+offset_left = 800.0
+offset_top = 90.0
+offset_right = 1100.0
+offset_bottom = 117.0
+show_percentage = false
+
+[node name="Player2UltimateMeter" type="ProgressBar" parent="UI"]
+offset_left = 800.0
+offset_top = 125.0
+offset_right = 1100.0
+offset_bottom = 152.0
+show_percentage = false
+
+[node name="Player1ComboLabel" type="Label" parent="UI"]
+offset_left = 124.0
+offset_top = 186.0
+offset_right = 336.0
+offset_bottom = 258.0
+
+[node name="Player2ComboLabel" type="Label" parent="UI"]
+offset_left = 700.0
+offset_top = 186.0
+offset_right = 912.0
+offset_bottom = 258.0
+
+[node name="DebugLabel" type="Label" parent="UI"]
+offset_left = 397.0
+offset_top = 25.0
+offset_right = 723.0
+offset_bottom = 103.0
+
+[node name="WinnerLabel" type="Label" parent="UI"]
+offset_left = 307.0
+offset_top = 234.0
+offset_right = 842.0
+offset_bottom = 496.0
+theme_override_font_sizes/font_size = 70
+
+[node name="Rematch button" type="Button" parent="UI/WinnerLabel"]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 139.0
+offset_right = 379.0
+offset_bottom = 212.0
+text = "Rematch"
+
+[node name="Character select button" type="Button" parent="UI/WinnerLabel"]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 235.0
+offset_right = 379.0
+offset_bottom = 308.0
+text = "Character select"
+
+[node name="AudioPlayers" type="Node" parent="."]
+
+[node name="AnnouncerAudio" type="AudioStreamPlayer" parent="AudioPlayers"]
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
