@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dwhncf7xhe0tc"]
 
-[ext_resource type="Script" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
+[ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
 
 [node name="FightScene" type="Node2D"]
 script = ExtResource("1_wqnb5")

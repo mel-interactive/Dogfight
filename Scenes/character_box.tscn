@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://cpo0t0n22p6lg"]
 
-[ext_resource type="Script" path="res://Scripts/character_box.gd" id="1_q12hs"]
+[ext_resource type="Script" uid="uid://uic4nphgt4yt" path="res://Scripts/character_box.gd" id="1_q12hs"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cv4bv"]
 content_margin_left = 4.0
@@ -134,10 +134,10 @@ loop_mode = 1
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gdplx"]
 _data = {
-"RESET": SubResource("Animation_f806i"),
-"hover": SubResource("Animation_05f61"),
-"idle": SubResource("Animation_qs8vw"),
-"selected": SubResource("Animation_pmg6h")
+&"RESET": SubResource("Animation_f806i"),
+&"hover": SubResource("Animation_05f61"),
+&"idle": SubResource("Animation_qs8vw"),
+&"selected": SubResource("Animation_pmg6h")
 }
 
 [node name="CharacterBox" type="Panel"]
