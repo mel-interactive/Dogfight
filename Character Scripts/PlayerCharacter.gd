@@ -32,7 +32,6 @@ func _physics_process(delta):
 	# Handle player input
 	handle_input()
 	
-	
 	# Call parent physics process
 	super._physics_process(delta)
 
@@ -46,14 +45,37 @@ func handle_input():
 	   current_state == CharacterState.HIT:
 		return
 	
-	# Movement (left/right)
+	# Attacks (check these FIRST to stop movement)
+	if Input.is_action_just_pressed(input_prefix + "light"):
+		velocity.x = 0  # Stop movement immediately
+		light_attack()
+		return  # Don't process movement this frame
+	
+	if Input.is_action_just_pressed(input_prefix + "heavy"):
+		velocity.x = 0  # Stop movement immediately
+		heavy_attack()
+		return  # Don't process movement this frame
+	
+	# Special attack
+	if Input.is_action_just_pressed(input_prefix + "special") and can_use_special():
+		velocity.x = 0  # Stop movement immediately
+		special_attack()
+		return  # Don't process movement this frame
+	
+	# Ultimate attack
+	if Input.is_action_just_pressed(input_prefix + "ultimate") and can_use_ultimate():
+		velocity.x = 0  # Stop movement immediately
+		ultimate_attack()
+		return  # Don't process movement this frame
+	
+	# Movement (left/right) - only processed if no attacks happened
 	var move_dir = 0
 	if Input.is_action_pressed(input_prefix + "left"):
 		move_dir -= 1
 	if Input.is_action_pressed(input_prefix + "right"):
 		move_dir += 1
 	
-	if move_dir != 0:
+	if move_dir != 0 and can_move():
 		velocity.x = move_dir * character_data.move_speed
 		current_state = CharacterState.MOVING
 	else:
@@ -61,23 +83,8 @@ func handle_input():
 		if current_state == CharacterState.MOVING:
 			current_state = CharacterState.IDLE
 	
-	# Attacks
-	if Input.is_action_just_pressed(input_prefix + "light"):
-		light_attack()
-	
-	if Input.is_action_just_pressed(input_prefix + "heavy"):
-		heavy_attack()
-	
 	# Block (hold action)
 	if Input.is_action_pressed(input_prefix + "block"):
 		block()
 	elif current_state == CharacterState.BLOCKING:
 		stop_blocking()
-	
-	# Special attack
-	if Input.is_action_just_pressed(input_prefix + "special") and can_use_special():
-		special_attack()
-	
-	# Ultimate attack
-	if Input.is_action_just_pressed(input_prefix + "ultimate") and can_use_ultimate():
-		ultimate_attack()
