@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CustomAnimation" load_steps=3 format=3 uid="uid://cplmcf57nxvgu"]
+
+[ext_resource type="SpriteFrames" uid="uid://bb2vpvhllw7uk" path="res://Assets/Characters/Dennis/Animations/dennislightattackeffect.tres" id="1_ek7p7"]
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Character Scripts/CustomAnimation.gd" id="2_ylph4"]
+
+[resource]
+script = ExtResource("2_ylph4")
+animation_frames = ExtResource("1_ek7p7")
+bound_to = "light_attack"
+flip_with_player = false
+anchored_to_player = true
+scale = Vector2(1.6, 1.6)
+position_offset = Vector2(-250, -200)
+metadata/_custom_type_script = "uid://cc281o2i4b35n"

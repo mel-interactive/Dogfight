@@ -13,6 +13,7 @@ var base_character_scene: PackedScene
 
 # Default character paths - these should be updated to match your actual file paths
 var character_paths = [
+	
 	"res://Character Scripts/Dennis.tres",
 	"res://Character Scripts/Olaf.tres",
 	"res://Character Scripts/Erwin.tres",

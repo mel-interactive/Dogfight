@@ -1,0 +1,70 @@
+[gd_resource type="SpriteFrames" load_steps=16 format=3 uid="uid://lg0eaq1s6tnb"]
+
+[ext_resource type="Texture2D" uid="uid://b6f2w0ohxlg8i" path="res://Assets/Characters/Dennis/Special/frame_00_delay-0.14s.png" id="1_si5ic"]
+[ext_resource type="Texture2D" uid="uid://c2emhjyjphkv6" path="res://Assets/Characters/Dennis/Special/frame_01_delay-0.15s.png" id="2_mqv5k"]
+[ext_resource type="Texture2D" uid="uid://bwd7uchdt74t4" path="res://Assets/Characters/Dennis/Special/frame_02_delay-0.14s.png" id="3_brs6i"]
+[ext_resource type="Texture2D" uid="uid://djv1xcyuetbre" path="res://Assets/Characters/Dennis/Special/frame_03_delay-0.14s.png" id="4_2dgic"]
+[ext_resource type="Texture2D" uid="uid://ds2hyxquehikm" path="res://Assets/Characters/Dennis/Special/frame_04_delay-0.14s.png" id="5_6g8hg"]
+[ext_resource type="Texture2D" uid="uid://6v7m8p66ciju" path="res://Assets/Characters/Dennis/Special/frame_05_delay-0.15s.png" id="6_f1qe7"]
+[ext_resource type="Texture2D" uid="uid://gvepyyehs0kk" path="res://Assets/Characters/Dennis/Special/frame_06_delay-0.14s.png" id="7_6f7nn"]
+[ext_resource type="Texture2D" uid="uid://nfink4cc5osv" path="res://Assets/Characters/Dennis/Special/frame_07_delay-0.14s.png" id="8_jkodi"]
+[ext_resource type="Texture2D" uid="uid://dl6tngsbnlrtc" path="res://Assets/Characters/Dennis/Special/frame_08_delay-0.15s.png" id="9_45vtp"]
+[ext_resource type="Texture2D" uid="uid://nxbb62ko5475" path="res://Assets/Characters/Dennis/Special/frame_09_delay-0.14s.png" id="10_kkf58"]
+[ext_resource type="Texture2D" uid="uid://cr2p27w8b4q0w" path="res://Assets/Characters/Dennis/Special/frame_10_delay-0.14s.png" id="11_vvs32"]
+[ext_resource type="Texture2D" uid="uid://b7dh65e27v81i" path="res://Assets/Characters/Dennis/Special/frame_11_delay-0.14s.png" id="12_ikwrg"]
+[ext_resource type="Texture2D" uid="uid://dkv2rqleom42w" path="res://Assets/Characters/Dennis/Special/frame_12_delay-0.15s.png" id="13_rnn4m"]
+[ext_resource type="Texture2D" uid="uid://cuxmmkhujfb6i" path="res://Assets/Characters/Dennis/Special/frame_13_delay-0.14s.png" id="14_kwvpq"]
+[ext_resource type="Texture2D" uid="uid://dopxly2h428b4" path="res://Assets/Characters/Dennis/Special/frame_14_delay-0.14s.png" id="15_mqv5k"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_si5ic")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_mqv5k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_brs6i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_2dgic")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_6g8hg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_f1qe7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_6f7nn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_jkodi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_45vtp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_kkf58")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_vvs32")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_ikwrg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_rnn4m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_kwvpq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_mqv5k")
+}],
+"loop": false,
+"name": &"dennis special",
+"speed": 7.0
+}]

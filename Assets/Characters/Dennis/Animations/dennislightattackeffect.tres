@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://bb2vpvhllw7uk"]
+
+[ext_resource type="Texture2D" uid="uid://bqhylnww7ipx8" path="res://Assets/Characters/Dennis/Light effect/frame_0_delay-0.14s.png" id="1_2hoqa"]
+[ext_resource type="Texture2D" uid="uid://bchxrlgvby4xm" path="res://Assets/Characters/Dennis/Light effect/frame_1_delay-0.15s.png" id="2_q3a8m"]
+[ext_resource type="Texture2D" uid="uid://ddvo0mp0nilhk" path="res://Assets/Characters/Dennis/Light effect/frame_2_delay-0.14s.png" id="3_0indi"]
+[ext_resource type="Texture2D" uid="uid://d0ykkq27yit2n" path="res://Assets/Characters/Dennis/Light effect/frame_3_delay-0.14s.png" id="4_iqhyh"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_2hoqa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_q3a8m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_0indi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_iqhyh")
+}],
+"loop": false,
+"name": &"dennislighteffect",
+"speed": 7.0
+}]

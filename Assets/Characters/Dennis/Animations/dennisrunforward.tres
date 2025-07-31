@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://w2m5w73c6t35"]
+
+[ext_resource type="Texture2D" uid="uid://di6lwb1s36mrf" path="res://Assets/Characters/Dennis/Forward/frame_0_delay-0.14s.png" id="1_rtfcd"]
+[ext_resource type="Texture2D" uid="uid://cqex40cst6itr" path="res://Assets/Characters/Dennis/Forward/frame_1_delay-0.15s.png" id="2_waq04"]
+[ext_resource type="Texture2D" uid="uid://iogf3tqafm6p" path="res://Assets/Characters/Dennis/Forward/frame_2_delay-0.14s.png" id="3_i603t"]
+[ext_resource type="Texture2D" uid="uid://u22s6ha72ujk" path="res://Assets/Characters/Dennis/Forward/frame_3_delay-0.14s.png" id="4_qrp5f"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_rtfcd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_waq04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_i603t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_qrp5f")
+}],
+"loop": true,
+"name": &"run forward",
+"speed": 14.0
+}]

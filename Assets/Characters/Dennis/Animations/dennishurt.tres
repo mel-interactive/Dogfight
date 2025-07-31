@@ -1,0 +1,34 @@
+[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://d0i33ig0uesca"]
+
+[ext_resource type="Texture2D" uid="uid://du8003vfn60dq" path="res://Assets/Characters/Dennis/Hurt/frame_0_delay-0.14s.png" id="1_u0tgk"]
+[ext_resource type="Texture2D" uid="uid://b3ek47orwjsqy" path="res://Assets/Characters/Dennis/Hurt/frame_1_delay-0.15s.png" id="2_8xgko"]
+[ext_resource type="Texture2D" uid="uid://bkifhu6t5olhn" path="res://Assets/Characters/Dennis/Hurt/frame_2_delay-0.14s.png" id="3_50xa6"]
+[ext_resource type="Texture2D" uid="uid://bm6wtl2ya255e" path="res://Assets/Characters/Dennis/Hurt/frame_3_delay-0.14s.png" id="4_o5u2w"]
+[ext_resource type="Texture2D" uid="uid://pm30dmjmlork" path="res://Assets/Characters/Dennis/Hurt/frame_4_delay-0.14s.png" id="5_k8qda"]
+[ext_resource type="Texture2D" uid="uid://dxkaqxk7a6o2s" path="res://Assets/Characters/Dennis/Hurt/frame_5_delay-0.14s.png" id="6_uuw5c"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_u0tgk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_8xgko")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_50xa6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_o5u2w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_k8qda")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_uuw5c")
+}],
+"loop": true,
+"name": &"dennishurt",
+"speed": 14.0
+}]
