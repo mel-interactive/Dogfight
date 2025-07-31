@@ -4,6 +4,12 @@ class_name BaseCharacter
 # Character data
 @export var character_data: CharacterData
 
+# Player identification (1 or 2) - 0 means auto-detect
+@export var player_number: int = 0
+
+# Movement direction tracking
+var movement_direction: float = 0.0  # -1 = left, 0 = not moving, 1 = right
+
 # Current state
 var current_health: int = 100
 
@@ -18,9 +24,6 @@ var combo_timer: float = 0.0
 # State machine
 enum CharacterState {IDLE, MOVING, ATTACKING_LIGHT, ATTACKING_HEAVY, BLOCKING, SPECIAL_ATTACK, ULTIMATE_ATTACK, HIT, DEFEAT}
 var current_state = CharacterState.IDLE
-
-# Direction the character is facing (1 = right, -1 = left)
-var facing_direction: int = 1
 
 # Reference to opponent
 var opponent: BaseCharacter = null
@@ -40,6 +43,10 @@ func _ready():
 	# If no character data is assigned, create a default one
 	if not character_data:
 		character_data = CharacterData.new()
+	
+	# Auto-detect player number if not set
+	if player_number == 0:
+		call_deferred("auto_detect_player_number")
 	
 	# Initialize health and meters
 	current_health = character_data.max_health
@@ -76,7 +83,7 @@ func _ready():
 		add_child(attack_area)
 
 func setup_visuals():
-	# Remove any existing sprite
+	# Remove any existing sprites
 	if has_node("DebugSprite"):
 		$DebugSprite.queue_free()
 	
@@ -91,48 +98,245 @@ func setup_visuals():
 	# Connect animation finished signal
 	sprite.connect("animation_finished", _on_animation_finished)
 	
-	# Check if we have animation frames
+	# Check if we have any animation frames and create SpriteFrames
+	sprite.sprite_frames = SpriteFrames.new()
+	var has_animations = false
+	
+	# Only add animations that actually exist
 	if character_data.idle_animation:
-		# Set up sprite frames
 		add_animation("idle", character_data.idle_animation)
-		add_animation("run", character_data.run_animation)
-		add_animation("light_attack", character_data.light_attack_animation)
-		add_animation("heavy_attack", character_data.heavy_attack_animation)
-		add_animation("block", character_data.block_animation)
-		add_animation("hit", character_data.hit_animation)
-		add_animation("special_attack", character_data.special_attack_animation)
-		add_animation("ultimate_attack", character_data.ultimate_attack_animation)
-		add_animation("defeat", character_data.defeat_animation)
+		has_animations = true
 		
-		# Start with idle animation
-		sprite.play("idle")
-	else:
+	if character_data.run_forward_animation:
+		add_animation("run_forward", character_data.run_forward_animation)
+		has_animations = true
+		
+	if character_data.run_backward_animation:
+		add_animation("run_backward", character_data.run_backward_animation)
+		has_animations = true
+		
+	if character_data.light_attack_animation:
+		add_animation("light_attack", character_data.light_attack_animation)
+		has_animations = true
+		
+	if character_data.heavy_attack_animation:
+		add_animation("heavy_attack", character_data.heavy_attack_animation)
+		has_animations = true
+		
+	if character_data.block_animation:
+		add_animation("block", character_data.block_animation)
+		has_animations = true
+		
+	if character_data.hit_animation:
+		add_animation("hit", character_data.hit_animation)
+		has_animations = true
+		
+	if character_data.special_attack_animation:
+		add_animation("special_attack", character_data.special_attack_animation)
+		has_animations = true
+		
+	if character_data.ultimate_attack_animation:
+		add_animation("ultimate_attack", character_data.ultimate_attack_animation)
+		has_animations = true
+		
+	if character_data.defeat_animation:
+		add_animation("defeat", character_data.defeat_animation)
+		has_animations = true
+	
+	# Start with the first available animation
+	if has_animations:
+		if sprite.sprite_frames.has_animation("idle"):
+			play_animation("idle")
+		else:
+			# Play the first available animation
+			var available_animations = sprite.sprite_frames.get_animation_names()
+			if available_animations.size() > 0:
+				play_animation(available_animations[0])
+		
+		# Set anchor point to bottom center after animations are loaded
+		set_sprite_anchor_bottom()
+	
+	if not has_animations:
 		# No animations provided, create a debug rectangle
 		var img = Image.create(50, 100, false, Image.FORMAT_RGBA8)
 		img.fill(character_data.color)
 		var tex = ImageTexture.create_from_image(img)
 		
-		# Create a simple sprite for debug
-		var debug_sprite = Sprite2D.new()
-		debug_sprite.name = "DebugSprite"
-		debug_sprite.texture = tex
-		add_child(debug_sprite)
+		# Create SpriteFrames for the debug sprite
+		sprite.sprite_frames = SpriteFrames.new()
+		sprite.sprite_frames.add_animation("debug")
+		sprite.sprite_frames.add_frame("debug", tex)
+		sprite.play("debug")
+		sprite.flip_h = (player_number == 1)
+		
+		# Set anchor point for debug sprite
+		set_sprite_anchor_bottom()
+
+func set_sprite_anchor_bottom():
+	if not sprite:
+		return
+	
+	# Reset position
+	sprite.position.y = 0
+	
+	# Get current frame size to set proper offset
+	if sprite.sprite_frames and sprite.animation != "":
+		var current_frame = sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
+		if current_frame:
+			var frame_width = current_frame.get_width()
+			var frame_height = current_frame.get_height()
+			
+			# Set Y offset so bottom of sprite is at node position
+			sprite.offset.y = -frame_height / 2
+			
+			# Set X offset based on player number (anchor to back edge)
+			if player_number == 1:
+				# Player 1: anchor to left edge (back)
+				sprite.offset.x = frame_width / 2
+			else:
+				# Player 2: anchor to right edge (back)  
+				sprite.offset.x = -frame_width / 2
+		else:
+			# Fallback values
+			sprite.offset.y = -50
+			if player_number == 1:
+				sprite.offset.x = 25  # Half of debug width
+			else:
+				sprite.offset.x = -25
+	else:
+		# For debug sprite
+		sprite.offset.y = -50
+		if player_number == 1:
+			sprite.offset.x = 25  # Half of debug width (50/2)
+		else:
+			sprite.offset.x = -25
+
+func get_movement_animation() -> String:
+	if movement_direction == 0:
+		return "idle"
+	
+	# Determine if moving forward or backward based on player number
+	var is_moving_forward: bool
+	
+	if player_number == 1:
+		# Player 1: right is forward, left is backward
+		is_moving_forward = (movement_direction > 0)
+	else:
+		# Player 2: left is forward, right is backward
+		is_moving_forward = (movement_direction < 0)
+	
+	if is_moving_forward:
+		return "run_forward" if sprite.sprite_frames.has_animation("run_forward") else "idle"
+	else:
+		return "run_backward" if sprite.sprite_frames.has_animation("run_backward") else "idle"
+
+func set_movement_direction(direction: float):
+	movement_direction = direction
+
+# Animation control with scaling
+func play_animation(animation_name: String):
+	if not sprite or not sprite.sprite_frames:
+		return
+		
+	if not sprite.sprite_frames.has_animation(animation_name):
+		return
+	
+	# Play the animation
+	sprite.play(animation_name)
+	
+	# Apply the appropriate scale
+	var target_scale = character_data.get_animation_scale(animation_name)
+	sprite.scale = target_scale
+	
+	# Simple flipping: Player 1 is flipped, Player 2 is not
+	sprite.flip_h = (player_number == 1)
+	
+	# Update anchor point for the new animation
+	call_deferred("set_sprite_anchor_bottom")
+
+# Smooth animation transition with scaling
+func play_animation_smooth(animation_name: String, transition_duration: float = 0.1):
+	if not sprite or not sprite.sprite_frames:
+		return
+		
+	if not sprite.sprite_frames.has_animation(animation_name):
+		return
+	
+	# Get target scale
+	var target_scale = character_data.get_animation_scale(animation_name)
+	
+	# Create a tween for smooth scaling transition
+	var tween = create_tween()
+	tween.parallel().tween_property(sprite, "scale", target_scale, transition_duration)
+	
+	# Play the animation
+	sprite.play(animation_name)
+	
+	# Simple flipping: Player 1 is flipped, Player 2 is not
+	sprite.flip_h = (player_number == 1)
+	
+	# Update anchor point for the new animation
+	call_deferred("set_sprite_anchor_bottom")
 
 func add_animation(anim_name: String, frames: SpriteFrames):
-	if frames:
-		if not sprite.sprite_frames:
-			sprite.sprite_frames = SpriteFrames.new()
+	if not frames or not sprite.sprite_frames:
+		return
 		
-		if not sprite.sprite_frames.has_animation(anim_name):
-			sprite.sprite_frames.add_animation(anim_name)
-			
-		# Copy frames from the character data
-		for i in range(frames.get_frame_count("default")):
-			sprite.sprite_frames.add_frame(anim_name, frames.get_frame("default", i))
+	# Check if the source SpriteFrames has any animations
+	var source_animations = frames.get_animation_names()
+	if source_animations.size() == 0:
+		return
 		
-		# Set animation speed
-		sprite.sprite_frames.set_animation_speed(anim_name, frames.get_animation_speed("default"))
-		sprite.sprite_frames.set_animation_loop(anim_name, frames.get_animation_loop("default"))
+	# Use the first available animation from the source
+	var source_anim_name = source_animations[0]
+	
+	# Check if source animation has any frames
+	if frames.get_frame_count(source_anim_name) == 0:
+		return
+		
+	# Add animation to our sprite frames
+	if not sprite.sprite_frames.has_animation(anim_name):
+		sprite.sprite_frames.add_animation(anim_name)
+		
+	# Copy frames from the source animation
+	for i in range(frames.get_frame_count(source_anim_name)):
+		var frame_texture = frames.get_frame_texture(source_anim_name, i)
+		if frame_texture:
+			sprite.sprite_frames.add_frame(anim_name, frame_texture)
+	
+	# Only set properties if we successfully added frames
+	if sprite.sprite_frames.get_frame_count(anim_name) > 0:
+		sprite.sprite_frames.set_animation_speed(anim_name, frames.get_animation_speed(source_anim_name))
+		
+		# FORCE attack animations to NOT loop
+		if "attack" in anim_name or anim_name == "hit" or anim_name == "defeat":
+			sprite.sprite_frames.set_animation_loop(anim_name, false)
+		else:
+			sprite.sprite_frames.set_animation_loop(anim_name, frames.get_animation_loop(source_anim_name))
+
+func auto_detect_player_number():
+	# Method 1: Check position (assumes player 1 starts on left, player 2 on right)
+	var viewport_center = get_viewport().get_visible_rect().size.x / 2
+	if global_position.x < viewport_center:
+		player_number = 1
+	else:
+		player_number = 2
+	
+	# Method 2: Check node name if it contains player info
+	if "player1" in name.to_lower() or "p1" in name.to_lower():
+		player_number = 1
+	elif "player2" in name.to_lower() or "p2" in name.to_lower():
+		player_number = 2
+	
+	# Default to player 1 if we still can't determine
+	if player_number == 0:
+		player_number = 1
+	
+	# Apply flipping immediately after detection
+	if sprite:
+		sprite.flip_h = (player_number == 1)
+	if has_node("DebugSprite"):
+		$DebugSprite.flip_h = (player_number == 1)
 
 func setup_audio():
 	# Create audio player if needed
@@ -157,18 +361,53 @@ func _physics_process(delta):
 	# Process current state
 	match current_state:
 		CharacterState.IDLE:
-			# Idle animation
-			if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("idle"):
-				if sprite.animation != "idle":
-					sprite.play("idle")
+			# Check if we should be moving based on velocity
+			if abs(velocity.x) > 10:  # Small threshold to avoid jitter
+				current_state = CharacterState.MOVING
+				movement_direction = sign(velocity.x)
+			else:
+				movement_direction = 0.0
+				# Only try to play idle if it exists AND we're not already playing it
+				if sprite and sprite.sprite_frames:
+					if sprite.sprite_frames.has_animation("idle") and sprite.animation != "idle":
+						play_animation("idle")
+					elif not sprite.sprite_frames.has_animation("idle"):
+						# No idle animation available - just stop whatever is playing
+						if sprite.animation != "":
+							sprite.stop()
 		CharacterState.MOVING:
-			# Movement handled by input or AI controller
-			if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("run"):
-				if sprite.animation != "run":
-					sprite.play("run")
+			# Check if we should stop moving
+			if abs(velocity.x) <= 10:  # Small threshold to avoid jitter
+				current_state = CharacterState.IDLE
+				movement_direction = 0.0
+			else:
+				movement_direction = sign(velocity.x)
+				var target_anim = get_movement_animation()
+				if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation(target_anim):
+					if sprite.animation != target_anim:
+						play_animation(target_anim)
 		# Other states are controlled by their respective functions
 	
 	move_and_slide()
+
+# Movement control functions
+func move_left():
+	if can_move():
+		velocity.x = -character_data.move_speed
+		current_state = CharacterState.MOVING
+
+func move_right():
+	if can_move():
+		velocity.x = character_data.move_speed
+		current_state = CharacterState.MOVING
+
+func stop_moving():
+	velocity.x = 0
+	if current_state == CharacterState.MOVING:
+		current_state = CharacterState.IDLE
+
+func can_move():
+	return current_state == CharacterState.IDLE or current_state == CharacterState.MOVING
 
 # Basic attacks
 func light_attack():
@@ -177,32 +416,26 @@ func light_attack():
 		
 		# Play animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("light_attack"):
-			sprite.play("light_attack")
+			play_animation("light_attack")
+		else:
+			current_state = CharacterState.IDLE
+			return
 		
 		# Play sound effect if available
 		play_sound(character_data.light_attack_sound)
 		
-		# Debug attack: enable attack area
+		# Enable attack area
 		var attack_area = get_node("AttackArea")
 		attack_area.monitoring = true
 		
-		# Check if opponent is in range and not blocking
-		if opponent and is_opponent_in_range():
+		# Check for hit immediately
+		if opponent and is_opponent_in_attack_range(character_data.light_attack_range):
 			var damage = character_data.light_attack_damage
-			# Must use await when calling take_damage
-			var hit_successful = await opponent.take_damage(damage, false)
+			var blocked = opponent.is_blocking()
+			opponent.take_damage(damage, false)
 			
-			if hit_successful:
+			if not blocked:
 				register_hit()
-		
-		# If no animation, use timer
-		if not sprite or not sprite.sprite_frames or not sprite.sprite_frames.has_animation("light_attack"):
-			# Disable attack area after a short delay
-			await get_tree().create_timer(character_data.light_attack_duration).timeout
-			attack_area.monitoring = false
-			
-			# Return to idle state
-			current_state = CharacterState.IDLE
 
 func heavy_attack():
 	if can_attack():
@@ -210,32 +443,26 @@ func heavy_attack():
 		
 		# Play animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("heavy_attack"):
-			sprite.play("heavy_attack")
+			play_animation("heavy_attack")
+		else:
+			current_state = CharacterState.IDLE
+			return
 		
 		# Play sound effect if available
 		play_sound(character_data.heavy_attack_sound)
 		
-		# Debug attack: enable attack area
+		# Enable attack area
 		var attack_area = get_node("AttackArea")
 		attack_area.monitoring = true
 		
-		# Check if opponent is in range and not blocking
-		if opponent and is_opponent_in_range():
+		# Check for hit immediately
+		if opponent and is_opponent_in_attack_range(character_data.heavy_attack_range):
 			var damage = character_data.heavy_attack_damage
-			# Must use await when calling take_damage
-			var hit_successful = await opponent.take_damage(damage, false)
+			var blocked = opponent.is_blocking()
+			opponent.take_damage(damage, false)
 			
-			if hit_successful:
+			if not blocked:
 				register_hit()
-		
-		# If no animation, use timer
-		if not sprite or not sprite.sprite_frames or not sprite.sprite_frames.has_animation("heavy_attack"):
-			# Disable attack area after a short delay
-			await get_tree().create_timer(character_data.heavy_attack_duration).timeout
-			attack_area.monitoring = false
-			
-			# Return to idle state
-			current_state = CharacterState.IDLE
 
 func block():
 	if can_block():
@@ -243,7 +470,7 @@ func block():
 		
 		# Play animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("block"):
-			sprite.play("block")
+			play_animation("block")
 		
 		# Play sound effect if available
 		play_sound(character_data.block_sound)
@@ -254,7 +481,7 @@ func stop_blocking():
 		
 		# Return to idle animation
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("idle"):
-			sprite.play("idle")
+			play_animation("idle")
 
 func special_attack():
 	if can_use_special():
@@ -262,7 +489,10 @@ func special_attack():
 		
 		# Play animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("special_attack"):
-			sprite.play("special_attack")
+			play_animation("special_attack")
+		else:
+			current_state = CharacterState.IDLE
+			return
 		
 		# Play sound effect if available
 		play_sound(character_data.special_attack_sound)
@@ -271,28 +501,18 @@ func special_attack():
 		special_meter = 0
 		emit_signal("special_meter_changed", special_meter)
 		
-		# Debug attack: enable attack area
+		# Enable attack area
 		var attack_area = get_node("AttackArea")
 		attack_area.monitoring = true
 		
-		# Check if opponent is in range
-		if opponent and is_opponent_in_range():
+		# Check for hit immediately
+		if opponent and is_opponent_in_attack_range(character_data.special_attack_range):
 			var damage = character_data.special_attack_damage
-			# Special attacks partially bypass blocks
-			# Must use await when calling take_damage
-			var hit_successful = await opponent.take_damage(damage, true)
+			var blocked = opponent.is_blocking()
+			opponent.take_damage(damage, true)
 			
-			if hit_successful:
+			if not blocked:
 				register_hit()
-		
-		# If no animation, use timer
-		if not sprite or not sprite.sprite_frames or not sprite.sprite_frames.has_animation("special_attack"):
-			# Disable attack area after a short delay
-			await get_tree().create_timer(character_data.special_attack_duration).timeout
-			attack_area.monitoring = false
-			
-			# Return to idle state
-			current_state = CharacterState.IDLE
 
 func ultimate_attack():
 	if can_use_ultimate():
@@ -300,7 +520,10 @@ func ultimate_attack():
 		
 		# Play animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("ultimate_attack"):
-			sprite.play("ultimate_attack")
+			play_animation("ultimate_attack")
+		else:
+			current_state = CharacterState.IDLE
+			return
 		
 		# Play sound effect if available
 		play_sound(character_data.ultimate_attack_sound)
@@ -309,28 +532,15 @@ func ultimate_attack():
 		ultimate_meter = 0
 		emit_signal("ultimate_meter_changed", ultimate_meter)
 		
-		# Debug attack: enable attack area
+		# Enable attack area
 		var attack_area = get_node("AttackArea")
 		attack_area.monitoring = true
 		
-		# Check if opponent is in range
-		if opponent and is_opponent_in_range():
+		# Check for hit immediately
+		if opponent and is_opponent_in_attack_range(character_data.ultimate_attack_range):
 			var damage = character_data.ultimate_attack_damage
-			# Ultimate attacks bypass blocks
-			# Must use await when calling take_damage
-			var hit_successful = await opponent.take_damage(damage, true)
-			
-			if hit_successful:
-				register_hit()
-		
-		# If no animation, use timer
-		if not sprite or not sprite.sprite_frames or not sprite.sprite_frames.has_animation("ultimate_attack"):
-			# Disable attack area after a short delay
-			await get_tree().create_timer(character_data.ultimate_attack_duration).timeout
-			attack_area.monitoring = false
-			
-			# Return to idle state
-			current_state = CharacterState.IDLE
+			opponent.take_damage(damage, true)
+			register_hit()
 
 # State checks
 func can_attack():
@@ -349,27 +559,38 @@ func is_blocking():
 	return current_state == CharacterState.BLOCKING
 
 # Helper functions
-func is_opponent_in_range():
-	# Simple distance check for debug purposes
+func is_opponent_in_attack_range(attack_range: float) -> bool:
 	if not opponent:
+		print("No opponent found")
 		return false
 	
-	var attack_distance = 120  # Adjust based on testing
-	return abs(global_position.x - opponent.global_position.x) < attack_distance
+	var my_x = global_position.x
+	var opponent_x = opponent.global_position.x
+	
+	
+	if player_number == 1:
+		# Player 1: hitbox extends rightward from character position
+		var hit = opponent_x >= my_x and opponent_x <= (my_x + attack_range)
+		print("Player 1 check: opponent_x >= ", my_x, " and opponent_x <= ", (my_x + attack_range), " = ", hit)
+		return hit
+	else:
+		# Player 2: hitbox extends leftward from character position  
+		var hit = opponent_x <= my_x and opponent_x >= (my_x - attack_range)
+		print("Player 2 check: opponent_x <= ", my_x, " and opponent_x >= ", (my_x - attack_range), " = ", hit)
+		return hit
+
+# Legacy function for backward compatibility
+func is_opponent_in_range():
+	return is_opponent_in_attack_range(120.0)  # Default range
 
 # Combat mechanics
 func take_damage(damage_amount, ignore_block):
-	# Check if attack is blocked
 	var blocked = is_blocking() and not ignore_block
 	
 	if blocked:
-		# Reduce damage when blocking
 		damage_amount = damage_amount * 0.2  # 80% damage reduction when blocking
-		
-		# Play block sound if available
 		play_sound(character_data.block_sound)
 	else:
-		# Play hit sound if available
 		play_sound(character_data.hit_sound)
 	
 	current_health -= damage_amount
@@ -380,38 +601,25 @@ func take_damage(damage_amount, ignore_block):
 	if current_health <= 0:
 		current_state = CharacterState.DEFEAT
 		
-		# Play defeat animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("defeat"):
-			sprite.play("defeat")
+			play_animation("defeat")
 			
-		# Play defeat sound if available
 		play_sound(character_data.defeat_sound)
 	elif not blocked:
 		current_state = CharacterState.HIT
 		
-		# Play hit animation if available
 		if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("hit"):
-			sprite.play("hit")
-		
-		# If no animation, use timer
-		if not sprite or not sprite.sprite_frames or not sprite.sprite_frames.has_animation("hit"):
-			# Return to idle after a short stun
-			await get_tree().create_timer(character_data.hit_stun_duration).timeout
-			if current_state == CharacterState.HIT:  # Make sure we're still in hit state
-				current_state = CharacterState.IDLE
+			play_animation("hit")
 	
-	return not blocked  # Return whether hit was successful (not blocked)
+	return not blocked
 
 func register_hit():
-	# Increase combo
 	combo_count += 1
 	combo_timer = character_data.combo_timeout
 	emit_signal("combo_changed", combo_count)
 	
-	# Charge special meter
 	charge_special_meter(character_data.special_meter_gain_per_hit)
 	
-	# Combo increases ultimate charge rate
 	var combo_bonus = combo_count * 2.0
 	charge_ultimate_meter(combo_bonus)
 
@@ -425,61 +633,40 @@ func charge_ultimate_meter(amount):
 	ultimate_meter = min(ultimate_meter, character_data.ultimate_meter_max)
 	emit_signal("ultimate_meter_changed", ultimate_meter)
 
-# Direction control
-func face_opponent():
-	if opponent:
-		if global_position.x < opponent.global_position.x:
-			facing_direction = 1
-		else:
-			facing_direction = -1
-		
-		# Flip sprite based on direction
-		if sprite:
-			sprite.flip_h = (facing_direction == -1)
-		elif has_node("DebugSprite"):
-			$DebugSprite.flip_h = (facing_direction == -1)
-			
-		# Flip attack area
-		$AttackArea.scale.x = facing_direction
-
 # Animation handling
 func _on_animation_finished():
-	# Called when an animation finishes
-	if sprite:
-		var anim_name = sprite.animation
+	if not sprite:
+		return
 		
-		match current_state:
-			CharacterState.ATTACKING_LIGHT:
-				if anim_name == "light_attack":
-					current_state = CharacterState.IDLE
-					$AttackArea.monitoring = false
-					sprite.play("idle")
-					
-			CharacterState.ATTACKING_HEAVY:
-				if anim_name == "heavy_attack":
-					current_state = CharacterState.IDLE
-					$AttackArea.monitoring = false
-					sprite.play("idle")
-					
-			CharacterState.SPECIAL_ATTACK:
-				if anim_name == "special_attack":
-					current_state = CharacterState.IDLE
-					$AttackArea.monitoring = false
-					sprite.play("idle")
-					
-			CharacterState.ULTIMATE_ATTACK:
-				if anim_name == "ultimate_attack":
-					current_state = CharacterState.IDLE
-					$AttackArea.monitoring = false
-					sprite.play("idle")
-					
-			CharacterState.HIT:
-				if anim_name == "hit":
-					current_state = CharacterState.IDLE
-					sprite.play("idle")
+	var anim_name = sprite.animation
 	
-	# Emit animation finished signal
-	emit_signal("animation_finished", sprite.animation if sprite else "")
+	match current_state:
+		CharacterState.ATTACKING_LIGHT:
+			if anim_name == "light_attack":
+				current_state = CharacterState.IDLE
+				$AttackArea.monitoring = false
+				
+		CharacterState.ATTACKING_HEAVY:
+			if anim_name == "heavy_attack":
+				current_state = CharacterState.IDLE
+				$AttackArea.monitoring = false
+				
+		CharacterState.SPECIAL_ATTACK:
+			if anim_name == "special_attack":
+				current_state = CharacterState.IDLE
+				$AttackArea.monitoring = false
+				
+		CharacterState.ULTIMATE_ATTACK:
+			if anim_name == "ultimate_attack":
+				current_state = CharacterState.IDLE
+				$AttackArea.monitoring = false
+				
+		CharacterState.HIT:
+			if anim_name == "hit":
+				current_state = CharacterState.IDLE
+	
+	# Don't automatically play idle here - let _physics_process handle it
+	emit_signal("animation_finished", anim_name)
 
 # Sound handling
 func play_sound(sound: AudioStream):

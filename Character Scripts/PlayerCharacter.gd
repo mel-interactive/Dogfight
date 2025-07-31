@@ -32,8 +32,6 @@ func _physics_process(delta):
 	# Handle player input
 	handle_input()
 	
-	# Face the opponent
-	face_opponent()
 	
 	# Call parent physics process
 	super._physics_process(delta)

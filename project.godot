@@ -20,6 +20,16 @@ config/icon="res://icon.svg"
 Character_Manager="*res://Character Scripts/CharacterManager.gd"
 GameState_Manager="*res://Scripts/GameStateManager.gd"
 
+[display]
+
+window/size/viewport_width=1366
+window/size/viewport_height=768
+window/size/resizable=false
+
+[dotnet]
+
+project/assembly_name="dogfight"
+
 [input]
 
 restart={

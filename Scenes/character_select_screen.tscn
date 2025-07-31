@@ -6,25 +6,30 @@
 script = ExtResource("1_g8xl4")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-offset_right = 1158.0
-offset_bottom = 642.0
+offset_left = 2.0
+offset_top = 4.0
+offset_right = 1373.38
+offset_bottom = 763.965
 color = Color(0.0815779, 1.49205e-06, 0.435414, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
-offset_left = 246.0
-offset_top = 6.0
-offset_right = 988.0
-offset_bottom = 113.0
+offset_left = 382.0
+offset_top = 22.0
+offset_right = 1124.0
+offset_bottom = 129.0
 theme_override_font_sizes/font_size = 60
 text = "SELECT YOUR FIGHTER"
+metadata/_edit_use_anchors_ = true
 
 [node name="Player1Side" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 48.0
-offset_top = 129.0
-offset_right = 520.0
-offset_bottom = 601.0
+offset_left = 100.0
+offset_top = 133.0
+offset_right = 572.0
+offset_bottom = 605.0
+metadata/_edit_use_anchors_ = true
 
 [node name="ReadyButton" type="Button" parent="Player1Side"]
 layout_mode = 1
@@ -40,20 +45,23 @@ offset_bottom = 9.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "READY"
+metadata/_edit_use_anchors_ = true
 
 [node name="CharacterGrid" type="GridContainer" parent="Player1Side"]
 layout_mode = 0
 offset_right = 517.0
 offset_bottom = 412.0
 columns = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="Player2Side" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 650.0
-offset_top = 129.0
-offset_right = 1122.0
-offset_bottom = 601.0
+offset_left = 800.0
+offset_top = 133.0
+offset_right = 1272.0
+offset_bottom = 605.0
+metadata/_edit_use_anchors_ = true
 
 [node name="ReadyButton" type="Button" parent="Player2Side"]
 layout_mode = 1
@@ -69,6 +77,7 @@ offset_bottom = 9.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "READY"
+metadata/_edit_use_anchors_ = true
 
 [node name="CharacterGrid" type="GridContainer" parent="Player2Side"]
 layout_mode = 0
@@ -76,12 +85,14 @@ offset_left = -26.0
 offset_right = 491.0
 offset_bottom = 412.0
 columns = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="CenterDivider" type="ColorRect" parent="."]
-offset_left = 581.0
-offset_top = 144.0
-offset_right = 603.0
-offset_bottom = 645.0
+offset_left = 686.54
+offset_top = 148.0
+offset_right = 708.54
+offset_bottom = 649.0
+metadata/_edit_use_anchors_ = true
 
 [node name="AudioPlayers" type="Node" parent="."]
 
