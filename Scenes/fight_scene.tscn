@@ -230,10 +230,10 @@ autoplay = "backgroundanim"
 [node name="Positions" type="Node2D" parent="."]
 
 [node name="Player1Position" type="Marker2D" parent="Positions"]
-position = Vector2(300, 725)
+position = Vector2(250, 725)
 
 [node name="Player2Position" type="Marker2D" parent="Positions"]
-position = Vector2(1050, 725)
+position = Vector2(1150, 725)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
