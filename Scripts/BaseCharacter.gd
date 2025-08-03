@@ -215,7 +215,6 @@ func slide_to_spawn_position(duration: float):
 	# Don't slide if we're the one attacking (our state handles our own sliding)
 	var current_state_name = state_machine.get_current_state_name()
 	if current_state_name == "SpecialAttack" or current_state_name == "UltimateAttack":
-		print("Character ", player_number, " is attacking, not sliding opponent")
 		return
 	
 	# Get our spawn position
@@ -228,9 +227,9 @@ func slide_to_spawn_position(duration: float):
 		slide_target_pos = spawn_pos
 		slide_time = 0.0
 		slide_total_duration = duration
-		print("Character ", player_number, " sliding to spawn from ", slide_start_pos, " to ", slide_target_pos)
-	else:
-		print("Character ", player_number, " already at spawn position")
+		
+		# Start speed lines for the non-attacking character
+		visual_component.start_speed_lines()
 
 func get_spawn_position() -> Vector2:
 	# Try to get the spawn position from the fight scene
@@ -255,6 +254,10 @@ func _physics_process(delta):
 		var eased_progress = 1.0 - pow(1.0 - slide_progress, 3.0)
 		eased_progress = clamp(eased_progress, 0.0, 1.0)
 		
+		# Calculate movement direction for speed lines
+		var movement_direction = (slide_target_pos - slide_start_pos).normalized()
+		visual_component.update_speed_lines_direction(movement_direction)
+		
 		# Interpolate position
 		global_position = slide_start_pos.lerp(slide_target_pos, eased_progress)
 		
@@ -262,7 +265,9 @@ func _physics_process(delta):
 		if slide_progress >= 1.0:
 			is_sliding_to_spawn = false
 			global_position = slide_target_pos
-			print("Character ", player_number, " finished sliding to spawn")
+			
+			# Stop speed lines
+			visual_component.stop_speed_lines()
 	
 	# Apply movement constraints before moving (only if not sliding)
 	if not is_sliding_to_spawn:

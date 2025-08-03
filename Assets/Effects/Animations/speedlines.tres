@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://cdsqoidpuo7in"]
+
+[ext_resource type="Texture2D" uid="uid://b6m68n3g6v2ar" path="res://Assets/Effects/Speedlines/frame_0_delay-0.2s.png" id="1_eaup4"]
+[ext_resource type="Texture2D" uid="uid://c00y3awgdxcr5" path="res://Assets/Effects/Speedlines/frame_1_delay-0.2s.png" id="2_emdet"]
+[ext_resource type="Texture2D" uid="uid://cd1yqw2piuaaj" path="res://Assets/Effects/Speedlines/frame_2_delay-0.2s.png" id="3_s1ajm"]
+[ext_resource type="Texture2D" uid="uid://dawijn3nt2kvu" path="res://Assets/Effects/Speedlines/frame_3_delay-0.2s.png" id="4_pdmrv"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_eaup4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_emdet")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_s1ajm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pdmrv")
+}],
+"loop": true,
+"name": &"speedlines",
+"speed": 5.0
+}]

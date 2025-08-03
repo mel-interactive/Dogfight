@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Character_Manager="*res://Character Scripts/CharacterManager.gd"
+Character_Manager="*res://Scripts/CharacterManager.gd"
 GameState_Manager="*res://Scripts/GameStateManager.gd"
 EventBus="*res://Scripts/EventBus.gd"
 

@@ -8,8 +8,73 @@ var custom_animation_sprites: Array[AnimatedSprite2D] = []
 var original_sprite_position: Vector2
 var shake_offset: Vector2 = Vector2.ZERO
 
+# Speed lines
+var speed_lines_sprite: AnimatedSprite2D
+var speed_lines_active: bool = false
+
 func _ready():
 	character = get_parent()
+	setup_speed_lines()
+
+func setup_speed_lines():
+	# Create speed lines sprite
+	speed_lines_sprite = AnimatedSprite2D.new()
+	speed_lines_sprite.name = "SpeedLines"
+	speed_lines_sprite.visible = false
+	speed_lines_sprite.z_index = 15
+	character.add_child(speed_lines_sprite)
+	
+	# Load the speed lines animation
+	var speed_lines_path = "res://Assets/Effects/Animations/speedlines.tres"
+	
+	if ResourceLoader.exists(speed_lines_path):
+		var speed_lines_frames = ResourceLoader.load(speed_lines_path) as SpriteFrames
+		if speed_lines_frames:
+			speed_lines_sprite.sprite_frames = speed_lines_frames
+
+func start_speed_lines():
+	speed_lines_active = true
+	speed_lines_sprite.visible = true
+	speed_lines_sprite.scale = Vector2(1.5, 1.5)
+
+	# Get available animations from the speed lines
+	var available_animations = speed_lines_sprite.sprite_frames.get_animation_names()
+	
+	if available_animations.size() > 0:
+		var anim_name = available_animations[0]
+		speed_lines_sprite.play(anim_name)
+		
+		# Force initial positioning - move UP from character position
+		speed_lines_sprite.global_position = character.global_position
+
+func stop_speed_lines():
+	if speed_lines_sprite:
+		speed_lines_active = false
+		speed_lines_sprite.visible = false
+		speed_lines_sprite.stop()
+
+func update_speed_lines_direction(movement_direction: Vector2):
+	if not speed_lines_active or not speed_lines_sprite:
+		return
+	
+	# Position speed lines ABOVE the character, not at their feet
+	speed_lines_sprite.global_position = character.global_position
+	speed_lines_sprite.global_position.y -= 200
+	
+	if character.player_number == 1:
+		if movement_direction.x < 0:
+			speed_lines_sprite.flip_h = true  # Moving left, lines go right
+			speed_lines_sprite.global_position.x += 250 
+		elif movement_direction.x > 0:
+			speed_lines_sprite.flip_h = false  # Moving right, lines go left
+			speed_lines_sprite.global_position.x -= 100 
+	elif character.player_number == 2:
+		if movement_direction.x < 0:
+			speed_lines_sprite.flip_h = true  # Moving left, lines go right
+			speed_lines_sprite.global_position.x += 100 
+		elif movement_direction.x > 0:
+			speed_lines_sprite.flip_h = false  # Moving right, lines go left
+			speed_lines_sprite.global_position.x -= 250 
 
 func setup_visuals():
 	# Clean up existing sprites
@@ -39,6 +104,9 @@ func setup_visuals():
 	
 	# Setup custom animations
 	setup_custom_animations()
+	
+	# Setup speed lines
+	setup_speed_lines()
 	
 	# Store original sprite position for shake effect
 	if sprite:
@@ -246,7 +314,6 @@ func _on_custom_animation_finished(sprite_index: int):
 
 func _on_animation_finished():
 	var anim_name = sprite.animation
-	print("VisualComponent: Animation finished: ", anim_name)
 	
 	# Emit to EventBus
 	EventBus.emit_signal("animation_finished", character, anim_name)

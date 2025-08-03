@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CustomAnimation" load_steps=3 format=3 uid="uid://dqgk46lx4twuq"]
 
 [ext_resource type="SpriteFrames" uid="uid://bvm5np28ml6o6" path="res://Assets/Characters/Dennis/Animations/dennisinterloperspecial.tres" id="1_mo514"]
-[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Character Scripts/CustomAnimation.gd" id="2_axbeb"]
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="2_axbeb"]
 
 [resource]
 script = ExtResource("2_axbeb")

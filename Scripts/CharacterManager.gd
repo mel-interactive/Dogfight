@@ -14,13 +14,13 @@ var base_character_scene: PackedScene
 # Default character paths - these should be updated to match your actual file paths
 var character_paths = [
 	
-	"res://Character Scripts/Dennis.tres",
-	"res://Character Scripts/Olaf.tres",
-	"res://Character Scripts/Erwin.tres",
-	"res://Character Scripts/Josh.tres",
-	"res://Character Scripts/Louis.tres",
-	"res://Character Scripts/Michael.tres",
-	"res://Character Scripts/Teague.tres"
+	"res://Character Resources/Dennis.tres",
+	"res://Character Resources/Olaf.tres",
+	"res://Character Resources/Erwin.tres",
+	"res://Character Resources/Josh.tres",
+	"res://Character Resources/Louis.tres",
+	"res://Character Resources/Michael.tres",
+	"res://Character Resources/Teague.tres"
 ]
 
 func _ready():

@@ -6,7 +6,6 @@ class_name AttackState
 var attack_timer: float = 0.0
 var attack_hit_applied: bool = false
 var attack_type: String = ""
-var max_attack_duration: float = 2.0  # Fallback timeout
 
 func enter():
 	attack_timer = 0.0
@@ -43,10 +42,6 @@ func update(delta):
 		attack_hit_applied = true
 		print("Applied hit for attack: ", attack_type)
 	
-	# Fallback timeout to prevent infinite hanging
-	if attack_timer >= max_attack_duration:
-		print("Attack timeout reached, forcing transition to Idle")
-		state_machine.change_state("Idle")
 
 func _on_animation_finished(animation_name: String):
 	# Check if this is our attack animation

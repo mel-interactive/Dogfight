@@ -1,4 +1,3 @@
-
 # UltimateAttackState.gd
 extends AttackState
 class_name UltimateAttackState

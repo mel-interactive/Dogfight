@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3 uid="uid://dds1h1yeu38el"]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3 uid="uid://ce6vmdknn470h"]
 
-[ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Character Scripts/CharacterData.gd" id="1_k8ki5"]
+[ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Scripts/CharacterData.gd" id="1_ac4hx"]
 
 [resource]
-script = ExtResource("1_k8ki5")
-character_id = "erwin"
-character_name = "Erwin"
+script = ExtResource("1_ac4hx")
+character_id = "wouter"
+character_name = "Wouter"
 description = "A basic fighter"
-color = Color(0.38, 0.411, 1, 1)
+color = Color(1, 0.611343, 0.338803, 1)
 max_health = 100
 move_speed = 300.0
 light_attack_damage = 5

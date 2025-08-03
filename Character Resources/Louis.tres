@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3 uid="uid://ce6vmdknn470h"]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3 uid="uid://d3c87molambr4"]
 
-[ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Character Scripts/CharacterData.gd" id="1_ac4hx"]
+[ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Scripts/CharacterData.gd" id="1_6cmld"]
 
 [resource]
-script = ExtResource("1_ac4hx")
-character_id = "wouter"
-character_name = "Wouter"
+script = ExtResource("1_6cmld")
+character_id = "louis"
+character_name = "Louis"
 description = "A basic fighter"
-color = Color(1, 0.611343, 0.338803, 1)
+color = Color(1, 0.865667, 0.38, 1)
 max_health = 100
 move_speed = 300.0
 light_attack_damage = 5

@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="CharacterData" load_steps=14 format=3 uid="uid://b4v386o2l6fw2"]
 
-[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Character Scripts/CustomAnimation.gd" id="1_4twnc"]
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="1_4twnc"]
 [ext_resource type="SpriteFrames" uid="uid://c2qjfkcm8akly" path="res://Assets/Characters/Dennis/Animations/dennisblock.tres" id="1_8kh0g"]
-[ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Character Scripts/CharacterData.gd" id="1_gte3r"]
+[ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Scripts/CharacterData.gd" id="1_gte3r"]
 [ext_resource type="Resource" uid="uid://bj107t233fvqy" path="res://Assets/Characters/Dennis/Animations/PlayOuterWildsCustom.tres" id="3_o2pix"]
 [ext_resource type="Resource" uid="uid://dqgk46lx4twuq" path="res://Assets/Characters/Dennis/Animations/InterloperCustom.tres" id="4_t883h"]
 [ext_resource type="Resource" uid="uid://cplmcf57nxvgu" path="res://Assets/Characters/Dennis/Animations/YapDennisCustom.tres" id="5_0x7kh"]

@@ -1,3 +1,4 @@
+
 # SpecialAttackState.gd
 extends AttackState
 class_name SpecialAttackState
@@ -32,6 +33,10 @@ func start_dual_character_slide():
 	if start_position.distance_to(target_position) > 10.0:
 		sliding = true
 		slide_timer = 0.0
+		
+		# Start speed lines for the attacking character too
+		character.visual_component.start_speed_lines()
+		
 		print("Special attack: both characters sliding - attacker from ", start_position, " to ", target_position)
 	else:
 		sliding = false
@@ -47,6 +52,10 @@ func update(delta):
 		var eased_progress = 1.0 - pow(1.0 - slide_progress, 3.0)
 		eased_progress = clamp(eased_progress, 0.0, 1.0)
 		
+		# Calculate movement direction for speed lines
+		var movement_direction = (target_position - start_position).normalized()
+		character.visual_component.update_speed_lines_direction(movement_direction)
+		
 		# Interpolate position
 		character.global_position = start_position.lerp(target_position, eased_progress)
 		
@@ -54,6 +63,10 @@ func update(delta):
 		if slide_progress >= 1.0:
 			sliding = false
 			character.global_position = target_position
+			
+			# Stop speed lines
+			character.visual_component.stop_speed_lines()
+			
 			print("Special attack: slide complete, starting attack")
 			super.enter()  # Start the actual attack
 	else:
