@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2k85ttg2sro7"
-path="res://.godot/imported/frame_1_delay-0.15s.png-3456fef569999aff7a9909a010cd63aa.ctex"
+uid="uid://bw5cu2i8wv6ys"
+path="res://.godot/imported/frame_3_delay-0.14s.png-05c6ae9ed90bae944887fbf92d6eed0d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Characters/Dennis/Block/frame_1_delay-0.15s.png"
-dest_files=["res://.godot/imported/frame_1_delay-0.15s.png-3456fef569999aff7a9909a010cd63aa.ctex"]
+source_file="res://Assets/Characters/Dennis/Block/frame_3_delay-0.14s.png"
+dest_files=["res://.godot/imported/frame_3_delay-0.14s.png-05c6ae9ed90bae944887fbf92d6eed0d.ctex"]
 
 [params]
 
