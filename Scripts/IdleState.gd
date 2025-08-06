@@ -11,6 +11,6 @@ func enter():
 			if character.sprite.animation != "":
 				character.sprite.stop()
 
-func physics_update(delta):
+func physics_update(_delta):
 	if abs(character.velocity.x) > 10:
 		state_machine.change_state("Moving")

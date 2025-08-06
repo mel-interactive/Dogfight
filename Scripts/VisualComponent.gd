@@ -185,12 +185,13 @@ func set_sprite_anchor_bottom():
 			var frame_width = current_frame.get_width()
 			var frame_height = current_frame.get_height()
 			
-			sprite.offset.y = -frame_height / 2
+			# Use float division to avoid integer division warnings
+			sprite.offset.y = -frame_height / 2.0
 			
 			if character.player_number == 1:
-				sprite.offset.x = frame_width / 2
+				sprite.offset.x = frame_width / 2.0
 			else:
-				sprite.offset.x = -frame_width / 2
+				sprite.offset.x = -frame_width / 2.0
 		else:
 			sprite.offset.y = -50
 			sprite.offset.x = 25 if character.player_number == 1 else -25
@@ -300,7 +301,7 @@ func position_custom_animation(custom_sprite: AnimatedSprite2D, custom_anim: Cus
 	else:
 		# Position at screen center
 		var viewport_size = character.get_viewport().get_visible_rect().size
-		custom_sprite.global_position = Vector2(viewport_size.x / 2, viewport_size.y / 2)
+		custom_sprite.global_position = Vector2(viewport_size.x / 2.0, viewport_size.y / 2.0)
 		
 		# Reset offset to center the sprite first
 		custom_sprite.offset = Vector2.ZERO

@@ -108,7 +108,8 @@ func take_damage(damage_amount: int, ignore_block: bool) -> bool:
 	var blocked = character.is_blocking()
 	
 	if blocked:
-		damage_amount = damage_amount * 0.2
+		# Convert to int to avoid narrowing conversion warning
+		damage_amount = int(damage_amount * 0.2)
 		character.play_sound(character.character_data.block_sound)
 		# WHITE FLASH only happens when blocking
 		character.visual_component.do_simple_shake()

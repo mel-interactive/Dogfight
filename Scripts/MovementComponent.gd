@@ -28,12 +28,12 @@ func apply_movement_constraints():
 		
 		# If moving towards opponent and would overlap too much
 		if character.velocity.x > 0 and my_x < opponent_x:  # Moving right towards opponent
-			var future_x = my_x + character.velocity.x * character.get_physics_process_delta_time()
-			if future_x + min_distance > opponent_x:
+			var predicted_x = my_x + character.velocity.x * character.get_physics_process_delta_time()
+			if predicted_x + min_distance > opponent_x:
 				character.velocity.x = 0
 		elif character.velocity.x < 0 and my_x > opponent_x:  # Moving left towards opponent
-			var future_x = my_x + character.velocity.x * character.get_physics_process_delta_time()
-			if future_x - min_distance < opponent_x:
+			var predicted_x_left = my_x + character.velocity.x * character.get_physics_process_delta_time()
+			if predicted_x_left - min_distance < opponent_x:
 				character.velocity.x = 0
 	
 	# Apply screen boundary constraints

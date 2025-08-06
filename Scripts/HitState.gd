@@ -26,7 +26,7 @@ func update(delta):
 	if hit_timer >= hit_duration:
 		state_machine.change_state("Idle")
 
-func physics_update(delta):
+func physics_update(_delta):
 	# Force stop movement when being hit
 	character.velocity.x = 0
 	character.movement_direction = 0.0

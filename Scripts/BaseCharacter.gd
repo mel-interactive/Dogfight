@@ -184,7 +184,7 @@ func setup_audio():
 		audio_player = $AudioPlayer
 
 func auto_detect_player_number():
-	var viewport_center = get_viewport().get_visible_rect().size.x / 2
+	var viewport_center = get_viewport().get_visible_rect().size.x / 2.0
 	if global_position.x < viewport_center:
 		player_number = 1
 	else:
@@ -254,9 +254,9 @@ func _physics_process(delta):
 		var eased_progress = 1.0 - pow(1.0 - slide_progress, 3.0)
 		eased_progress = clamp(eased_progress, 0.0, 1.0)
 		
-		# Calculate movement direction for speed lines
-		var movement_direction = (slide_target_pos - slide_start_pos).normalized()
-		visual_component.update_speed_lines_direction(movement_direction)
+		# Calculate slide direction for speed lines (renamed to avoid shadowing)
+		var slide_direction = (slide_target_pos - slide_start_pos).normalized()
+		visual_component.update_speed_lines_direction(slide_direction)
 		
 		# Interpolate position
 		global_position = slide_start_pos.lerp(slide_target_pos, eased_progress)
@@ -374,14 +374,18 @@ func is_opponent_in_range():
 # ===== ANIMATION HANDLING =====
 
 func _on_animation_finished():
-	var anim_name = sprite.animation if sprite else ""
+	var anim_name: String
+	if sprite:
+		anim_name = sprite.animation
+	else:
+		anim_name = ""
 	
 	# Forward to the current state if it's an attack state
 	var state_name = state_machine.get_current_state_name()
-	var current_state = state_machine.current_state
+	var active_state = state_machine.current_state
 	
-	if current_state.has_method("_on_animation_finished"):
-		current_state._on_animation_finished(anim_name)
+	if active_state.has_method("_on_animation_finished"):
+		active_state._on_animation_finished(anim_name)
 	else:
 		# Fallback for states that don't handle animation finished
 		match state_name:

@@ -49,7 +49,10 @@ func change_state(new_state_name: String) -> bool:
 	return true
 
 func get_current_state_name() -> String:
-	return current_state.name if current_state else ""
+	if current_state:
+		return current_state.name
+	else:
+		return ""
 
 func _process(delta):
 	if current_state:

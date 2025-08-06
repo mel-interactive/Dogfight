@@ -3,7 +3,7 @@ extends AttackState
 class_name UltimateAttackState
 
 var slide_timer: float = 0.0
-var slide_duration: float = 0.4  # Slightly longer slide for ultimate
+var slide_duration: float = 0.4 
 var sliding: bool = false
 var start_position: Vector2
 var target_position: Vector2
@@ -32,6 +32,10 @@ func start_dual_character_slide():
 	if start_position.distance_to(target_position) > 10.0:
 		sliding = true
 		slide_timer = 0.0
+		
+		# Start speed lines for the attacking character (THIS WAS MISSING!)
+		character.visual_component.start_speed_lines()
+		
 		print("Ultimate attack: both characters sliding - attacker from ", start_position, " to ", target_position)
 	else:
 		sliding = false
@@ -47,6 +51,10 @@ func update(delta):
 		var eased_progress = 1.0 - pow(1.0 - slide_progress, 4.0)
 		eased_progress = clamp(eased_progress, 0.0, 1.0)
 		
+		# Calculate movement direction for speed lines (THIS WAS MISSING!)
+		var movement_direction = (target_position - start_position).normalized()
+		character.visual_component.update_speed_lines_direction(movement_direction)
+		
 		# Interpolate position
 		character.global_position = start_position.lerp(target_position, eased_progress)
 		
@@ -54,6 +62,10 @@ func update(delta):
 		if slide_progress >= 1.0:
 			sliding = false
 			character.global_position = target_position
+			
+			# Stop speed lines (THIS WAS MISSING!)
+			character.visual_component.stop_speed_lines()
+			
 			print("Ultimate attack: slide complete, starting attack")
 			super.enter()  # Start the actual attack
 	else:

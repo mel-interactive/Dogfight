@@ -8,7 +8,7 @@ func enter():
 		if character.sprite.animation != target_anim:
 			character.play_animation(target_anim)
 
-func physics_update(delta):
+func physics_update(_delta):
 	if abs(character.velocity.x) <= 10:
 		state_machine.change_state("Idle")
 	else:

@@ -87,7 +87,7 @@ func _ready():
 	
 	print("FightScene: Ready function completed")
 
-func _process(delta):
+func _process(_delta):
 	# Restart fight with R key
 	if Input.is_action_just_pressed("restart"):
 		get_tree().reload_current_scene()

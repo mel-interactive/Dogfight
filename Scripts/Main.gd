@@ -7,5 +7,8 @@ func _ready():
 		game_state_manager.name = "GameStateManager"
 		get_tree().root.add_child(game_state_manager)
 	
-	# Start with the character selection screen
+	# Start with the character selection screen (deferred to avoid busy parent error)
+	call_deferred("change_to_character_select")
+
+func change_to_character_select():
 	get_tree().change_scene_to_file("res://Scenes/character_select_screen.tscn")
