@@ -1,3 +1,4 @@
+# PlayerCharacter.gd - Enhanced with win/lose state input blocking
 extends BaseCharacter
 class_name PlayerCharacter
 
@@ -36,13 +37,14 @@ func _physics_process(delta):
 	super._physics_process(delta)
 
 func handle_input():
-	# Skip input handling if defeated or attacking
-	if current_state == CharacterState.DEFEAT or \
-	   current_state == CharacterState.ATTACKING_LIGHT or \
-	   current_state == CharacterState.ATTACKING_HEAVY or \
-	   current_state == CharacterState.SPECIAL_ATTACK or \
-	   current_state == CharacterState.ULTIMATE_ATTACK or \
-	   current_state == CharacterState.HIT:
+	# Skip input handling during intro sequence
+	var fight_scene = get_tree().current_scene as FightScene
+	if fight_scene and fight_scene.intro_sequence_active:
+		return
+	
+	# Skip input handling if defeated, victorious, or during attacks
+	var current_state_name = state_machine.get_current_state_name()
+	if current_state_name in ["Defeat", "Victory", "LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack", "Hit"]:
 		return
 	
 	# Attacks (check these FIRST to stop movement)

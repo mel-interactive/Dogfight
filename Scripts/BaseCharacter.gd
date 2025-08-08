@@ -1,4 +1,4 @@
-# BaseCharacter.gd - Refactored with components
+# BaseCharacter.gd - Refactored with components and win/lose states
 extends CharacterBody2D
 class_name BaseCharacter
 
@@ -120,6 +120,15 @@ func setup_components():
 	defeat_state.name = "Defeat"
 	state_machine.add_child(defeat_state)
 	
+	var entrance_state = EntranceState.new()
+	entrance_state.name = "Entrance"
+	state_machine.add_child(entrance_state)
+	
+	# ADD NEW VICTORY STATE
+	var victory_state = VictoryState.new()
+	victory_state.name = "Victory"
+	state_machine.add_child(victory_state)
+	
 	# Wait for everything to be ready
 	await get_tree().process_frame
 	await get_tree().process_frame  # Extra wait to ensure states are registered
@@ -127,9 +136,10 @@ func setup_components():
 	# Setup visuals first
 	visual_component.setup_visuals()
 	
-	# Then start state machine
+	# Start in IDLE state initially (entrance will be triggered by FightScene)
 	state_machine.start("Idle")
 
+# Updated _on_state_changed method to include Victory state:
 func _on_state_changed(old_state: String, new_state: String):
 	# Update legacy current_state for compatibility
 	match new_state:
@@ -151,6 +161,10 @@ func _on_state_changed(old_state: String, new_state: String):
 			current_state = CharacterState.HIT
 		"Defeat":
 			current_state = CharacterState.DEFEAT
+		"Entrance":
+			current_state = CharacterState.IDLE  # Map entrance to idle for legacy compatibility
+		"Victory":
+			current_state = CharacterState.IDLE  # Map victory to idle for legacy compatibility
 
 func setup_collision():
 	if not has_node("CollisionShape2D"):

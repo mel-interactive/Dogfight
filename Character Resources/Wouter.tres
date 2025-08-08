@@ -1,19 +1,25 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3 uid="uid://ce6vmdknn470h"]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=3 format=3 uid="uid://ce6vmdknn470h"]
 
 [ext_resource type="Script" uid="uid://cec20u2m1s6t" path="res://Scripts/CharacterData.gd" id="1_ac4hx"]
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="1_jfyfr"]
 
 [resource]
 script = ExtResource("1_ac4hx")
 character_id = "wouter"
 character_name = "Wouter"
 description = "A basic fighter"
-color = Color(1, 0.611343, 0.338803, 1)
+color = Color(0.902149, 0.813926, 0.874156, 1)
+base_scale = Vector2(1, 1)
 max_health = 100
 move_speed = 300.0
 light_attack_damage = 5
 heavy_attack_damage = 15
 special_attack_damage = 25
 ultimate_attack_damage = 40
+light_attack_range = 80.0
+heavy_attack_range = 100.0
+special_attack_range = 120.0
+ultimate_attack_range = 150.0
 special_meter_max = 100.0
 ultimate_meter_max = 100.0
 special_meter_gain_per_hit = 20.0
@@ -24,3 +30,27 @@ heavy_attack_duration = 0.5
 special_attack_duration = 0.7
 ultimate_attack_duration = 1.0
 hit_stun_duration = 0.3
+custom_animations = Array[ExtResource("1_jfyfr")]([])
+entrance_scale = Vector2(1, 1)
+idle_scale = Vector2(1, 1)
+run_forward_scale = Vector2(1, 1)
+run_backward_scale = Vector2(1, 1)
+light_attack_scale = Vector2(1, 1)
+heavy_attack_scale = Vector2(1, 1)
+block_scale = Vector2(1, 1)
+hit_scale = Vector2(1, 1)
+special_attack_scale = Vector2(1.5, 1.5)
+ultimate_attack_scale = Vector2(2, 2)
+defeat_scale = Vector2(1, 1)
+entrance_offset = Vector2(0, 0)
+idle_offset = Vector2(0, 0)
+run_forward_offset = Vector2(0, 0)
+run_backward_offset = Vector2(0, 0)
+light_attack_offset = Vector2(0, 0)
+heavy_attack_offset = Vector2(0, 0)
+block_offset = Vector2(0, 0)
+hit_offset = Vector2(0, 0)
+special_attack_offset = Vector2(0, 0)
+ultimate_attack_offset = Vector2(0, 0)
+defeat_offset = Vector2(0, 0)
+portrait_scale = Vector2(1, 1)

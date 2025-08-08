@@ -1,10 +1,14 @@
-[gd_scene load_steps=55 format=3 uid="uid://dwhncf7xhe0tc"]
+[gd_scene load_steps=63 format=3 uid="uid://dwhncf7xhe0tc"]
 
 [ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
+[ext_resource type="AudioStream" uid="uid://cn0njbhvj5tga" path="res://Assets/Announcer/Intro line/onlyonedogswalking.mp3" id="2_5n8pe"]
 [ext_resource type="Texture2D" uid="uid://cj3ony6iwrux2" path="res://Assets/Backgrounds/Computer table/frame_00_delay-0.1s.png" id="2_vjorg"]
+[ext_resource type="AudioStream" uid="uid://cjxhh01yjout3" path="res://Assets/Announcer/Intro line/thereseemstobeanopinion.mp3" id="3_1ar86"]
 [ext_resource type="Texture2D" uid="uid://cqbl22kxglxaa" path="res://Assets/Backgrounds/Computer table/frame_01_delay-0.1s.png" id="3_nq1sn"]
 [ext_resource type="Texture2D" uid="uid://lbqhupmiv3ss" path="res://Assets/Backgrounds/Computer table/frame_02_delay-0.1s.png" id="4_7mdle"]
+[ext_resource type="AudioStream" uid="uid://dbux5d674dg0x" path="res://Assets/Announcer/Intro line/thesedogsaremorebite.mp3" id="4_lsme7"]
 [ext_resource type="Texture2D" uid="uid://b3yo8ktvthjry" path="res://Assets/Backgrounds/Computer table/frame_03_delay-0.1s.png" id="5_k8y2o"]
+[ext_resource type="AudioStream" uid="uid://uu6lw2k2cqtv" path="res://Assets/Announcer/Fight!/fight.mp3" id="5_qiae4"]
 [ext_resource type="Texture2D" uid="uid://dtsxwndwwwnhc" path="res://Assets/Backgrounds/Computer table/frame_04_delay-0.1s.png" id="6_5n8pe"]
 [ext_resource type="Texture2D" uid="uid://bma43hb4m861k" path="res://Assets/Backgrounds/Computer table/frame_05_delay-0.1s.png" id="7_1ar86"]
 [ext_resource type="Texture2D" uid="uid://c6vd2humxstxu" path="res://Assets/Backgrounds/Computer table/frame_06_delay-0.1s.png" id="8_lsme7"]
@@ -53,6 +57,10 @@
 [ext_resource type="Texture2D" uid="uid://cxd4t6u55p46l" path="res://Assets/Backgrounds/Computer table/frame_49_delay-0.1s.png" id="51_ltmwq"]
 [ext_resource type="Texture2D" uid="uid://cvaflpy6j57j" path="res://Assets/Backgrounds/Computer table/frame_50_delay-0.1s.png" id="52_v636w"]
 [ext_resource type="Texture2D" uid="uid://b8a1q047lkc33" path="res://Assets/Backgrounds/Computer table/frame_51_delay-0.11s.png" id="53_hl8d8"]
+[ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="58_xsuk8"]
+[ext_resource type="Texture2D" uid="uid://dh8xgju4xnfqb" path="res://Assets/Menus/boxdecor.png" id="59_42uwl"]
+[ext_resource type="StyleBox" uid="uid://cbmjaagebbypn" path="res://Assets/Menus/hoverbox.tres" id="60_71oq3"]
+[ext_resource type="StyleBox" uid="uid://bfw74w8a6nn2f" path="res://Assets/Menus/stylebox.tres" id="61_yp32m"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tys6i"]
 animations = [{
@@ -220,6 +228,8 @@ animations = [{
 
 [node name="FightScene" type="Node2D"]
 script = ExtResource("1_wqnb5")
+intro_lines = Array[AudioStream]([ExtResource("2_5n8pe"), ExtResource("3_1ar86"), ExtResource("4_lsme7")])
+fight_start_sound = ExtResource("5_qiae4")
 
 [node name="Background" type="AnimatedSprite2D" parent="."]
 position = Vector2(683, 384)
@@ -298,26 +308,53 @@ offset_right = 723.0
 offset_bottom = 103.0
 
 [node name="WinnerLabel" type="Label" parent="UI"]
-offset_left = 421.0
-offset_top = 241.0
-offset_right = 956.0
-offset_bottom = 503.0
-theme_override_font_sizes/font_size = 70
+offset_left = 354.0
+offset_top = 188.0
+offset_right = 1028.0
+offset_bottom = 450.0
+theme_override_constants/outline_size = 30
+theme_override_fonts/font = ExtResource("58_xsuk8")
+theme_override_font_sizes/font_size = 100
+
+[node name="TextureRect" type="TextureRect" parent="UI/WinnerLabel"]
+modulate = Color(0.00351917, 0.00351917, 0.00351917, 0.419608)
+layout_mode = 0
+offset_left = 170.0
+offset_top = 104.0
+offset_right = 511.0
+offset_bottom = 445.0
+texture = ExtResource("59_42uwl")
+expand_mode = 4
 
 [node name="Rematch button" type="Button" parent="UI/WinnerLabel"]
 layout_mode = 0
-offset_left = 139.0
-offset_top = 139.0
-offset_right = 379.0
-offset_bottom = 212.0
+offset_left = 219.0
+offset_top = 185.0
+offset_right = 459.0
+offset_bottom = 258.0
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("58_xsuk8")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/disabled = ExtResource("60_71oq3")
+theme_override_styles/hover = ExtResource("60_71oq3")
+theme_override_styles/pressed = ExtResource("61_yp32m")
+theme_override_styles/normal = ExtResource("61_yp32m")
 text = "Rematch"
 
 [node name="Character select button" type="Button" parent="UI/WinnerLabel"]
 layout_mode = 0
-offset_left = 139.0
-offset_top = 235.0
-offset_right = 379.0
-offset_bottom = 308.0
+offset_left = 219.0
+offset_top = 281.0
+offset_right = 459.0
+offset_bottom = 354.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("58_xsuk8")
+theme_override_font_sizes/font_size = 23
+theme_override_styles/disabled = ExtResource("60_71oq3")
+theme_override_styles/hover = ExtResource("60_71oq3")
+theme_override_styles/pressed = ExtResource("61_yp32m")
+theme_override_styles/normal = ExtResource("61_yp32m")
 text = "Character select"
 
 [node name="AudioPlayers" type="Node" parent="."]

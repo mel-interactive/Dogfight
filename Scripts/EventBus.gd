@@ -23,3 +23,8 @@ signal animation_finished(character: BaseCharacter, animation_name: String)
 # Visual effects
 signal screen_shake_requested(intensity: float, duration: float)
 signal character_hit_shake(character: BaseCharacter)
+
+# Fight setup events
+signal character_entrance_finished(character: BaseCharacter)
+signal both_entrances_finished()
+signal fight_intro_started()

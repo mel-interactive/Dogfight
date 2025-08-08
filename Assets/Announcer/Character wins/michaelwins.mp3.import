@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://mme4sxw7iywk"
+path="res://.godot/imported/michaelwins.mp3-3dba7d49ff6d5e2590c7aa7ef1ac220b.mp3str"
+
+[deps]
+
+source_file="res://Assets/Announcer/Character wins/michaelwins.mp3"
+dest_files=["res://.godot/imported/michaelwins.mp3-3dba7d49ff6d5e2590c7aa7ef1ac220b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

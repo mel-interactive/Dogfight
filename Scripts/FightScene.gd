@@ -1,3 +1,4 @@
+# FightScene.gd - Complete version with enhanced win/lose slide system
 extends Node2D
 class_name FightScene
 
@@ -42,50 +43,63 @@ var max_combo_reached = 0
 var highest_combo_player = 0
 var fight_over = false  # Track if the fight is over
 
+# Fight setup
+@export_group("Fight Intro Sounds")
+@export var intro_lines: Array[AudioStream] = []  # Random intro lines
+@export var fight_start_sound: AudioStream  # "FIGHT!" sound
+
+# Fight setup state
+var entrance_count_finished: int = 0
+var intro_sequence_active: bool = false
+
 func _ready():
 	print("FightScene: Ready function starting")
 	
-	# Make sure we have audio players
-	setup_audio_players()
+	# Connect to EventBus for entrance events
+	EventBus.connect("character_entrance_finished", _on_character_entrance_finished)
+	EventBus.connect("both_entrances_finished", _on_both_entrances_finished)
 	
-	# Load the character data
+	# Setup audio and load data
+	setup_audio_players()
 	load_character_data()
 	
-	# Set up the fight scene
+	# Setup the fight scene (creates players)
 	setup_fight()
 	
-	# Display debug info
 	if debug_label:
-		debug_label.text = "Fight started!"
-	else:
-		print("Debug label not found")
+		debug_label.text = "Fight starting..."
 	
 	# Hide winner UI at start
-	if winner_label:
-		winner_label.visible = false
-		print("Winner label hidden at start")
-	else:
-		print("Winner label not found!")
+	hide_winner_ui()
 	
-	# Connect button signals and hide them
-	if rematch_button:
-		rematch_button.visible = false
-		rematch_button.pressed.connect(_on_rematch_button_pressed)
-		print("Rematch button connected and hidden")
-	else:
-		print("Rematch button not found!")
+	# Connect button signals
+	connect_buttons()
 	
-	if charselect_button:
-		charselect_button.visible = false
-		charselect_button.pressed.connect(_on_charselect_button_pressed)
-		print("Character select button connected and hidden")
-	else:
-		print("Character select button not found!")
+	# IMPORTANT: Wait for everything to be ready before starting entrance sequence
+	await get_tree().process_frame
+	await get_tree().process_frame
 	
-	# Start the fight sequence
-	start_fight_sequence()
+	# NOW start the entrance sequence
+	start_fight_intro_sequence()
 	
 	print("FightScene: Ready function completed")
+
+# Add this helper method to hide winner UI:
+func hide_winner_ui():
+	if winner_label:
+		winner_label.visible = false
+	if rematch_button:
+		rematch_button.visible = false
+	if charselect_button:
+		charselect_button.visible = false
+
+# Add this helper method to connect buttons:
+func connect_buttons():
+	if rematch_button and not rematch_button.is_connected("pressed", _on_rematch_button_pressed):
+		rematch_button.pressed.connect(_on_rematch_button_pressed)
+	
+	if charselect_button and not charselect_button.is_connected("pressed", _on_charselect_button_pressed):
+		charselect_button.pressed.connect(_on_charselect_button_pressed)
 
 func _process(_delta):
 	# Restart fight with R key
@@ -347,6 +361,7 @@ func start_fight_sequence():
 	fight_over = false
 	print("Fight started")
 
+# ENHANCED END_FIGHT METHOD - Wait for winner's attack to finish before victory
 func end_fight(winner_id):
 	print("Ending fight, winner: Player " + str(winner_id))
 	
@@ -357,6 +372,10 @@ func end_fight(winner_id):
 	fight_active = false
 	fight_over = true
 	
+	# Get winner and loser
+	var winner = player1 if winner_id == 1 else player2
+	var loser = player1 if winner_id == 2 else player2
+	
 	# Stop background music
 	if music_player:
 		music_player.stop()
@@ -366,8 +385,17 @@ func end_fight(winner_id):
 		announcer_audio.stream = victory_sound
 		announcer_audio.play()
 	
-	# Show winner message with delay
-	await get_tree().create_timer(0.5).timeout
+	# Start loser's defeat immediately
+	if loser:
+		loser.state_machine.change_state("Defeat")
+	
+	# Wait for winner's current attack animation to finish before victory
+	if winner:
+		await wait_for_current_animation_to_finish(winner)
+		winner.state_machine.change_state("Victory")
+	
+	# Show winner message after both animations are set up
+	await get_tree().create_timer(1.5).timeout  # Extra time for victory slide/animation
 	
 	var winner_name = player1_character.character_name if winner_id == 1 else player2_character.character_name
 	
@@ -409,6 +437,31 @@ func end_fight(winner_id):
 	# Show restart message
 	if debug_label:
 		debug_label.text = "Game Over - Use buttons to continue"
+
+# NEW HELPER METHOD: Wait for current animation to complete
+func wait_for_current_animation_to_finish(character: BaseCharacter):
+	# Check if character is in an attack state
+	var current_state = character.state_machine.get_current_state_name()
+	if current_state in ["LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack"]:
+		print("Waiting for ", current_state, " animation to finish for player ", character.player_number)
+		
+		# Wait for the attack state to finish (it will transition to Idle when done)
+		while character.state_machine.get_current_state_name() == current_state:
+			await get_tree().process_frame
+		
+		print("Attack animation finished for player ", character.player_number)
+	else:
+		print("Player ", character.player_number, " not in attack state, proceeding immediately")
+
+# NEW METHOD FOR HANDLING CHARACTER DEFEAT
+func on_character_defeated(defeated_character: BaseCharacter):
+	print("Character defeated: Player ", defeated_character.player_number)
+	
+	# Determine winner
+	var winner_id = 1 if defeated_character.player_number == 2 else 2
+	
+	# End the fight
+	end_fight(winner_id)
 
 func check_combo_milestones():
 	# Check player 1 combo
@@ -491,3 +544,57 @@ func _on_player2_combo_changed(new_combo):
 			player2_combo_label.text = str(new_combo) + " HIT COMBO!"
 		else:
 			player2_combo_label.text = ""
+
+func play_random_intro_line():
+	if intro_lines.size() > 0 and announcer_audio:
+		var random_intro = intro_lines[randi() % intro_lines.size()]
+		announcer_audio.stream = random_intro
+		announcer_audio.play()
+
+func _on_character_entrance_finished(character: BaseCharacter):
+	entrance_count_finished += 1
+	print("Character ", character.player_number, " entrance finished. Count: ", entrance_count_finished)
+	
+	if entrance_count_finished >= 2:
+		# Both entrance animations are done
+		EventBus.emit_signal("both_entrances_finished")
+
+func _on_both_entrances_finished():
+	print("Both entrances finished - playing FIGHT sound and starting battle")
+	
+	# Play "FIGHT!" sound
+	if fight_start_sound and announcer_audio:
+		announcer_audio.stream = fight_start_sound
+		announcer_audio.play()
+	
+	# Wait for fight sound to play, then enable controls
+	await get_tree().create_timer(1.0).timeout
+	
+	# Start background music
+	if fight_music and music_player:
+		music_player.stream = fight_music
+		music_player.play()
+	
+	# Enable fighting
+	intro_sequence_active = false
+	fight_active = true
+	fight_over = false
+	
+	if debug_label:
+		debug_label.text = "FIGHT!"
+	
+	print("Fight controls enabled!")
+
+func start_fight_intro_sequence():
+	print("Starting fight intro sequence")
+	intro_sequence_active = true
+	entrance_count_finished = 0
+	
+	# Characters start in entrance state (not controllable)
+	if player1:
+		player1.state_machine.change_state("Entrance")
+	if player2:
+		player2.state_machine.change_state("Entrance")
+	
+	# Play random intro line
+	play_random_intro_line()

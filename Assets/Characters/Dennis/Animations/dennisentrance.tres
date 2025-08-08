@@ -1,0 +1,134 @@
+[gd_resource type="SpriteFrames" load_steps=32 format=3 uid="uid://d2qpvg2fhvico"]
+
+[ext_resource type="Texture2D" uid="uid://bnkgm6e12fx37" path="res://Assets/Characters/Dennis/Entrance/frame_00_delay-0.14s.png" id="1_nfs80"]
+[ext_resource type="Texture2D" uid="uid://cvx5kmhpipamw" path="res://Assets/Characters/Dennis/Entrance/frame_01_delay-0.15s.png" id="2_kx7qo"]
+[ext_resource type="Texture2D" uid="uid://ca2ofpwurkfbl" path="res://Assets/Characters/Dennis/Entrance/frame_02_delay-0.14s.png" id="3_iou7y"]
+[ext_resource type="Texture2D" uid="uid://cy17ded65d2vm" path="res://Assets/Characters/Dennis/Entrance/frame_03_delay-0.14s.png" id="4_ik11p"]
+[ext_resource type="Texture2D" uid="uid://dw6vg2lwym5s1" path="res://Assets/Characters/Dennis/Entrance/frame_04_delay-0.14s.png" id="5_krtlu"]
+[ext_resource type="Texture2D" uid="uid://ddu00u2pn2ajl" path="res://Assets/Characters/Dennis/Entrance/frame_05_delay-0.15s.png" id="6_7x347"]
+[ext_resource type="Texture2D" uid="uid://bqhxlgya4xlmn" path="res://Assets/Characters/Dennis/Entrance/frame_06_delay-0.14s.png" id="7_akglk"]
+[ext_resource type="Texture2D" uid="uid://8y30iqj3d618" path="res://Assets/Characters/Dennis/Entrance/frame_07_delay-0.14s.png" id="8_jtg44"]
+[ext_resource type="Texture2D" uid="uid://b5hxwcd5leodg" path="res://Assets/Characters/Dennis/Entrance/frame_08_delay-0.15s.png" id="9_kcsrd"]
+[ext_resource type="Texture2D" uid="uid://bhflnb2v6x7l" path="res://Assets/Characters/Dennis/Entrance/frame_09_delay-0.14s.png" id="10_gb1fl"]
+[ext_resource type="Texture2D" uid="uid://clas7pglpgsk6" path="res://Assets/Characters/Dennis/Entrance/frame_10_delay-0.14s.png" id="11_8wgle"]
+[ext_resource type="Texture2D" uid="uid://byygu2e7r55ho" path="res://Assets/Characters/Dennis/Entrance/frame_11_delay-0.14s.png" id="12_x2bki"]
+[ext_resource type="Texture2D" uid="uid://bec0bgur7txj4" path="res://Assets/Characters/Dennis/Entrance/frame_12_delay-0.15s.png" id="13_ouy70"]
+[ext_resource type="Texture2D" uid="uid://blxx7q6g77pks" path="res://Assets/Characters/Dennis/Entrance/frame_13_delay-0.14s.png" id="14_7eduf"]
+[ext_resource type="Texture2D" uid="uid://c7x2s2sdhe4bt" path="res://Assets/Characters/Dennis/Entrance/frame_14_delay-0.14s.png" id="15_vacgf"]
+[ext_resource type="Texture2D" uid="uid://c4rhuysumwmap" path="res://Assets/Characters/Dennis/Entrance/frame_15_delay-0.15s.png" id="16_0vask"]
+[ext_resource type="Texture2D" uid="uid://c43loa0uytykh" path="res://Assets/Characters/Dennis/Entrance/frame_16_delay-0.14s.png" id="17_2f1tv"]
+[ext_resource type="Texture2D" uid="uid://diufrqne7yi4t" path="res://Assets/Characters/Dennis/Entrance/frame_17_delay-0.14s.png" id="18_6qasf"]
+[ext_resource type="Texture2D" uid="uid://85j3npgtu82o" path="res://Assets/Characters/Dennis/Entrance/frame_18_delay-0.14s.png" id="19_bm872"]
+[ext_resource type="Texture2D" uid="uid://cdobqtwcp541v" path="res://Assets/Characters/Dennis/Entrance/frame_19_delay-0.15s.png" id="20_od518"]
+[ext_resource type="Texture2D" uid="uid://ga6x8ewbmj2d" path="res://Assets/Characters/Dennis/Entrance/frame_20_delay-0.14s.png" id="21_8ln3d"]
+[ext_resource type="Texture2D" uid="uid://c4delpvm2oa44" path="res://Assets/Characters/Dennis/Entrance/frame_21_delay-0.14s.png" id="22_droxl"]
+[ext_resource type="Texture2D" uid="uid://crfa63tuleidd" path="res://Assets/Characters/Dennis/Entrance/frame_22_delay-0.15s.png" id="23_lyw5o"]
+[ext_resource type="Texture2D" uid="uid://cs8jn7yakyhhv" path="res://Assets/Characters/Dennis/Entrance/frame_23_delay-0.14s.png" id="24_jfsa0"]
+[ext_resource type="Texture2D" uid="uid://djyl4vvy3im3n" path="res://Assets/Characters/Dennis/Entrance/frame_24_delay-0.14s.png" id="25_5xwlu"]
+[ext_resource type="Texture2D" uid="uid://cy5fb6sl7ju5e" path="res://Assets/Characters/Dennis/Entrance/frame_25_delay-0.14s.png" id="26_rfpbl"]
+[ext_resource type="Texture2D" uid="uid://ckjv7hf2ya6oe" path="res://Assets/Characters/Dennis/Entrance/frame_26_delay-0.15s.png" id="27_d44si"]
+[ext_resource type="Texture2D" uid="uid://cmllk1whmi8rs" path="res://Assets/Characters/Dennis/Entrance/frame_27_delay-0.14s.png" id="28_uiv7a"]
+[ext_resource type="Texture2D" uid="uid://bthvd3778wxg7" path="res://Assets/Characters/Dennis/Entrance/frame_28_delay-0.14s.png" id="29_4ip3o"]
+[ext_resource type="Texture2D" uid="uid://cxo237g4l0a0u" path="res://Assets/Characters/Dennis/Entrance/frame_29_delay-0.15s.png" id="30_gb14m"]
+[ext_resource type="Texture2D" uid="uid://14coykd2ecwd" path="res://Assets/Characters/Dennis/Entrance/frame_30_delay-0.14s.png" id="31_76g3c"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nfs80")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_kx7qo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_iou7y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ik11p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_krtlu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_7x347")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_akglk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_jtg44")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_kcsrd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_gb1fl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_8wgle")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_x2bki")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_ouy70")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_7eduf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_vacgf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_0vask")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_2f1tv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_6qasf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_bm872")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_od518")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_8ln3d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_droxl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_lyw5o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_jfsa0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_5xwlu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_rfpbl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_d44si")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_uiv7a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_4ip3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_gb14m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_76g3c")
+}],
+"loop": true,
+"name": &"dennisentrance",
+"speed": 7.0
+}]

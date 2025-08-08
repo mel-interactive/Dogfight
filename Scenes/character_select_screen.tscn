@@ -1,34 +1,82 @@
-[gd_scene load_steps=2 format=3 uid="uid://dcr48etfhif0q"]
+[gd_scene load_steps=9 format=3 uid="uid://dcr48etfhif0q"]
 
 [ext_resource type="Script" uid="uid://bpa2wcad3impo" path="res://Scripts/character_select_screen.gd" id="1_g8xl4"]
+[ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="2_3nlio"]
+[ext_resource type="Texture2D" uid="uid://crdnxm3c7f31" path="res://Assets/Menus/charaselectbg.png" id="2_7qt8n"]
+[ext_resource type="StyleBox" uid="uid://cbmjaagebbypn" path="res://Assets/Menus/hoverbox.tres" id="3_5j2ph"]
+[ext_resource type="StyleBox" uid="uid://bfw74w8a6nn2f" path="res://Assets/Menus/stylebox.tres" id="3_xv7hb"]
+
+[sub_resource type="Animation" id="Animation_xv7hb"]
+resource_name = "idle"
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(2.2974, 1.62451),
+"update": 0,
+"values": [Vector2(340, 40), Vector2(340, 35)]
+}
+
+[sub_resource type="Animation" id="Animation_5j2ph"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(331, 52)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7qt8n"]
+_data = {
+&"RESET": SubResource("Animation_5j2ph"),
+&"idle": SubResource("Animation_xv7hb")
+}
 
 [node name="CharacterSelectScreen" type="Node2D"]
 script = ExtResource("1_g8xl4")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 offset_left = 2.0
 offset_top = 4.0
 offset_right = 1373.38
 offset_bottom = 763.965
-color = Color(0.0815779, 1.49205e-06, 0.435414, 1)
+texture = ExtResource("2_7qt8n")
 metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
-offset_left = 382.0
-offset_top = 22.0
-offset_right = 1124.0
-offset_bottom = 129.0
+offset_left = 340.0
+offset_top = 40.0
+offset_right = 1082.0
+offset_bottom = 147.0
+theme_override_fonts/font = ExtResource("2_3nlio")
 theme_override_font_sizes/font_size = 60
 text = "SELECT YOUR FIGHTER"
 metadata/_edit_use_anchors_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="TitleLabel"]
+libraries = {
+&"": SubResource("AnimationLibrary_7qt8n")
+}
+autoplay = "idle"
 
 [node name="Player1Side" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 100.0
-offset_top = 133.0
+offset_top = 120.0
 offset_right = 572.0
-offset_bottom = 605.0
+offset_bottom = 592.0
 metadata/_edit_use_anchors_ = true
 
 [node name="ReadyButton" type="Button" parent="Player1Side"]
@@ -38,12 +86,20 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -29.5
-offset_top = -31.0
-offset_right = 50.5
-offset_bottom = 9.0
+offset_left = -61.5
+offset_top = 98.0
+offset_right = 98.5
+offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_3nlio")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/disabled = ExtResource("3_xv7hb")
+theme_override_styles/hover = ExtResource("3_5j2ph")
+theme_override_styles/pressed = ExtResource("3_5j2ph")
+theme_override_styles/normal = ExtResource("3_xv7hb")
 text = "READY"
 metadata/_edit_use_anchors_ = true
 
@@ -51,6 +107,8 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 0
 offset_right = 517.0
 offset_bottom = 412.0
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 50
 columns = 3
 metadata/_edit_use_anchors_ = true
 
@@ -58,9 +116,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 3
 anchors_preset = 0
 offset_left = 800.0
-offset_top = 133.0
+offset_top = 120.0
 offset_right = 1272.0
-offset_bottom = 605.0
+offset_bottom = 592.0
 metadata/_edit_use_anchors_ = true
 
 [node name="ReadyButton" type="Button" parent="Player2Side"]
@@ -70,12 +128,19 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -29.5
-offset_top = -31.0
-offset_right = 50.5
-offset_bottom = 9.0
+offset_left = -76.0
+offset_top = 98.0
+offset_right = 84.0
+offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_3nlio")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/disabled = ExtResource("3_xv7hb")
+theme_override_styles/hover = ExtResource("3_5j2ph")
+theme_override_styles/pressed = ExtResource("3_5j2ph")
+theme_override_styles/normal = ExtResource("3_xv7hb")
 text = "READY"
 metadata/_edit_use_anchors_ = true
 
@@ -84,6 +149,8 @@ layout_mode = 0
 offset_left = -26.0
 offset_right = 491.0
 offset_bottom = 412.0
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 50
 columns = 3
 metadata/_edit_use_anchors_ = true
 

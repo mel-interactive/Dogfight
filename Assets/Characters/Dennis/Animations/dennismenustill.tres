@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://c33kwgcn5cetp"]
+
+[ext_resource type="Texture2D" uid="uid://d1uw7wq84i5ao" path="res://Assets/Characters/Dennis/Hover/frame_00_delay-0.14s.png" id="1_yid3q"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_yid3q")
+}],
+"loop": false,
+"name": &"dennisstill",
+"speed": 7.0
+}]

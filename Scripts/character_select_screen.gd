@@ -43,6 +43,10 @@ func _ready():
 	setup_character_grid(player1_grid, 1)
 	setup_character_grid(player2_grid, 2)
 
+	# Wait for character boxes to be fully set up before setting initial hover
+	await get_tree().process_frame
+	await get_tree().process_frame
+
 	if available_characters.size() > 0:
 		update_hover(1, 0)
 		update_hover(2, 0)
@@ -84,8 +88,10 @@ func setup_character_grid(grid: Control, player_id: int):
 		child.queue_free()
 
 	grid.columns = 3
-	grid.add_theme_constant_override("hseparation", 10)
-	grid.add_theme_constant_override("vseparation", 10)
+	
+	# INCREASED SPACING - change these values to adjust spacing
+	grid.add_theme_constant_override("hseparation", 25)  # Horizontal spacing (was 10)
+	grid.add_theme_constant_override("vseparation", 25)  # Vertical spacing (was 10)
 
 	var boxes = []
 	for character in available_characters:
@@ -102,7 +108,6 @@ func setup_character_grid(grid: Control, player_id: int):
 		player1_boxes = boxes
 	else:
 		player2_boxes = boxes
-
 
 func handle_input(player_id: int):
 	if (player_id == 1 and player1_ready) or (player_id == 2 and player2_ready):
@@ -146,7 +151,12 @@ func update_hover(player_id: int, index: int):
 		return
 
 	for i in range(boxes.size()):
-		boxes[i].set_hovered(i == index)
+		var should_be_hovered = (i == index)
+		var box = boxes[i]
+		
+		# Only call set_hovered if the state is actually changing
+		if box.is_hovered != should_be_hovered:
+			box.set_hovered(should_be_hovered)
 
 func select_character(player_id: int, index: int):
 	if index < 0 or index >= available_characters.size():

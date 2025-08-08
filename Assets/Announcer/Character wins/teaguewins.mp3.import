@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cs1oldwatu7cg"
+path="res://.godot/imported/teaguewins.mp3-244d28c443a212de921db49d002288e3.mp3str"
+
+[deps]
+
+source_file="res://Assets/Announcer/Character wins/teaguewins.mp3"
+dest_files=["res://.godot/imported/teaguewins.mp3-244d28c443a212de921db49d002288e3.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,6 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://cpo0t0n22p6lg"]
+[gd_scene load_steps=12 format=3 uid="uid://cpo0t0n22p6lg"]
 
 [ext_resource type="Script" uid="uid://uic4nphgt4yt" path="res://Scripts/character_box.gd" id="1_q12hs"]
+[ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="2_4j61d"]
+[ext_resource type="Texture2D" uid="uid://dh8xgju4xnfqb" path="res://Assets/Menus/boxdecor.png" id="2_ldspr"]
+[ext_resource type="Texture2D" uid="uid://ckhf4k223xk48" path="res://Assets/Menus/boxbackground.png" id="3_wswjt"]
+[ext_resource type="Texture2D" uid="uid://chglovd8bip6k" path="res://Assets/Menus/halftone.png" id="4_o3uru"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cv4bv"]
 content_margin_left = 4.0
@@ -10,6 +14,7 @@ content_margin_bottom = 4.0
 
 [sub_resource type="Animation" id="Animation_f806i"]
 length = 0.001
+capture_included = true
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -32,7 +37,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true]
+"values": [false]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -46,10 +51,71 @@ tracks/2/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("red effect:size")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 2,
+"values": [Vector2(20, 20)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("red effect:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 2,
+"values": [-0.200713]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("red effect:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 2,
+"values": [Vector2(50, 50)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Halftone:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Halftone:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_05f61"]
 resource_name = "hover"
 length = 0.3
+capture_included = true
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -72,7 +138,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true, true]
+"values": [false, true]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -82,6 +148,66 @@ tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(-0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("red effect:size")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(-0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 2,
+"values": [Vector2(20, 20), Vector2(180, 200)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("red effect:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(-0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 2,
+"values": [-3.01593, -2.91645]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("red effect:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(-0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 2,
+"values": [Vector2(50, 50), Vector2(140, 220)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Halftone:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Halftone:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.266667),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
@@ -141,19 +267,50 @@ _data = {
 }
 
 [node name="CharacterBox" type="Panel"]
-offset_right = 140.0
-offset_bottom = 140.0
+offset_left = -19.1111
+offset_top = -19.1111
+offset_right = 120.889
+offset_bottom = 120.889
 theme_override_styles/panel = SubResource("StyleBoxEmpty_cv4bv")
 script = ExtResource("1_q12hs")
 
-[node name="BackgroundColor" type="ColorRect" parent="."]
+[node name="red effect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 67.0
+offset_right = 112.152
+offset_bottom = 105.0
+rotation = -0.200713
+texture = ExtResource("2_ldspr")
+expand_mode = 3
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+modulate = Color(0.990348, 1, 0.683602, 1)
+position = Vector2(68.1111, 72.1111)
+rotation = 1.33518
+emitting = false
+lifetime = 0.31
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 15.08
+direction = Vector2(-1, -1)
+spread = 180.0
+initial_velocity_min = 485.45
+initial_velocity_max = 725.54
+angular_velocity_min = -389.65
+scale_amount_max = 71.59
+
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+pivot_offset = Vector2(451.111, 911.111)
+texture = ExtResource("3_wswjt")
+expand_mode = 1
+stretch_mode = 4
 
 [node name="CharacterSprite" type="TextureRect" parent="."]
 layout_mode = 1
@@ -164,7 +321,15 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch_mode = 5
 
+[node name="Halftone" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0)
+position = Vector2(80.1111, 102.892)
+scale = Vector2(0.148148, 0.0885648)
+texture = ExtResource("4_o3uru")
+
 [node name="InfoContainer" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -179,14 +344,22 @@ grow_vertical = 0
 theme_override_constants/separation = 2
 
 [node name="NameLabel" type="Label" parent="InfoContainer"]
+z_index = 10
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_4j61d")
+theme_override_font_sizes/font_size = 25
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="InfoContainer"]
+z_index = 10
 layout_mode = 2
-theme_override_font_sizes/font_size = 10
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_4j61d")
+theme_override_font_sizes/font_size = 11
 horizontal_alignment = 1
 vertical_alignment = 1
 

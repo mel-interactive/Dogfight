@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=16 format=3 uid="uid://b4v386o2l6fw2"]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=22 format=3 uid="uid://b4v386o2l6fw2"]
 
 [ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="1_4twnc"]
 [ext_resource type="SpriteFrames" uid="uid://c2qjfkcm8akly" path="res://Assets/Characters/Dennis/Animations/dennisblock.tres" id="1_8kh0g"]
@@ -8,24 +8,30 @@
 [ext_resource type="Resource" uid="uid://cplmcf57nxvgu" path="res://Assets/Characters/Dennis/Animations/YapDennisCustom.tres" id="5_0x7kh"]
 [ext_resource type="SpriteFrames" uid="uid://citn8vqkp12b" path="res://Assets/Characters/Dennis/Animations/dennisheavy.tres" id="6_o2pix"]
 [ext_resource type="Resource" uid="uid://cdeppjc3wmjwf" path="res://Assets/Characters/Dennis/Animations/UltimateDiagramCustom.tres" id="6_wgbcn"]
+[ext_resource type="SpriteFrames" uid="uid://2cwyn4l88oen" path="res://Assets/Characters/Dennis/Animations/dennisdefeat.tres" id="7_l8kn4"]
 [ext_resource type="SpriteFrames" uid="uid://d0i33ig0uesca" path="res://Assets/Characters/Dennis/Animations/dennishurt.tres" id="7_o2pix"]
+[ext_resource type="SpriteFrames" uid="uid://d2qpvg2fhvico" path="res://Assets/Characters/Dennis/Animations/dennisentrance.tres" id="7_qimoi"]
 [ext_resource type="SpriteFrames" uid="uid://c8f8xr1xp7udy" path="res://Assets/Characters/Dennis/Animations/dennisidle.tres" id="8_t883h"]
 [ext_resource type="SpriteFrames" uid="uid://c0qes7d00y3o1" path="res://Assets/Characters/Dennis/Animations/dennislight.tres" id="9_0x7kh"]
 [ext_resource type="SpriteFrames" uid="uid://dya1a5b408on0" path="res://Assets/Characters/Dennis/Animations/dennisrunbackward.tres" id="10_qm4xg"]
 [ext_resource type="SpriteFrames" uid="uid://w2m5w73c6t35" path="res://Assets/Characters/Dennis/Animations/dennisrunforward.tres" id="11_inkpt"]
+[ext_resource type="SpriteFrames" uid="uid://7425q0vd7xxp" path="res://Assets/Characters/Dennis/Animations/dennismenuhover.tres" id="12_g0xb1"]
+[ext_resource type="SpriteFrames" uid="uid://c33kwgcn5cetp" path="res://Assets/Characters/Dennis/Animations/dennismenustill.tres" id="13_7lywn"]
 [ext_resource type="SpriteFrames" uid="uid://lg0eaq1s6tnb" path="res://Assets/Characters/Dennis/Animations/dennisspecial.tres" id="13_8kh0g"]
+[ext_resource type="SpriteFrames" uid="uid://bvlq4xdhiw6se" path="res://Assets/Characters/Dennis/Animations/dennismenuselect.tres" id="13_so8li"]
 [ext_resource type="SpriteFrames" uid="uid://cnuxj44241gqx" path="res://Assets/Characters/Dennis/Animations/dennisultimate.tres" id="15_qimoi"]
+[ext_resource type="SpriteFrames" uid="uid://dtoxi7nrmcvj3" path="res://Assets/Characters/Dennis/Animations/dennisvictory.tres" id="21_prslw"]
 
 [resource]
 script = ExtResource("1_gte3r")
 character_id = "dennis"
 character_name = "Dennis"
-description = "A basic fighter"
-color = Color(0.20585, 0.77009, 3.85046e-07, 1)
+description = "writes your ending"
+color = Color(0.593082, 1, 0.518364, 1)
 base_scale = Vector2(1, 1)
 max_health = 100
 move_speed = 300.0
-light_attack_damage = 1
+light_attack_damage = 100
 heavy_attack_damage = 1
 special_attack_damage = 1
 ultimate_attack_damage = 1
@@ -44,6 +50,7 @@ special_attack_duration = 1.0
 ultimate_attack_duration = 5.0
 hit_stun_duration = 0.3
 custom_animations = Array[ExtResource("1_4twnc")]([ExtResource("3_o2pix"), ExtResource("4_t883h"), ExtResource("5_0x7kh"), ExtResource("6_wgbcn")])
+entrance_animation = ExtResource("7_qimoi")
 idle_animation = ExtResource("8_t883h")
 run_forward_animation = ExtResource("11_inkpt")
 run_backward_animation = ExtResource("10_qm4xg")
@@ -53,6 +60,9 @@ block_animation = ExtResource("1_8kh0g")
 hit_animation = ExtResource("7_o2pix")
 special_attack_animation = ExtResource("13_8kh0g")
 ultimate_attack_animation = ExtResource("15_qimoi")
+defeat_animation = ExtResource("7_l8kn4")
+victory_animation = ExtResource("21_prslw")
+entrance_scale = Vector2(1.3, 1.3)
 idle_scale = Vector2(1.3, 1.3)
 run_forward_scale = Vector2(1.3, 1.3)
 run_backward_scale = Vector2(1.3, 1.3)
@@ -63,3 +73,20 @@ hit_scale = Vector2(1.3, 1.3)
 special_attack_scale = Vector2(1.25, 1.25)
 ultimate_attack_scale = Vector2(1.3, 1.3)
 defeat_scale = Vector2(1.3, 1.3)
+victory_scale = Vector2(1.3, 1.3)
+entrance_offset = Vector2(180, 0)
+idle_offset = Vector2(0, 0)
+run_forward_offset = Vector2(0, 0)
+run_backward_offset = Vector2(0, 0)
+light_attack_offset = Vector2(0, 0)
+heavy_attack_offset = Vector2(0, 0)
+block_offset = Vector2(0, 0)
+hit_offset = Vector2(0, 0)
+special_attack_offset = Vector2(60, 0)
+ultimate_attack_offset = Vector2(100, 0)
+defeat_offset = Vector2(0, 0)
+victory_offset = Vector2(100, 0)
+portrait_idle_frames = ExtResource("13_7lywn")
+portrait_hover_frames = ExtResource("12_g0xb1")
+portrait_select_frames = ExtResource("13_so8li")
+portrait_scale = Vector2(1, 1)

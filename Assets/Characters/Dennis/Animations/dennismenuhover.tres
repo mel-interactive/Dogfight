@@ -1,0 +1,58 @@
+[gd_resource type="SpriteFrames" load_steps=13 format=3 uid="uid://7425q0vd7xxp"]
+
+[ext_resource type="Texture2D" uid="uid://d1uw7wq84i5ao" path="res://Assets/Characters/Dennis/Hover/frame_00_delay-0.14s.png" id="1_uoe3r"]
+[ext_resource type="Texture2D" uid="uid://djikqfmy80xni" path="res://Assets/Characters/Dennis/Hover/frame_01_delay-0.15s.png" id="2_2nyus"]
+[ext_resource type="Texture2D" uid="uid://csep1ll3cgm8v" path="res://Assets/Characters/Dennis/Hover/frame_02_delay-0.14s.png" id="3_akt05"]
+[ext_resource type="Texture2D" uid="uid://bjk0l6huw5s2w" path="res://Assets/Characters/Dennis/Hover/frame_03_delay-0.14s.png" id="4_bsbke"]
+[ext_resource type="Texture2D" uid="uid://cdvpdy4ppll5v" path="res://Assets/Characters/Dennis/Hover/frame_04_delay-0.14s.png" id="5_c5wgg"]
+[ext_resource type="Texture2D" uid="uid://c2kswk2q47jkv" path="res://Assets/Characters/Dennis/Hover/frame_05_delay-0.15s.png" id="6_qrker"]
+[ext_resource type="Texture2D" uid="uid://dcwo7ih6567ll" path="res://Assets/Characters/Dennis/Hover/frame_06_delay-0.14s.png" id="7_a3utj"]
+[ext_resource type="Texture2D" uid="uid://blve76drobiv5" path="res://Assets/Characters/Dennis/Hover/frame_07_delay-0.14s.png" id="8_sl26c"]
+[ext_resource type="Texture2D" uid="uid://c07ftr725jyga" path="res://Assets/Characters/Dennis/Hover/frame_08_delay-0.15s.png" id="9_ak4xu"]
+[ext_resource type="Texture2D" uid="uid://c2h31q5ibskcy" path="res://Assets/Characters/Dennis/Hover/frame_09_delay-0.14s.png" id="10_rpwta"]
+[ext_resource type="Texture2D" uid="uid://dysikbjntjcb5" path="res://Assets/Characters/Dennis/Hover/frame_10_delay-0.14s.png" id="11_gut7d"]
+[ext_resource type="Texture2D" uid="uid://bdrk6s81idvh0" path="res://Assets/Characters/Dennis/Hover/frame_11_delay-0.14s.png" id="12_q0yrs"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_uoe3r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_2nyus")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_akt05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_bsbke")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_c5wgg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_qrker")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_a3utj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_sl26c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ak4xu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_rpwta")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_gut7d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_q0yrs")
+}],
+"loop": false,
+"name": &"dennishover",
+"speed": 7.0
+}]

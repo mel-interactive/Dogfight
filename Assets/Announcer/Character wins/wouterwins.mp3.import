@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://rr48jgs351sh"
+path="res://.godot/imported/wouterwins.mp3-fbbf292ca8bf540f76cab9b9af45c3ae.mp3str"
+
+[deps]
+
+source_file="res://Assets/Announcer/Character wins/wouterwins.mp3"
+dest_files=["res://.godot/imported/wouterwins.mp3-fbbf292ca8bf540f76cab9b9af45c3ae.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,4 +1,4 @@
-# VisualComponent.gd
+# VisualComponent.gd - Complete version with animation offsets
 extends Node
 class_name VisualComponent
 
@@ -116,11 +116,11 @@ func setup_base_animations():
 	sprite.sprite_frames = SpriteFrames.new()
 	var has_animations = false
 	
-	# Add base animations
+	# Add base animations - including "entrance"
 	var base_animations = [
 		"idle", "run_forward", "run_backward", "light_attack",
 		"heavy_attack", "block", "hit", "special_attack",
-		"ultimate_attack", "defeat"
+		"ultimate_attack", "defeat", "entrance", "victory"
 	]
 	
 	for anim_name in base_animations:
@@ -177,7 +177,19 @@ func set_sprite_anchor_bottom():
 	if not sprite:
 		return
 	
-	sprite.position.y = 0
+	# Get current animation offset
+	var current_anim_offset = Vector2.ZERO
+	if sprite.animation != "":
+		var base_offset = character.character_data.get_animation_offset(sprite.animation)
+		current_anim_offset = base_offset
+		
+		# Flip X offset for player 1
+		if character.player_number == 1:
+			current_anim_offset.x = -current_anim_offset.x
+	
+	# Apply the base position + animation offset
+	sprite.position.y = original_sprite_position.y + current_anim_offset.y
+	sprite.position.x = original_sprite_position.x + current_anim_offset.x
 	
 	if sprite.sprite_frames and sprite.animation != "":
 		var current_frame = sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
@@ -238,6 +250,17 @@ func play_animation(animation_name: String):
 	var target_scale = character.character_data.get_animation_scale(animation_name)
 	sprite.scale = target_scale
 	sprite.flip_h = (character.player_number == 1)
+	
+	# Apply animation offset (flipped for player 1)
+	var base_offset = character.character_data.get_animation_offset(animation_name)
+	var final_offset = base_offset
+	
+	# Flip X offset for player 1 (same logic as sprite flipping)
+	if character.player_number == 1:
+		final_offset.x = -final_offset.x
+	
+	# Apply the offset to sprite position
+	sprite.position = original_sprite_position + final_offset
 	
 	call_deferred("set_sprite_anchor_bottom")
 	
@@ -348,7 +371,7 @@ func add_animation(anim_name: String, frames: SpriteFrames):
 	if sprite.sprite_frames.get_frame_count(anim_name) > 0:
 		sprite.sprite_frames.set_animation_speed(anim_name, frames.get_animation_speed(source_anim_name))
 		
-		if "attack" in anim_name or anim_name == "hit" or anim_name == "defeat":
+		if "attack" in anim_name or anim_name == "hit" or anim_name == "defeat" or anim_name == "entrance":
 			sprite.sprite_frames.set_animation_loop(anim_name, false)
 		else:
 			sprite.sprite_frames.set_animation_loop(anim_name, frames.get_animation_loop(source_anim_name))
