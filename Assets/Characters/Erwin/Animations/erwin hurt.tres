@@ -1,0 +1,34 @@
+[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://dqr85n5nx0mtk"]
+
+[ext_resource type="Texture2D" uid="uid://decp53bjv7gkc" path="res://Assets/Characters/Erwin/Hurt/frame_0_delay-0.14s.png" id="1_0mgkt"]
+[ext_resource type="Texture2D" uid="uid://d0bm03jnukkud" path="res://Assets/Characters/Erwin/Hurt/frame_1_delay-0.15s.png" id="2_0o6qu"]
+[ext_resource type="Texture2D" uid="uid://d1yu7v7kqcvv8" path="res://Assets/Characters/Erwin/Hurt/frame_2_delay-0.14s.png" id="3_afigc"]
+[ext_resource type="Texture2D" uid="uid://dv2702l785l1v" path="res://Assets/Characters/Erwin/Hurt/frame_3_delay-0.14s.png" id="4_oey4d"]
+[ext_resource type="Texture2D" uid="uid://treyjltvd1eo" path="res://Assets/Characters/Erwin/Hurt/frame_4_delay-0.14s.png" id="5_gorcl"]
+[ext_resource type="Texture2D" uid="uid://b1aptcqpfc73q" path="res://Assets/Characters/Erwin/Hurt/frame_5_delay-0.14s.png" id="6_dbkv7"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_0mgkt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_0o6qu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_afigc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_oey4d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_gorcl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_dbkv7")
+}],
+"loop": false,
+"name": &"erwinhurt",
+"speed": 5.0
+}]

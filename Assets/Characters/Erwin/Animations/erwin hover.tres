@@ -1,0 +1,34 @@
+[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://bm25klmsh1fx0"]
+
+[ext_resource type="Texture2D" uid="uid://xvvn2wd6wrwk" path="res://Assets/Characters/Erwin/Hover/frame_0_delay-0.14s.png" id="1_xp45o"]
+[ext_resource type="Texture2D" uid="uid://d2fr0dyxfxnm6" path="res://Assets/Characters/Erwin/Hover/frame_1_delay-0.15s.png" id="2_evw31"]
+[ext_resource type="Texture2D" uid="uid://cb84actwp8m3u" path="res://Assets/Characters/Erwin/Hover/frame_2_delay-0.14s.png" id="3_ytxv7"]
+[ext_resource type="Texture2D" uid="uid://6wi38wkpamga" path="res://Assets/Characters/Erwin/Hover/frame_3_delay-0.14s.png" id="4_nihef"]
+[ext_resource type="Texture2D" uid="uid://bbgh4676jx3tq" path="res://Assets/Characters/Erwin/Hover/frame_4_delay-0.14s.png" id="5_8l8xq"]
+[ext_resource type="Texture2D" uid="uid://drs6ykc0o71y5" path="res://Assets/Characters/Erwin/Hover/frame_5_delay-0.15s.png" id="6_tdymu"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_xp45o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_evw31")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ytxv7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_nihef")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_8l8xq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_tdymu")
+}],
+"loop": false,
+"name": &"erwinhover",
+"speed": 7.0
+}]

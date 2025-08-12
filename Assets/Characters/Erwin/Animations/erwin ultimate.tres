@@ -1,0 +1,9 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://dmhvw50uxi603"]
+
+[resource]
+animations = [{
+"frames": [],
+"loop": false,
+"name": &"erwinultimate",
+"speed": 7.0
+}]

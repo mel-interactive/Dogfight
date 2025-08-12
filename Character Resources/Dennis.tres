@@ -26,7 +26,7 @@
 script = ExtResource("1_gte3r")
 character_id = "dennis"
 character_name = "Dennis"
-description = "writes your ending"
+description = "light attack, heavy lore"
 color = Color(0.593082, 1, 0.518364, 1)
 base_scale = Vector2(1, 1)
 max_health = 100

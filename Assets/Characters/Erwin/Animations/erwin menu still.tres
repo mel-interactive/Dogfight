@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://cevjrmqhy5c01"]
+
+[ext_resource type="Texture2D" uid="uid://xvvn2wd6wrwk" path="res://Assets/Characters/Erwin/Hover/frame_0_delay-0.14s.png" id="1_jrnb1"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_jrnb1")
+}],
+"loop": false,
+"name": &"erwinstill",
+"speed": 7.0
+}]

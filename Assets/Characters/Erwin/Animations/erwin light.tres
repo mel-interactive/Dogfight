@@ -1,0 +1,42 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://beeuhtviynhhr"]
+
+[ext_resource type="Texture2D" uid="uid://cl2ij0i31k70y" path="res://Assets/Characters/Erwin/Light/frame_0_delay-0.14s.png" id="1_u0wga"]
+[ext_resource type="Texture2D" uid="uid://7gp60bcpvmf6" path="res://Assets/Characters/Erwin/Light/frame_1_delay-0.15s.png" id="2_px4ek"]
+[ext_resource type="Texture2D" uid="uid://cjw7rvkt7wmsn" path="res://Assets/Characters/Erwin/Light/frame_2_delay-0.14s.png" id="3_57tvb"]
+[ext_resource type="Texture2D" uid="uid://gh5x4mak5bc8" path="res://Assets/Characters/Erwin/Light/frame_3_delay-0.14s.png" id="4_wq0fu"]
+[ext_resource type="Texture2D" uid="uid://67qnw8k2fato" path="res://Assets/Characters/Erwin/Light/frame_4_delay-0.14s.png" id="5_kkgcw"]
+[ext_resource type="Texture2D" uid="uid://drj4o7oh4rilj" path="res://Assets/Characters/Erwin/Light/frame_5_delay-0.15s.png" id="6_1b6yl"]
+[ext_resource type="Texture2D" uid="uid://o32p7p4v7qoh" path="res://Assets/Characters/Erwin/Light/frame_6_delay-0.14s.png" id="7_0ur64"]
+[ext_resource type="Texture2D" uid="uid://cmp7eambvewfe" path="res://Assets/Characters/Erwin/Light/frame_7_delay-0.14s.png" id="8_atsbh"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_u0wga")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_px4ek")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_57tvb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_wq0fu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_kkgcw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_1b6yl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_0ur64")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_atsbh")
+}],
+"loop": false,
+"name": &"erwin light",
+"speed": 8.0
+}]

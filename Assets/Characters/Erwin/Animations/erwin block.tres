@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://ogdwgqjn7k21"]
+
+[ext_resource type="Texture2D" uid="uid://fl0x0qfhu8b2" path="res://Assets/Characters/Erwin/Block/frame_0_delay-0.14s.png" id="1_xf717"]
+[ext_resource type="Texture2D" uid="uid://d3yqwc3ohv0kw" path="res://Assets/Characters/Erwin/Block/frame_1_delay-0.15s.png" id="2_g2wi6"]
+[ext_resource type="Texture2D" uid="uid://cxjvnkn6qv2ud" path="res://Assets/Characters/Erwin/Block/frame_2_delay-0.14s.png" id="3_ujj5k"]
+[ext_resource type="Texture2D" uid="uid://bxdfqfr4tbqun" path="res://Assets/Characters/Erwin/Block/frame_3_delay-0.14s.png" id="4_n2pvg"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_xf717")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_g2wi6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ujj5k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_n2pvg")
+}],
+"loop": false,
+"name": &"erwin block",
+"speed": 7.0
+}]
