@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CustomAnimation" load_steps=3 format=3 uid="uid://c428b5mb204vu"]
+
+[ext_resource type="SpriteFrames" uid="uid://bb4g27pna0qu8" path="res://Assets/Characters/Erwin/Animations/erwin special effect.tres" id="1_q4ugn"]
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="1_qox3i"]
+
+[resource]
+script = ExtResource("1_qox3i")
+animation_frames = ExtResource("1_q4ugn")
+bound_to = "special_attack"
+flip_with_player = false
+anchored_to_player = true
+scale = Vector2(1, 1)
+position_offset = Vector2(-100, -300)
+metadata/_custom_type_script = "uid://cc281o2i4b35n"

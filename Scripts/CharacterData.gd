@@ -1,4 +1,4 @@
-# CharacterData.gd - Enhanced with victory animation support
+# CharacterData.gd - Enhanced with reaction system
 extends Resource
 class_name CharacterData
 
@@ -45,11 +45,15 @@ class_name CharacterData
 @export var ultimate_attack_duration: float = 1.0
 @export var hit_stun_duration: float = 0.3
 
-# NEW CUSTOM ANIMATION SYSTEM
+# NEW REACTION SYSTEM
+@export_group("Character Reactions")
+@export var reaction_data: Array[ReactionData] = []
+
+# CUSTOM ANIMATION SYSTEM (existing)
 @export_group("Custom Animations")
 @export var custom_animations: Array[CustomAnimation] = []
 
-# BASE ANIMATIONS (Keep the original system for base animations)
+# BASE ANIMATIONS (existing - keeping all current functionality)
 @export_group("Base Animations")
 @export var entrance_animation: SpriteFrames
 @export var idle_animation: SpriteFrames
@@ -62,7 +66,7 @@ class_name CharacterData
 @export var special_attack_animation: SpriteFrames
 @export var ultimate_attack_animation: SpriteFrames
 @export var defeat_animation: SpriteFrames
-@export var victory_animation: SpriteFrames  # NEW: Victory animation
+@export var victory_animation: SpriteFrames
 
 # Base animation scales and offsets (keeping for compatibility)
 @export_group("Base Animation Settings")
@@ -77,7 +81,7 @@ class_name CharacterData
 @export var special_attack_scale: Vector2 = Vector2(1.5, 1.5)
 @export var ultimate_attack_scale: Vector2 = Vector2(2.0, 2.0)
 @export var defeat_scale: Vector2 = Vector2(1.0, 1.0)
-@export var victory_scale: Vector2 = Vector2(1.2, 1.2)  # NEW: Victory scale
+@export var victory_scale: Vector2 = Vector2(1.2, 1.2)
 
 # Sound effects
 @export_group("Sound Effects")
@@ -88,9 +92,9 @@ class_name CharacterData
 @export var special_attack_sound: AudioStream
 @export var ultimate_attack_sound: AudioStream
 @export var defeat_sound: AudioStream
-@export var victory_sound: AudioStream  # NEW: Victory sound
+@export var victory_sound: AudioStream
 
-# Base animation offsets (applied on top of normal anchoring)
+# Base animation offsets
 @export_group("Base Animation Offsets")
 @export var entrance_offset: Vector2 = Vector2(0.0, 0.0)
 @export var idle_offset: Vector2 = Vector2(0.0, 0.0)
@@ -103,16 +107,57 @@ class_name CharacterData
 @export var special_attack_offset: Vector2 = Vector2(0.0, 0.0)
 @export var ultimate_attack_offset: Vector2 = Vector2(0.0, 0.0)
 @export var defeat_offset: Vector2 = Vector2(0.0, 0.0)
-@export var victory_offset: Vector2 = Vector2(0.0, 0.0)  # NEW: Victory offset
+@export var victory_offset: Vector2 = Vector2(0.0, 0.0)
 
 # Character Select Portrait Animations
 @export_group("Character Select Portraits")
-@export var portrait_idle_frames: SpriteFrames    # For the still frame 
-@export var portrait_hover_frames: SpriteFrames   # For hover animation
-@export var portrait_select_frames: SpriteFrames  # For select animation
-@export var portrait_scale: Vector2 = Vector2(1.0, 1.0)  # Scale for portraits
+@export var portrait_idle_frames: SpriteFrames
+@export var portrait_hover_frames: SpriteFrames
+@export var portrait_select_frames: SpriteFrames
+@export var portrait_scale: Vector2 = Vector2(1.0, 1.0)
 
-# ENHANCED METHODS WITH VICTORY SUPPORT
+# NEW REACTION SYSTEM METHODS
+
+# Find a specific reaction for an attacking character and attack type
+func get_reaction_for_attack(attacking_character_id: String, attack_type: String) -> ReactionData:
+	for reaction in reaction_data:
+		if reaction.attacking_character_id == attacking_character_id and reaction.attack_type == attack_type:
+			return reaction
+	return null
+
+# Check if this character has a specific reaction
+func has_reaction_for_attack(attacking_character_id: String, attack_type: String) -> bool:
+	return get_reaction_for_attack(attacking_character_id, attack_type) != null
+
+# Get all reactions for a specific attacking character
+func get_reactions_for_character(attacking_character_id: String) -> Array[ReactionData]:
+	var character_reactions: Array[ReactionData] = []
+	for reaction in reaction_data:
+		if reaction.attacking_character_id == attacking_character_id:
+			character_reactions.append(reaction)
+	return character_reactions
+
+# Add a new reaction
+func add_reaction(new_reaction: ReactionData):
+	# Check if reaction already exists and replace it
+	for i in range(reaction_data.size()):
+		var existing = reaction_data[i]
+		if existing.attacking_character_id == new_reaction.attacking_character_id and existing.attack_type == new_reaction.attack_type:
+			reaction_data[i] = new_reaction
+			return
+	
+	# Add new reaction if it doesn't exist
+	reaction_data.append(new_reaction)
+
+# Remove a reaction
+func remove_reaction(attacking_character_id: String, attack_type: String):
+	for i in range(reaction_data.size() - 1, -1, -1):
+		var reaction = reaction_data[i]
+		if reaction.attacking_character_id == attacking_character_id and reaction.attack_type == attack_type:
+			reaction_data.remove_at(i)
+			break
+
+# EXISTING METHODS (keeping all for compatibility)
 
 func get_animation_offset(animation_name: String) -> Vector2:
 	match animation_name:
@@ -138,12 +183,11 @@ func get_animation_offset(animation_name: String) -> Vector2:
 			return ultimate_attack_offset
 		"defeat":
 			return defeat_offset
-		"victory":  # NEW: Victory offset support
+		"victory":
 			return victory_offset
 		_:
 			return Vector2(0.0, 0.0)
 
-# Get all animations bound to a specific base animation
 func get_animations_for_action(action_name: String) -> Array[CustomAnimation]:
 	var bound_animations: Array[CustomAnimation] = []
 	for custom_anim in custom_animations:
@@ -151,7 +195,6 @@ func get_animations_for_action(action_name: String) -> Array[CustomAnimation]:
 			bound_animations.append(custom_anim)
 	return bound_animations
 
-# Helper function to get scale for a specific base animation
 func get_animation_scale(animation_name: String) -> Vector2:
 	var scale_multiplier: Vector2
 	
@@ -178,13 +221,12 @@ func get_animation_scale(animation_name: String) -> Vector2:
 			scale_multiplier = ultimate_attack_scale
 		"defeat":
 			scale_multiplier = defeat_scale
-		"victory":  # NEW: Victory scale support
+		"victory":
 			scale_multiplier = victory_scale
 		_:
 			scale_multiplier = Vector2(1.0, 1.0)
 	return base_scale * scale_multiplier
 
-# Check if base animation exists
 func has_base_animation(animation_name: String) -> bool:
 	match animation_name:
 		"entrance":
@@ -209,12 +251,11 @@ func has_base_animation(animation_name: String) -> bool:
 			return ultimate_attack_animation != null
 		"defeat":
 			return defeat_animation != null
-		"victory":  # NEW: Victory animation check
+		"victory":
 			return victory_animation != null
 		_:
 			return false
 
-# Get base animation
 func get_base_animation(animation_name: String) -> SpriteFrames:
 	match animation_name:
 		"entrance":
@@ -239,12 +280,11 @@ func get_base_animation(animation_name: String) -> SpriteFrames:
 			return ultimate_attack_animation
 		"defeat":
 			return defeat_animation
-		"victory":  # NEW: Victory animation getter
+		"victory":
 			return victory_animation
 		_:
 			return null
 
-# Helper functions for portrait animations
 func has_portrait_animation(animation_type: String) -> bool:
 	match animation_type:
 		"idle":
@@ -267,6 +307,5 @@ func get_portrait_animation(animation_type: String) -> SpriteFrames:
 		_:
 			return null
 
-# NEW: Helper method for victory sound (used by VictoryState)
 func get_victory_sound() -> AudioStream:
 	return victory_sound

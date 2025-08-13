@@ -1,0 +1,118 @@
+[gd_resource type="SpriteFrames" load_steps=28 format=3 uid="uid://dfknc7abrg20c"]
+
+[ext_resource type="Texture2D" uid="uid://b6fw7dmht3x5j" path="res://Assets/Characters/Dennis/ER_Special/frame_00_delay-0.14s.png" id="1_0prox"]
+[ext_resource type="Texture2D" uid="uid://oxhek28l6xio" path="res://Assets/Characters/Dennis/ER_Special/frame_01_delay-0.15s.png" id="2_d7cqm"]
+[ext_resource type="Texture2D" uid="uid://dckdkoihpca1x" path="res://Assets/Characters/Dennis/ER_Special/frame_02_delay-0.14s.png" id="3_ql3sh"]
+[ext_resource type="Texture2D" uid="uid://b63joqgg6xpjm" path="res://Assets/Characters/Dennis/ER_Special/frame_03_delay-0.14s.png" id="4_eqn3o"]
+[ext_resource type="Texture2D" uid="uid://bvp83x1c6c1fo" path="res://Assets/Characters/Dennis/ER_Special/frame_04_delay-0.14s.png" id="5_6ukuy"]
+[ext_resource type="Texture2D" uid="uid://7j7hb4cpb0vi" path="res://Assets/Characters/Dennis/ER_Special/frame_05_delay-0.15s.png" id="6_cc1cq"]
+[ext_resource type="Texture2D" uid="uid://bgqln7yiacyua" path="res://Assets/Characters/Dennis/ER_Special/frame_06_delay-0.14s.png" id="7_yfxhy"]
+[ext_resource type="Texture2D" uid="uid://b2dtysa2l42xp" path="res://Assets/Characters/Dennis/ER_Special/frame_07_delay-0.14s.png" id="8_mli3q"]
+[ext_resource type="Texture2D" uid="uid://cca4ckim0dous" path="res://Assets/Characters/Dennis/ER_Special/frame_08_delay-0.15s.png" id="9_622yi"]
+[ext_resource type="Texture2D" uid="uid://bac5mxfb0q7as" path="res://Assets/Characters/Dennis/ER_Special/frame_09_delay-0.14s.png" id="10_mco0f"]
+[ext_resource type="Texture2D" uid="uid://c5k8dtuc52q5r" path="res://Assets/Characters/Dennis/ER_Special/frame_10_delay-0.14s.png" id="11_smj6y"]
+[ext_resource type="Texture2D" uid="uid://cifd6cb8q4rn6" path="res://Assets/Characters/Dennis/ER_Special/frame_11_delay-0.14s.png" id="12_04j34"]
+[ext_resource type="Texture2D" uid="uid://cpu1qt67eyyv4" path="res://Assets/Characters/Dennis/ER_Special/frame_12_delay-0.15s.png" id="13_uogd8"]
+[ext_resource type="Texture2D" uid="uid://cj38nm1rg6jic" path="res://Assets/Characters/Dennis/ER_Special/frame_13_delay-0.14s.png" id="14_iu0wk"]
+[ext_resource type="Texture2D" uid="uid://c7vj4mylel805" path="res://Assets/Characters/Dennis/ER_Special/frame_14_delay-0.14s.png" id="15_s127m"]
+[ext_resource type="Texture2D" uid="uid://6ut6upfsqhth" path="res://Assets/Characters/Dennis/ER_Special/frame_15_delay-0.15s.png" id="16_5pl8t"]
+[ext_resource type="Texture2D" uid="uid://dbolemkpf2qqn" path="res://Assets/Characters/Dennis/ER_Special/frame_16_delay-0.14s.png" id="17_ahjlf"]
+[ext_resource type="Texture2D" uid="uid://dykftwtslkdli" path="res://Assets/Characters/Dennis/ER_Special/frame_17_delay-0.14s.png" id="18_c5ieu"]
+[ext_resource type="Texture2D" uid="uid://csvqpbsjckap0" path="res://Assets/Characters/Dennis/ER_Special/frame_18_delay-0.14s.png" id="19_232xu"]
+[ext_resource type="Texture2D" uid="uid://cw8do6ba8wcqv" path="res://Assets/Characters/Dennis/ER_Special/frame_19_delay-0.15s.png" id="20_on67q"]
+[ext_resource type="Texture2D" uid="uid://dad8xd1maeml" path="res://Assets/Characters/Dennis/ER_Special/frame_20_delay-0.14s.png" id="21_42sjf"]
+[ext_resource type="Texture2D" uid="uid://dkvwlpiq8ifkl" path="res://Assets/Characters/Dennis/ER_Special/frame_21_delay-0.14s.png" id="22_jf4uj"]
+[ext_resource type="Texture2D" uid="uid://0nybfogpg7ot" path="res://Assets/Characters/Dennis/ER_Special/frame_22_delay-0.15s.png" id="23_q8kbt"]
+[ext_resource type="Texture2D" uid="uid://db1j0fyyb0q23" path="res://Assets/Characters/Dennis/ER_Special/frame_23_delay-0.14s.png" id="24_1haya"]
+[ext_resource type="Texture2D" uid="uid://dlxsg86j7wpyj" path="res://Assets/Characters/Dennis/ER_Special/frame_24_delay-0.14s.png" id="25_fssjw"]
+[ext_resource type="Texture2D" uid="uid://cbcn7xc105i4m" path="res://Assets/Characters/Dennis/ER_Special/frame_25_delay-0.14s.png" id="26_xq2ix"]
+[ext_resource type="Texture2D" uid="uid://dxiykgr50d2if" path="res://Assets/Characters/Dennis/ER_Special/frame_26_delay-0.14s.png" id="27_wlrvy"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_0prox")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_d7cqm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ql3sh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_eqn3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_6ukuy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_cc1cq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_yfxhy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_mli3q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_622yi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_mco0f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_smj6y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_04j34")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_uogd8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_iu0wk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_s127m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_5pl8t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_ahjlf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_c5ieu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_232xu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_on67q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_42sjf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_jf4uj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_q8kbt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_1haya")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_fssjw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_xq2ix")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_wlrvy")
+}],
+"loop": false,
+"name": &"dennis_er_special",
+"speed": 7.0
+}]

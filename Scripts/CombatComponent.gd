@@ -1,4 +1,4 @@
-# CombatComponent.gd
+# CombatComponent.gd - Enhanced with reaction system integration
 extends Node
 class_name CombatComponent
 
@@ -44,22 +44,27 @@ func apply_attack_hit():
 			damage = character.character_data.special_attack_damage
 			attack_range = character.character_data.special_attack_range
 			ignore_block = true
-			attack_type = "special"
+			attack_type = "special_attack"  # Match the ReactionData enum
 		"UltimateAttack":
 			damage = character.character_data.ultimate_attack_damage
 			attack_range = character.character_data.ultimate_attack_range
 			ignore_block = true
-			attack_type = "ultimate"
+			attack_type = "ultimate_attack"  # Match the ReactionData enum
 	
 	# Check if opponent is in range
 	if is_opponent_in_attack_range(attack_range):
+		print("CombatComponent: Opponent in range for ", attack_type)
+		
 		if ignore_block:
-			# Special/Ultimate attacks ignore blocking
+			print("CombatComponent: Processing special/ultimate attack")
+			# For special/ultimate attacks, reaction was already triggered in attack state
+			# Just apply damage here
 			var damage_taken = character.opponent.take_damage(damage, true)
 			if damage_taken:
 				register_hit()
 				EventBus.emit_signal("attack_hit", character, character.opponent, damage, attack_type)
 		else:
+			print("CombatComponent: Processing normal attack")
 			# Normal attacks check for blocking
 			var is_blocked = character.opponent.is_blocking()
 			if is_blocked:
@@ -68,11 +73,73 @@ func apply_attack_hit():
 				character.opponent.visual_component.do_simple_shake()
 				EventBus.emit_signal("attack_blocked", character, character.opponent, attack_type)
 			else:
-				# Full damage
+				# Full damage - no special reactions for normal attacks
 				var damage_taken = character.opponent.take_damage(damage, false)
 				if damage_taken:
 					register_hit()
 					EventBus.emit_signal("attack_hit", character, character.opponent, damage, attack_type)
+	else:
+		print("CombatComponent: Opponent NOT in range for ", attack_type)
+
+# NEW: Trigger reaction at the START of special/ultimate attacks for better timing
+func trigger_attack_reaction(attack_type: String):
+	print("CombatComponent: trigger_attack_reaction called with attack_type: ", attack_type)
+	
+	if not character.opponent or not character.character_data:
+		print("  FAILED: No opponent or character data")
+		return
+	
+	# Only handle special and ultimate attacks
+	if attack_type != "special_attack" and attack_type != "ultimate_attack":
+		print("  SKIPPED: Not a special or ultimate attack")
+		return
+	
+	# Check if opponent is in range first
+	var attack_range: float = 0
+	match attack_type:
+		"special_attack":
+			attack_range = character.character_data.special_attack_range
+		"ultimate_attack":
+			attack_range = character.character_data.ultimate_attack_range
+	
+	if not is_opponent_in_attack_range(attack_range):
+		print("  SKIPPED: Opponent not in range")
+		return
+	
+	print("  Attempting to trigger reaction on opponent: ", character.opponent.character_data.character_name if character.opponent.character_data else "NO DATA")
+	
+	# Trigger the reaction immediately
+	var played_reaction = character.opponent.play_reaction_to_attack(character, attack_type)
+	
+	if played_reaction:
+		print("SUCCESS: Triggered reaction: ", character.opponent.character_data.character_name, " reacting to ", character.character_data.character_name, "'s ", attack_type)
+	else:
+		print("NO REACTION: No specific reaction found for: ", character.opponent.character_data.character_name, " vs ", character.character_data.character_name, "'s ", attack_type)
+
+# NEW: Try to play character-specific reaction for special/ultimate attacks
+func try_play_character_reaction(attack_type: String) -> bool:
+	print("CombatComponent: try_play_character_reaction called with attack_type: ", attack_type)
+	
+	if not character.opponent or not character.character_data:
+		print("  FAILED: No opponent or character data")
+		return false
+	
+	# Only handle special and ultimate attacks
+	if attack_type != "special_attack" and attack_type != "ultimate_attack":
+		print("  SKIPPED: Not a special or ultimate attack")
+		return false
+	
+	print("  Attempting to play reaction on opponent: ", character.opponent.character_data.character_name if character.opponent.character_data else "NO DATA")
+	
+	# Check if opponent has a specific reaction to this character's attack
+	var played_reaction = character.opponent.play_reaction_to_attack(character, attack_type)
+	
+	if played_reaction:
+		print("SUCCESS: Playing specific reaction: ", character.opponent.character_data.character_name, " reacting to ", character.character_data.character_name, "'s ", attack_type)
+		return true
+	else:
+		print("NO REACTION: No specific reaction found for: ", character.opponent.character_data.character_name, " vs ", character.character_data.character_name, "'s ", attack_type)
+		return false
 
 func is_opponent_in_attack_range(attack_range: float) -> bool:
 	if not character.opponent:
@@ -98,7 +165,8 @@ func take_damage(damage_amount: int, ignore_block: bool) -> bool:
 		if character.current_health <= 0:
 			character.state_machine.change_state("Defeat")
 		else:
-			character.state_machine.change_state("Hit")
+			# For special/ultimate attacks, the reaction system handles the hit animation
+			# We don't need to go to Hit state because the reaction replaces it
 			character.play_sound(character.character_data.hit_sound)
 			# NO WHITE FLASH for ignore_block attacks (specials/ultimates)
 		

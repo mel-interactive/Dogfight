@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CustomAnimation" load_steps=3 format=3 uid="uid://bu15u6evmh670"]
+
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="1_2x7gp"]
+[ext_resource type="SpriteFrames" uid="uid://c7rqldgkevp2x" path="res://Assets/Characters/Erwin/Animations/erwin heavy effect.tres" id="1_mylqj"]
+
+[resource]
+script = ExtResource("1_2x7gp")
+animation_frames = ExtResource("1_mylqj")
+bound_to = "heavy_attack"
+flip_with_player = false
+anchored_to_player = true
+scale = Vector2(1, 1)
+position_offset = Vector2(-300, -350)
+metadata/_custom_type_script = "uid://cc281o2i4b35n"

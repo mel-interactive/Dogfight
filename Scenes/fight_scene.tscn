@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://dwhncf7xhe0tc"]
+[gd_scene load_steps=64 format=3 uid="uid://dwhncf7xhe0tc"]
 
 [ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
 [ext_resource type="AudioStream" uid="uid://cn0njbhvj5tga" path="res://Assets/Announcer/Intro line/onlyonedogswalking.mp3" id="2_5n8pe"]
@@ -57,6 +57,7 @@
 [ext_resource type="Texture2D" uid="uid://cxd4t6u55p46l" path="res://Assets/Backgrounds/Computer table/frame_49_delay-0.1s.png" id="51_ltmwq"]
 [ext_resource type="Texture2D" uid="uid://cvaflpy6j57j" path="res://Assets/Backgrounds/Computer table/frame_50_delay-0.1s.png" id="52_v636w"]
 [ext_resource type="Texture2D" uid="uid://b8a1q047lkc33" path="res://Assets/Backgrounds/Computer table/frame_51_delay-0.11s.png" id="53_hl8d8"]
+[ext_resource type="Script" uid="uid://b2nhk64ge0hr4" path="res://Scripts/ReactionDebugHelper.gd" id="58_42uwl"]
 [ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="58_xsuk8"]
 [ext_resource type="Texture2D" uid="uid://dh8xgju4xnfqb" path="res://Assets/Menus/boxdecor.png" id="59_42uwl"]
 [ext_resource type="StyleBox" uid="uid://cbmjaagebbypn" path="res://Assets/Menus/hoverbox.tres" id="60_71oq3"]
@@ -236,6 +237,7 @@ position = Vector2(683, 384)
 sprite_frames = SubResource("SpriteFrames_tys6i")
 animation = &"backgroundanim"
 autoplay = "backgroundanim"
+script = ExtResource("58_42uwl")
 
 [node name="Positions" type="Node2D" parent="."]
 

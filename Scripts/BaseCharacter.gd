@@ -1,4 +1,4 @@
-# BaseCharacter.gd - Refactored with components and win/lose states
+# BaseCharacter.gd - Enhanced with reaction system
 extends CharacterBody2D
 class_name BaseCharacter
 
@@ -37,6 +37,7 @@ var state_machine: StateMachine
 var visual_component: VisualComponent
 var combat_component: CombatComponent
 var movement_component: MovementComponent
+var reaction_component: ReactionComponent  # NEW: Reaction component
 
 # Signals (kept for compatibility)
 signal health_changed(new_health)
@@ -77,6 +78,11 @@ func setup_components():
 	movement_component = MovementComponent.new()
 	movement_component.name = "MovementComponent"
 	add_child(movement_component)
+	
+	# NEW: Create reaction component
+	reaction_component = ReactionComponent.new()
+	reaction_component.name = "ReactionComponent"
+	add_child(reaction_component)
 	
 	# Create state machine
 	state_machine = StateMachine.new()
@@ -124,24 +130,22 @@ func setup_components():
 	entrance_state.name = "Entrance"
 	state_machine.add_child(entrance_state)
 	
-	# ADD NEW VICTORY STATE
 	var victory_state = VictoryState.new()
 	victory_state.name = "Victory"
 	state_machine.add_child(victory_state)
 	
 	# Wait for everything to be ready
 	await get_tree().process_frame
-	await get_tree().process_frame  # Extra wait to ensure states are registered
+	await get_tree().process_frame
 	
 	# Setup visuals first
 	visual_component.setup_visuals()
 	
-	# Start in IDLE state initially (entrance will be triggered by FightScene)
+	# Start in IDLE state initially
 	state_machine.start("Idle")
 
-# Updated _on_state_changed method to include Victory state:
+# Updated _on_state_changed method (keeping existing functionality)
 func _on_state_changed(old_state: String, new_state: String):
-	# Update legacy current_state for compatibility
 	match new_state:
 		"Idle":
 			current_state = CharacterState.IDLE
@@ -162,9 +166,26 @@ func _on_state_changed(old_state: String, new_state: String):
 		"Defeat":
 			current_state = CharacterState.DEFEAT
 		"Entrance":
-			current_state = CharacterState.IDLE  # Map entrance to idle for legacy compatibility
+			current_state = CharacterState.IDLE
 		"Victory":
-			current_state = CharacterState.IDLE  # Map victory to idle for legacy compatibility
+			current_state = CharacterState.IDLE
+
+# NEW: Method to trigger character-specific reaction using reaction component
+func play_reaction_to_attack(attacking_character: BaseCharacter, attack_type: String) -> bool:
+	if reaction_component:
+		return reaction_component.play_reaction_to_attack(attacking_character, attack_type)
+	return false
+
+# NEW: Check if character has a specific reaction
+func has_reaction_for_attack(attacking_character_id: String, attack_type: String) -> bool:
+	if reaction_component:
+		return reaction_component.has_reaction_for_attack(attacking_character_id, attack_type)
+	return false
+
+# NEW: Stop current reaction
+func stop_current_reaction():
+	if reaction_component:
+		reaction_component.stop_reaction()
 
 func setup_collision():
 	if not has_node("CollisionShape2D"):

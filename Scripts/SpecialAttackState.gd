@@ -1,5 +1,4 @@
-
-# SpecialAttackState.gd
+# SpecialAttackState.gd - Updated to trigger reactions at the start
 extends AttackState
 class_name SpecialAttackState
 
@@ -41,7 +40,9 @@ func start_dual_character_slide():
 	else:
 		sliding = false
 		print("Special attack: attacker already at spawn, starting immediately")
+		# Start the actual attack AND trigger reaction immediately
 		super.enter()
+		trigger_reaction_immediately()
 
 func update(delta):
 	if sliding:
@@ -68,10 +69,19 @@ func update(delta):
 			character.visual_component.stop_speed_lines()
 			
 			print("Special attack: slide complete, starting attack")
+			# Start the actual attack AND trigger reaction immediately
 			super.enter()  # Start the actual attack
+			trigger_reaction_immediately()
 	else:
 		# Normal attack behavior
 		super.update(delta)
+
+# NEW: Trigger reaction immediately when attack starts
+func trigger_reaction_immediately():
+	print("SpecialAttackState: Triggering reaction immediately")
+	# IMMEDIATELY trigger reaction on opponent for better timing
+	if character.combat_component:
+		character.combat_component.trigger_attack_reaction("special_attack")
 
 func get_character_spawn_position(player_num: int) -> Vector2:
 	# Try to get the spawn position from the fight scene
