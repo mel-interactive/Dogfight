@@ -1,0 +1,173 @@
+[gd_scene load_steps=15 format=3 uid="uid://clrndojac2a4m"]
+
+[ext_resource type="Texture2D" uid="uid://c3owjiodovj40" path="res://Assets/Menus/titlescreenbg.png" id="1_8mikk"]
+[ext_resource type="Script" uid="uid://8grubn1tish5" path="res://Scenes/title_screen.gd" id="1_sqelc"]
+[ext_resource type="Texture2D" uid="uid://cuq02ub4jgsse" path="res://Assets/Menus/titletext.png" id="2_sqelc"]
+[ext_resource type="Texture2D" uid="uid://xj885e2tgy0l" path="res://Assets/Menus/title effect 1.png" id="3_w5sh6"]
+[ext_resource type="Texture2D" uid="uid://bf5m0qb3fes5m" path="res://Assets/Menus/title effect 2.png" id="4_o1e67"]
+[ext_resource type="Texture2D" uid="uid://bep0rmk0o4v7e" path="res://Assets/Menus/anger icon.png" id="5_ycay6"]
+[ext_resource type="Texture2D" uid="uid://cs3k385lh174n" path="res://Assets/Menus/angry robot icon.png" id="6_bsy20"]
+[ext_resource type="Texture2D" uid="uid://15th67v2ls16" path="res://Assets/Menus/buttonbase.png" id="7_07cxn"]
+[ext_resource type="Texture2D" uid="uid://bi6qxd07d5ko8" path="res://Assets/Menus/buttonpress.png" id="8_x2pfe"]
+[ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="9_k1y01"]
+[ext_resource type="AudioStream" uid="uid://pnrv46wxns3i" path="res://Assets/Sound/digging-the-funky-3-piece-loop-383694.mp3" id="10_4blwa"]
+
+[sub_resource type="Animation" id="Animation_sqelc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(269, 51)]
+}
+
+[sub_resource type="Animation" id="Animation_8mikk"]
+resource_name = "idle"
+length = 1.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 1.46667),
+"transitions": PackedFloat32Array(2.63902, 2.37841),
+"update": 0,
+"values": [Vector2(269, 80), Vector2(269, 51)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w5sh6"]
+_data = {
+&"RESET": SubResource("Animation_sqelc"),
+&"idle": SubResource("Animation_8mikk")
+}
+
+[node name="TitleScreen" type="Node2D"]
+script = ExtResource("1_sqelc")
+
+[node name="Background" type="TextureRect" parent="."]
+z_index = -10
+offset_right = 1374.0
+offset_bottom = 781.0
+texture = ExtResource("1_8mikk")
+
+[node name="Title" type="TextureRect" parent="."]
+offset_left = 269.0
+offset_top = 51.0
+offset_right = 1117.0
+offset_bottom = 331.0
+texture = ExtResource("2_sqelc")
+stretch_mode = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Title"]
+libraries = {
+&"": SubResource("AnimationLibrary_w5sh6")
+}
+autoplay = "idle"
+
+[node name="Back Decoration" type="TextureRect" parent="."]
+offset_left = 74.0
+offset_top = 30.0
+offset_right = 333.0
+offset_bottom = 239.0
+rotation = -0.15708
+pivot_offset = Vector2(150, 120)
+texture = ExtResource("3_w5sh6")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="Red Decoration" type="TextureRect" parent="."]
+offset_left = 1063.0
+offset_top = 31.0
+offset_right = 1322.0
+offset_bottom = 240.0
+texture = ExtResource("4_o1e67")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="pvebuttoncombined" type="Node2D" parent="."]
+
+[node name="Angry Robot Decoration" type="TextureRect" parent="pvebuttoncombined"]
+z_index = 5
+offset_left = 735.735
+offset_top = 500.0
+offset_right = 854.735
+offset_bottom = 596.0
+texture = ExtResource("6_bsy20")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="PVE Button" type="TextureButton" parent="pvebuttoncombined"]
+offset_left = 561.0
+offset_top = 523.0
+offset_right = 802.0
+offset_bottom = 633.0
+texture_normal = ExtResource("7_07cxn")
+texture_pressed = ExtResource("8_x2pfe")
+ignore_texture_size = true
+
+[node name="PVE Label" type="Label" parent="pvebuttoncombined"]
+offset_left = 624.0
+offset_top = 541.0
+offset_right = 756.0
+offset_bottom = 602.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("9_k1y01")
+theme_override_font_sizes/font_size = 50
+text = "PVE"
+
+[node name="Credit Label" type="Label" parent="."]
+offset_left = 489.0
+offset_top = 686.0
+offset_right = 887.0
+offset_bottom = 747.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_k1y01")
+theme_override_font_sizes/font_size = 20
+text = "              CREATED BY
+MICK SIEBEN AND MELISSA ISSAOUN"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_4blwa")
+volume_db = -9.161
+autoplay = true
+parameters/looping = true
+
+[node name="pvpbuttoncombined" type="Node2D" parent="."]
+
+[node name="Angry Decoration" type="TextureRect" parent="pvpbuttoncombined"]
+z_index = 5
+offset_left = 735.0
+offset_top = 373.0
+offset_right = 854.0
+offset_bottom = 469.0
+texture = ExtResource("5_ycay6")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="PVP Button" type="TextureButton" parent="pvpbuttoncombined"]
+offset_left = 561.0
+offset_top = 398.0
+offset_right = 802.0
+offset_bottom = 508.0
+texture_normal = ExtResource("7_07cxn")
+texture_pressed = ExtResource("8_x2pfe")
+ignore_texture_size = true
+
+[node name="PVP Label" type="Label" parent="pvpbuttoncombined"]
+offset_left = 624.0
+offset_top = 421.0
+offset_right = 756.0
+offset_bottom = 482.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("9_k1y01")
+theme_override_font_sizes/font_size = 50
+text = "PVP"

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ReactionData" load_steps=3 format=3 uid="uid://x31ribb45g7g"]
+
+[ext_resource type="SpriteFrames" uid="uid://cyu4hqx8ifycc" path="res://Assets/Characters/Erwin/Animations/erwin de_specialreaction.tres" id="1_iqw2c"]
+[ext_resource type="Script" uid="uid://bwl4qpbfsgqd1" path="res://Scripts/ReactionData.gd" id="2_7ik4e"]
+
+[resource]
+script = ExtResource("2_7ik4e")
+target_character_id = "erwin"
+attacking_character_id = "dennis"
+attack_type = "special_attack"
+reaction_animation = ExtResource("1_iqw2c")
+reaction_scale = Vector2(1, 1)
+reaction_offset = Vector2(0, 0)
+flip_with_player = true
+additional_animations = Array[SpriteFrames]([])
+additional_animation_scales = Array[Vector2]([])
+additional_animation_offsets = Array[Vector2]([])
+additional_animation_flips = Array[bool]([])
+duration_override = 0.0
+metadata/_custom_type_script = "uid://bwl4qpbfsgqd1"

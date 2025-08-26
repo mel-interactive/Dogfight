@@ -14,6 +14,9 @@ var current_winner: int = 0
 var player1_wins: int = 0
 var player2_wins: int = 0
 
+# NEW: Game mode tracking
+var game_mode: String = "PVP"  # "PVP" or "PVE"
+
 # Store references to the actual character instances during fights
 var player1_instance: BaseCharacter = null
 var player2_instance: BaseCharacter = null
@@ -28,6 +31,7 @@ func start_fight() -> void:
 	print("GameState_Manager: Starting fight with characters:", 
 		player1_character.character_name if player1_character else "None",
 		player2_character.character_name if player2_character else "None")
+	print("Game mode: ", game_mode)
 	get_tree().change_scene_to_file(FIGHT_SCENE)
 
 # Called by FightScene when it's ready to set up characters
@@ -69,6 +73,20 @@ func create_player_characters() -> Array:
 	
 	return character_manager.create_characters_for_game_state(self)
 
+# NEW: Create the appropriate character type based on game mode
+func create_character_instance(player_id: int) -> BaseCharacter:
+	var character_instance: BaseCharacter
+	
+	if player_id == 1 or game_mode == "PVP":
+		# Player 1 is always human, Player 2 is human in PVP mode
+		character_instance = PlayerCharacter.new()
+	else:
+		# Player 2 is AI in PVE mode
+		character_instance = AICharacter.new()
+	
+	character_instance.player_id = player_id
+	return character_instance
+
 # Function to get the player number for a specific character (for auto-detection)
 func get_player_number_for_character(character_instance: BaseCharacter) -> int:
 	if character_instance == player1_instance:
@@ -96,7 +114,13 @@ func fight_completed(winner_id: int) -> void:
 	elif winner_id == 2:
 		player2_wins += 1
 	
-	print("Fight completed. Player " + str(winner_id) + " won.")
+	if game_mode == "PVE":
+		if winner_id == 1:
+			print("Fight completed. Player won against AI!")
+		else:
+			print("Fight completed. AI won against Player!")
+	else:
+		print("Fight completed. Player " + str(winner_id) + " won.")
 	
 	# Clear character instances
 	player1_instance = null

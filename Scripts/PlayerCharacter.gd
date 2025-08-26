@@ -11,6 +11,11 @@ var input_prefix: String
 func _ready():
 	super._ready()
 	
+	# Use player_number from BaseCharacter (set by FightScene) instead of player_id
+	# This ensures proper input mapping when created dynamically
+	if player_number > 0:
+		player_id = player_number
+	
 	# If we don't have character data assigned in the editor, create a default one with player colors
 	if not character_data:
 		character_data = CharacterData.new()
@@ -28,6 +33,7 @@ func _ready():
 	
 	# Set up input prefix based on player ID
 	input_prefix = "p" + str(player_id) + "_"
+	print("PlayerCharacter: Player ", player_id, " using input prefix: ", input_prefix)
 
 func _physics_process(delta):
 	# Handle player input
@@ -42,10 +48,19 @@ func handle_input():
 	if fight_scene and fight_scene.intro_sequence_active:
 		return
 	
-	# Skip input handling if defeated, victorious, or during attacks
-	var current_state_name = state_machine.get_current_state_name()
-	if current_state_name in ["Defeat", "Victory", "LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack", "Hit"]:
+	# NEW: Skip input if block stunned
+	if get("is_block_stunned") == true:
 		return
+	
+	# Skip input handling if defeated, victorious, or during hit
+	var current_state_name = state_machine.get_current_state_name()
+	if current_state_name in ["Defeat", "Victory", "Hit"]:
+		return
+	
+	# ATTACK PRIORITY SYSTEM - Prevent interruption of ongoing attacks
+	# If currently attacking, BLOCK ALL INPUT to prevent interruption
+	if current_state_name in ["LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack"]:
+		return  # No input processing during attacks - first attacker has priority
 	
 	# Attacks (check these FIRST to stop movement)
 	if Input.is_action_just_pressed(input_prefix + "light"):

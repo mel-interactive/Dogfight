@@ -1,10 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://dcr48etfhif0q"]
+[gd_scene load_steps=13 format=3 uid="uid://dcr48etfhif0q"]
 
 [ext_resource type="Script" uid="uid://bpa2wcad3impo" path="res://Scripts/character_select_screen.gd" id="1_g8xl4"]
 [ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="2_3nlio"]
 [ext_resource type="Texture2D" uid="uid://crdnxm3c7f31" path="res://Assets/Menus/charaselectbg.png" id="2_7qt8n"]
+[ext_resource type="AudioStream" uid="uid://dqj7e06tg1yet" path="res://Assets/Sound/hover.mp3" id="2_51856"]
 [ext_resource type="StyleBox" uid="uid://cbmjaagebbypn" path="res://Assets/Menus/hoverbox.tres" id="3_5j2ph"]
+[ext_resource type="AudioStream" uid="uid://ws3ipytjd74q" path="res://Assets/Sound/select.mp3" id="3_kp4oj"]
 [ext_resource type="StyleBox" uid="uid://bfw74w8a6nn2f" path="res://Assets/Menus/stylebox.tres" id="3_xv7hb"]
+[ext_resource type="AudioStream" uid="uid://bxc7ygkk3h2pb" path="res://Assets/Sound/12-afro-bars-loop-383693.mp3" id="4_581ws"]
+[ext_resource type="Texture2D" uid="uid://ddlqhkh3fnirm" path="res://Assets/Menus/steam deck charselect.png" id="9_kp4oj"]
 
 [sub_resource type="Animation" id="Animation_5j2ph"]
 length = 0.001
@@ -45,6 +49,10 @@ _data = {
 
 [node name="CharacterSelectScreen" type="Node2D"]
 script = ExtResource("1_g8xl4")
+navigation_audio = ExtResource("2_51856")
+select_audio = ExtResource("3_kp4oj")
+ready_audio = ExtResource("3_kp4oj")
+background_music = ExtResource("4_581ws")
 
 [node name="Background" type="TextureRect" parent="."]
 offset_left = 2.0
@@ -55,10 +63,10 @@ texture = ExtResource("2_7qt8n")
 metadata/_edit_use_anchors_ = true
 
 [node name="TitleLabel" type="Label" parent="."]
-offset_left = 340.0
-offset_top = 40.0
-offset_right = 1082.0
-offset_bottom = 147.0
+offset_left = 331.0
+offset_top = 52.0
+offset_right = 1073.0
+offset_bottom = 159.0
 theme_override_fonts/font = ExtResource("2_3nlio")
 theme_override_font_sizes/font_size = 60
 text = "SELECT YOUR FIGHTER"
@@ -86,9 +94,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -61.5
+offset_left = -36.0
 offset_top = 98.0
-offset_right = 98.5
+offset_right = 124.0
 offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -112,6 +120,15 @@ theme_override_constants/v_separation = 50
 columns = 3
 metadata/_edit_use_anchors_ = true
 
+[node name="TextureRect" type="TextureRect" parent="Player1Side"]
+layout_mode = 0
+offset_left = 496.0
+offset_top = 447.0
+offset_right = 703.0
+offset_bottom = 631.0
+texture = ExtResource("9_kp4oj")
+expand_mode = 2
+
 [node name="Player2Side" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -128,9 +145,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -76.0
+offset_left = -86.0
 offset_top = 98.0
-offset_right = 84.0
+offset_right = 74.0
 offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -158,7 +175,7 @@ metadata/_edit_use_anchors_ = true
 offset_left = 686.54
 offset_top = 148.0
 offset_right = 708.54
-offset_bottom = 649.0
+offset_bottom = 532.015
 metadata/_edit_use_anchors_ = true
 
 [node name="AudioPlayers" type="Node" parent="."]
@@ -166,9 +183,15 @@ metadata/_edit_use_anchors_ = true
 [node name="NavigationSound" type="AudioStreamPlayer" parent="AudioPlayers"]
 
 [node name="SelectSound" type="AudioStreamPlayer" parent="AudioPlayers"]
+volume_db = 1.926
+pitch_scale = 0.72
 
 [node name="ReadySound" type="AudioStreamPlayer" parent="AudioPlayers"]
 
 [node name="StartSound" type="AudioStreamPlayer" parent="AudioPlayers"]
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
+stream = ExtResource("4_581ws")
+volume_db = -16.18
+autoplay = true
+parameters/looping = true

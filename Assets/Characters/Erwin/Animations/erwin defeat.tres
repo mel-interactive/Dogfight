@@ -1,9 +1,98 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://b054y2m3dlkr5"]
+[gd_resource type="SpriteFrames" load_steps=23 format=3 uid="uid://b054y2m3dlkr5"]
+
+[ext_resource type="Texture2D" uid="uid://bo57voe3q57m3" path="res://Assets/Characters/Erwin/Defeat/frame_00_delay-0.14s.png" id="1_7fqs2"]
+[ext_resource type="Texture2D" uid="uid://dt0r6jvpturaq" path="res://Assets/Characters/Erwin/Defeat/frame_01_delay-0.15s.png" id="2_3p3ir"]
+[ext_resource type="Texture2D" uid="uid://fefqh4y4t6s6" path="res://Assets/Characters/Erwin/Defeat/frame_02_delay-0.14s.png" id="3_ed678"]
+[ext_resource type="Texture2D" uid="uid://ueg7k6uaon8a" path="res://Assets/Characters/Erwin/Defeat/frame_03_delay-0.14s.png" id="4_qb6q0"]
+[ext_resource type="Texture2D" uid="uid://bj2d7d38dfk12" path="res://Assets/Characters/Erwin/Defeat/frame_04_delay-0.14s.png" id="5_f7jac"]
+[ext_resource type="Texture2D" uid="uid://c7bwfthyef5h" path="res://Assets/Characters/Erwin/Defeat/frame_05_delay-0.15s.png" id="6_v4h01"]
+[ext_resource type="Texture2D" uid="uid://b1dj6mfna150h" path="res://Assets/Characters/Erwin/Defeat/frame_06_delay-0.14s.png" id="7_arifa"]
+[ext_resource type="Texture2D" uid="uid://cx4dhitfy7j22" path="res://Assets/Characters/Erwin/Defeat/frame_07_delay-0.14s.png" id="8_wal7l"]
+[ext_resource type="Texture2D" uid="uid://bfdljajpuqltp" path="res://Assets/Characters/Erwin/Defeat/frame_08_delay-0.15s.png" id="9_3j046"]
+[ext_resource type="Texture2D" uid="uid://dukngdkpas6fj" path="res://Assets/Characters/Erwin/Defeat/frame_09_delay-0.14s.png" id="10_23ult"]
+[ext_resource type="Texture2D" uid="uid://btvih02tf7xjn" path="res://Assets/Characters/Erwin/Defeat/frame_10_delay-0.14s.png" id="11_ci07g"]
+[ext_resource type="Texture2D" uid="uid://dpbv7ircbqcwf" path="res://Assets/Characters/Erwin/Defeat/frame_11_delay-0.14s.png" id="12_fl003"]
+[ext_resource type="Texture2D" uid="uid://brxfn03vye7y4" path="res://Assets/Characters/Erwin/Defeat/frame_12_delay-0.15s.png" id="13_16hsw"]
+[ext_resource type="Texture2D" uid="uid://cd6hqc6gy4to6" path="res://Assets/Characters/Erwin/Defeat/frame_13_delay-0.14s.png" id="14_d2aon"]
+[ext_resource type="Texture2D" uid="uid://dt5qyr0e8gddp" path="res://Assets/Characters/Erwin/Defeat/frame_14_delay-0.14s.png" id="15_sktit"]
+[ext_resource type="Texture2D" uid="uid://iu61nk6o4on5" path="res://Assets/Characters/Erwin/Defeat/frame_15_delay-0.15s.png" id="16_x7oaj"]
+[ext_resource type="Texture2D" uid="uid://b5wcb4r8fjyxh" path="res://Assets/Characters/Erwin/Defeat/frame_16_delay-0.14s.png" id="17_vh02k"]
+[ext_resource type="Texture2D" uid="uid://dei07motlk3ud" path="res://Assets/Characters/Erwin/Defeat/frame_17_delay-0.14s.png" id="18_bcptf"]
+[ext_resource type="Texture2D" uid="uid://t0yyojecq6el" path="res://Assets/Characters/Erwin/Defeat/frame_18_delay-0.14s.png" id="19_sq6dd"]
+[ext_resource type="Texture2D" uid="uid://b2ni2s8t76jgw" path="res://Assets/Characters/Erwin/Defeat/frame_19_delay-0.15s.png" id="20_qvjf2"]
+[ext_resource type="Texture2D" uid="uid://c0waj7fk7fudb" path="res://Assets/Characters/Erwin/Defeat/frame_20_delay-0.14s.png" id="21_igx3u"]
+[ext_resource type="Texture2D" uid="uid://dn7fe5svdkvio" path="res://Assets/Characters/Erwin/Defeat/frame_21_delay-0.14s.png" id="22_nfemh"]
 
 [resource]
 animations = [{
-"frames": [],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_7fqs2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_3p3ir")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ed678")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_qb6q0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_f7jac")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_v4h01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_arifa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_wal7l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_3j046")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_23ult")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_ci07g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_fl003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_16hsw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_d2aon")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_sktit")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_x7oaj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_vh02k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_bcptf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_sq6dd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_qvjf2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_igx3u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_nfemh")
+}],
+"loop": false,
 "name": &"erwindefeat",
 "speed": 7.0
 }]

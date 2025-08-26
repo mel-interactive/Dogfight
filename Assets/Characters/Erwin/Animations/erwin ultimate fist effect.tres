@@ -1,0 +1,70 @@
+[gd_resource type="SpriteFrames" load_steps=16 format=3 uid="uid://d1cqmuqc4dgr5"]
+
+[ext_resource type="Texture2D" uid="uid://dks8abahw583a" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_00_delay-0.29s.png" id="1_l3y4j"]
+[ext_resource type="Texture2D" uid="uid://2cqusaiee2he" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_01_delay-0.14s.png" id="2_pi3go"]
+[ext_resource type="Texture2D" uid="uid://bvn537qkbjcgo" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_02_delay-0.14s.png" id="3_hdq76"]
+[ext_resource type="Texture2D" uid="uid://b7a21qjhf7kaa" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_03_delay-0.14s.png" id="4_pq3er"]
+[ext_resource type="Texture2D" uid="uid://bbdteef7tkxgt" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_04_delay-0.15s.png" id="5_ew3x6"]
+[ext_resource type="Texture2D" uid="uid://dgpjr5go7q5b5" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_05_delay-0.14s.png" id="6_qsegg"]
+[ext_resource type="Texture2D" uid="uid://dl1q3slmo80af" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_06_delay-0.14s.png" id="7_xxsog"]
+[ext_resource type="Texture2D" uid="uid://c88dq6ts6mdxo" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_07_delay-0.15s.png" id="8_tf4j0"]
+[ext_resource type="Texture2D" uid="uid://cienvg2uo6nn4" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_08_delay-0.14s.png" id="9_lcjaj"]
+[ext_resource type="Texture2D" uid="uid://1w0wpa4e7kea" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_09_delay-0.14s.png" id="10_l3y4j"]
+[ext_resource type="Texture2D" uid="uid://cwkuo2nw43i24" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_10_delay-0.14s.png" id="11_pi3go"]
+[ext_resource type="Texture2D" uid="uid://dq1qe5guot8ab" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_11_delay-0.15s.png" id="12_88drx"]
+[ext_resource type="Texture2D" uid="uid://ca7e2jsre7a41" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_12_delay-0.14s.png" id="13_b0ak1"]
+[ext_resource type="Texture2D" uid="uid://doqhua834foeu" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_13_delay-0.14s.png" id="14_tf4j0"]
+[ext_resource type="Texture2D" uid="uid://bndqdp8ovf7tx" path="res://Assets/Characters/Erwin/Ultimate Fist Effect/frame_14_delay-0.15s.png" id="15_2rjah"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_l3y4j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pi3go")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hdq76")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pq3er")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ew3x6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_qsegg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_xxsog")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_tf4j0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lcjaj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_l3y4j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_pi3go")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_88drx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_b0ak1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_tf4j0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_2rjah")
+}],
+"loop": false,
+"name": &"erwin ultimate fist ",
+"speed": 7.0
+}]

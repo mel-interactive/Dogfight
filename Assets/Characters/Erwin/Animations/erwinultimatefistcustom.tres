@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CustomAnimation" load_steps=3 format=3 uid="uid://db5gkq8ufa1et"]
+
+[ext_resource type="SpriteFrames" uid="uid://d1cqmuqc4dgr5" path="res://Assets/Characters/Erwin/Animations/erwin ultimate fist effect.tres" id="1_6s3b6"]
+[ext_resource type="Script" uid="uid://cc281o2i4b35n" path="res://Scripts/CustomAnimation.gd" id="2_guisb"]
+
+[resource]
+script = ExtResource("2_guisb")
+animation_frames = ExtResource("1_6s3b6")
+bound_to = "ultimate_attack"
+flip_with_player = true
+anchored_to_player = true
+scale = Vector2(1, 1)
+position_offset = Vector2(-520, -150)
+metadata/_custom_type_script = "uid://cc281o2i4b35n"

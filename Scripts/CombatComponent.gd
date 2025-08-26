@@ -65,16 +65,18 @@ func apply_attack_hit():
 				EventBus.emit_signal("attack_hit", character, character.opponent, damage, attack_type)
 		else:
 			print("CombatComponent: Processing normal attack")
-			# Normal attacks check for blocking
+			# Normal attacks check for blocking and apply damage
 			var is_blocked = character.opponent.is_blocking()
+			
+			# Apply damage regardless of blocking (blocking just reduces it)
+			var damage_taken = character.opponent.take_damage(damage, false)
+			
 			if is_blocked:
-				# Play block sound and shake
-				character.opponent.play_sound(character.opponent.character_data.block_sound)
-				character.opponent.visual_component.do_simple_shake()
+				# NEW: Apply block stun to attacker
+				apply_block_stun()
 				EventBus.emit_signal("attack_blocked", character, character.opponent, attack_type)
 			else:
-				# Full damage - no special reactions for normal attacks
-				var damage_taken = character.opponent.take_damage(damage, false)
+				# Only register hit if not blocked
 				if damage_taken:
 					register_hit()
 					EventBus.emit_signal("attack_hit", character, character.opponent, damage, attack_type)
@@ -167,6 +169,7 @@ func take_damage(damage_amount: int, ignore_block: bool) -> bool:
 		else:
 			# For special/ultimate attacks, the reaction system handles the hit animation
 			# We don't need to go to Hit state because the reaction replaces it
+			# NO PITCH VARIATION for specials/ultimates - keep their dramatic impact
 			character.play_sound(character.character_data.hit_sound)
 			# NO WHITE FLASH for ignore_block attacks (specials/ultimates)
 		
@@ -181,8 +184,16 @@ func take_damage(damage_amount: int, ignore_block: bool) -> bool:
 		character.play_sound(character.character_data.block_sound)
 		# WHITE FLASH only happens when blocking
 		character.visual_component.do_simple_shake()
+		
+		# COMBO BREAKER: Successful block ends opponent's combo
+		if character.opponent:
+			character.opponent.combo_count = 0
+			character.opponent.combo_timer = 0.0
+			character.opponent.emit_signal("combo_changed", character.opponent.combo_count)
+			EventBus.emit_signal("combo_changed", character.opponent, character.opponent.combo_count)
+			print("Combo broken by successful block!")
 	else:
-		character.play_sound(character.character_data.hit_sound)
+		play_hit_sound_with_pitch_variation()
 		# NO WHITE FLASH for normal hits
 	
 	character.current_health -= damage_amount
@@ -194,10 +205,83 @@ func take_damage(damage_amount: int, ignore_block: bool) -> bool:
 	if character.current_health <= 0:
 		character.state_machine.change_state("Defeat")
 	elif not blocked:
-		character.state_machine.change_state("Hit")
+		# ATTACK PRIORITY: Don't interrupt if character is currently attacking
+		var current_state = character.state_machine.get_current_state_name()
+		if current_state not in ["LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack"]:
+			# Only go to Hit state if not currently attacking
+			character.state_machine.change_state("Hit")
+		# If they ARE attacking, they continue their attack (attack priority)
 		# NO WHITE FLASH here either
 	
 	return not blocked
+
+# NEW: Apply brief stun to attacker when they hit a blocking opponent
+func apply_block_stun():
+	print("CombatComponent: Applying block stun to attacker")
+	
+	# Longer freeze - prevent input for more time
+	var stun_duration = 1.0  # 400ms stun (about 24 frames at 60fps)
+	
+	# Create a timer to handle the stun
+	var stun_timer = Timer.new()
+	character.add_child(stun_timer)
+	stun_timer.wait_time = stun_duration
+	stun_timer.one_shot = true
+	
+	# Set a flag on the character to indicate they're stunned
+	character.set("is_block_stunned", true)
+	
+	# Stronger knockback - push attacker away
+	character.velocity.x = 0  # Stop current movement
+	var knockback_force = -150.0 if character.player_number == 1 else 150.0
+	
+	# Apply knockback using a tween for smooth motion
+	var tween = create_tween()
+	var knockback_distance = -30.0 if character.player_number == 1 else 30.0
+	var start_pos = character.global_position.x
+	var target_pos = start_pos + knockback_distance
+	
+	# Knockback animation (quick push back, then gradual stop)
+	tween.tween_method(func(pos_x): character.global_position.x = pos_x, start_pos, target_pos, 0.2)
+	tween.tween_callback(func(): character.velocity.x = 0)  # Stop any residual movement
+	
+	# End stun after timer expires
+	stun_timer.timeout.connect(func():
+		if character.has_method("set") and character.get("is_block_stunned"):
+			character.set("is_block_stunned", false)
+		character.velocity.x = 0  # Ensure stopped
+		stun_timer.queue_free()
+		print("CombatComponent: Block stun ended")
+	)
+	
+	stun_timer.start()
+
+# NEW: Play hit sound with random pitch variation
+func play_hit_sound_with_pitch_variation():
+	if not character.character_data.hit_sound or not character.audio_player:
+		return
+	
+	# Random pitch variation between 0.8 and 1.2 (±20%)
+	var pitch_variation = randf_range(0.8, 1.2)
+	
+	# Set the pitch
+	character.audio_player.pitch_scale = pitch_variation
+	
+	# Play the sound
+	character.play_sound(character.character_data.hit_sound)
+	
+	# Reset pitch back to normal after playing (optional, but good practice)
+	# We'll reset it after a short delay to avoid cutting off the current sound
+	var timer = Timer.new()
+	character.add_child(timer)
+	timer.wait_time = 0.1
+	timer.one_shot = true
+	timer.timeout.connect(func(): 
+		if character.audio_player:
+			character.audio_player.pitch_scale = 1.0
+		timer.queue_free()
+	)
+	timer.start()
 
 func register_hit():
 	character.combo_count += 1

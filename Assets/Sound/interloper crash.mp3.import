@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d0iau0o7ye15y"
+path="res://.godot/imported/interloper crash.mp3-4ed35b55e432fe1cfce624d12c2d5027.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sound/interloper crash.mp3"
+dest_files=["res://.godot/imported/interloper crash.mp3-4ed35b55e432fe1cfce624d12c2d5027.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

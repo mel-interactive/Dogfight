@@ -14,6 +14,9 @@ var is_hovered = false
 var is_selected = false
 var just_deselected = false  # Track if we just deselected to prevent hover override
 
+# NEW: Unavailable state for mirror picking prevention
+var is_unavailable = false
+var original_portrait_modulate: Color = Color.WHITE
 
 func _ready():
 	# Ensure we have a consistent size from the start
@@ -30,6 +33,23 @@ func _ready():
 	
 	if animation_player and animation_player.has_animation("idle"):
 		animation_player.play("idle")
+
+# NEW: Set unavailable state (for mirror picking prevention)
+func set_unavailable(unavailable: bool):
+	is_unavailable = unavailable
+	
+	if portrait_sprite:
+		if unavailable:
+			# Store original modulate if not already stored
+			if original_portrait_modulate == Color.WHITE:
+				original_portrait_modulate = portrait_sprite.modulate
+			# Dim just the portrait sprite to 50% opacity
+			portrait_sprite.modulate = Color(1.0, 1.0, 1.0, 0.5)
+			print("Dimming portrait sprite for: ", character_data.character_name if character_data else "unknown")
+		else:
+			# Restore original portrait appearance
+			portrait_sprite.modulate = original_portrait_modulate
+			print("Undimming portrait sprite for: ", character_data.character_name if character_data else "unknown")
 
 func setup_portrait_sprite():
 	# Check if we already have a portrait sprite
@@ -253,6 +273,10 @@ func play_portrait_animation(anim_name: String, reverse: bool = false):
 		call_deferred("update_portrait_scale")
 
 func set_hovered(hovered: bool):
+	# NEW: Don't allow hovering on unavailable characters
+	if is_unavailable and hovered:
+		return
+	
 	# Check just_deselected BEFORE clearing it
 	var should_skip_ui_hover = just_deselected
 	
@@ -294,6 +318,10 @@ func set_hovered(hovered: bool):
 			animation_player.play_backwards("hover")
 
 func set_selected(selected: bool):
+	# NEW: Don't allow selecting unavailable characters
+	if is_unavailable and selected:
+		return
+	
 	is_selected = selected
 	
 	if selected:

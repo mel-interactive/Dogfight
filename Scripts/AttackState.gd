@@ -1,4 +1,3 @@
-
 # AttackState.gd
 extends State
 class_name AttackState
@@ -24,7 +23,8 @@ func enter():
 		state_machine.change_state("Idle")
 		return
 	
-	character.play_sound(get_attack_sound())
+	# Play attack sound with pitch variation for light and heavy attacks
+	play_attack_sound_with_pitch()
 	
 	var attack_area = character.get_node("AttackArea")
 	attack_area.monitoring = true
@@ -41,7 +41,6 @@ func update(delta):
 		apply_attack_hit()
 		attack_hit_applied = true
 		print("Applied hit for attack: ", attack_type)
-	
 
 func _on_animation_finished(animation_name: String):
 	# Check if this is our attack animation
@@ -57,6 +56,36 @@ func exit():
 	
 	var attack_area = character.get_node("AttackArea")
 	attack_area.monitoring = false
+
+# NEW: Play attack sound with pitch variation for light/heavy attacks
+func play_attack_sound_with_pitch():
+	var attack_sound = get_attack_sound()
+	if not attack_sound or not character.audio_player:
+		return
+	
+	# Add pitch variation only for light and heavy attacks
+	if attack_type == "light" or attack_type == "heavy":
+		# Random pitch variation between 0.9 and 1.1 (±10% for attack sounds)
+		var pitch_variation = randf_range(0.9, 1.1)
+		character.audio_player.pitch_scale = pitch_variation
+		
+		# Play the sound
+		character.play_sound(attack_sound)
+		
+		# Reset pitch back to normal after playing
+		var timer = Timer.new()
+		character.add_child(timer)
+		timer.wait_time = 0.1
+		timer.one_shot = true
+		timer.timeout.connect(func(): 
+			if character.audio_player:
+				character.audio_player.pitch_scale = 1.0
+			timer.queue_free()
+		)
+		timer.start()
+	else:
+		# No pitch variation for specials, ultimates, or other attack types
+		character.play_sound(attack_sound)
 
 func get_animation_name() -> String:
 	return ""  # Override in subclasses

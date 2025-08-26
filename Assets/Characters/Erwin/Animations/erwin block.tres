@@ -22,5 +22,5 @@ animations = [{
 }],
 "loop": false,
 "name": &"erwin block",
-"speed": 7.0
+"speed": 30.0
 }]

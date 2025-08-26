@@ -1,7 +1,10 @@
-[gd_scene load_steps=64 format=3 uid="uid://dwhncf7xhe0tc"]
+[gd_scene load_steps=90 format=3 uid="uid://dwhncf7xhe0tc"]
 
 [ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
 [ext_resource type="AudioStream" uid="uid://cn0njbhvj5tga" path="res://Assets/Announcer/Intro line/onlyonedogswalking.mp3" id="2_5n8pe"]
+[ext_resource type="AudioStream" uid="uid://ds286xq3p5hys" path="res://Assets/Sound/combo cute ping.mp3" id="2_5nfax"]
+[ext_resource type="AudioStream" uid="uid://dio1bx4csof8p" path="res://Assets/Sound/fight music.mp3" id="2_71oq3"]
+[ext_resource type="AudioStream" uid="uid://bxc2fylgeo7ny" path="res://Assets/Sound/crowd-cheering-383111.mp3" id="2_h3kue"]
 [ext_resource type="Texture2D" uid="uid://cj3ony6iwrux2" path="res://Assets/Backgrounds/Computer table/frame_00_delay-0.1s.png" id="2_vjorg"]
 [ext_resource type="AudioStream" uid="uid://cjxhh01yjout3" path="res://Assets/Announcer/Intro line/thereseemstobeanopinion.mp3" id="3_1ar86"]
 [ext_resource type="Texture2D" uid="uid://cqbl22kxglxaa" path="res://Assets/Backgrounds/Computer table/frame_01_delay-0.1s.png" id="3_nq1sn"]
@@ -12,7 +15,9 @@
 [ext_resource type="Texture2D" uid="uid://dtsxwndwwwnhc" path="res://Assets/Backgrounds/Computer table/frame_04_delay-0.1s.png" id="6_5n8pe"]
 [ext_resource type="Texture2D" uid="uid://bma43hb4m861k" path="res://Assets/Backgrounds/Computer table/frame_05_delay-0.1s.png" id="7_1ar86"]
 [ext_resource type="Texture2D" uid="uid://c6vd2humxstxu" path="res://Assets/Backgrounds/Computer table/frame_06_delay-0.1s.png" id="8_lsme7"]
+[ext_resource type="AudioStream" uid="uid://cyuv0dten0c6j" path="res://Assets/Announcer/Low HP character/someonesintrouble.mp3" id="9_cryrl"]
 [ext_resource type="Texture2D" uid="uid://jrorqbuymotv" path="res://Assets/Backgrounds/Computer table/frame_07_delay-0.1s.png" id="9_qiae4"]
+[ext_resource type="AudioStream" uid="uid://dxlm7mxclueey" path="res://Assets/Announcer/Low HP character/afightersontheirlastlegs.mp3" id="10_j0noi"]
 [ext_resource type="Texture2D" uid="uid://2k231l2rlhok" path="res://Assets/Backgrounds/Computer table/frame_08_delay-0.1s.png" id="10_xsuk8"]
 [ext_resource type="Texture2D" uid="uid://boxpha0cqttgq" path="res://Assets/Backgrounds/Computer table/frame_09_delay-0.1s.png" id="11_42uwl"]
 [ext_resource type="Texture2D" uid="uid://btjtry1hbd85q" path="res://Assets/Backgrounds/Computer table/frame_10_delay-0.1s.png" id="12_71oq3"]
@@ -61,7 +66,22 @@
 [ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="58_xsuk8"]
 [ext_resource type="Texture2D" uid="uid://dh8xgju4xnfqb" path="res://Assets/Menus/boxdecor.png" id="59_42uwl"]
 [ext_resource type="StyleBox" uid="uid://cbmjaagebbypn" path="res://Assets/Menus/hoverbox.tres" id="60_71oq3"]
+[ext_resource type="Texture2D" uid="uid://6m0lmexds66v" path="res://Assets/Menus/health bar filled.png" id="60_muw03"]
+[ext_resource type="Texture2D" uid="uid://dmm2ca2tutygf" path="res://Assets/Menus/special bar unfilled.png" id="61_ml8ds"]
 [ext_resource type="StyleBox" uid="uid://bfw74w8a6nn2f" path="res://Assets/Menus/stylebox.tres" id="61_yp32m"]
+[ext_resource type="Texture2D" uid="uid://cgnmfy6sdxnrw" path="res://Assets/Menus/special bar filled.png" id="62_5nfax"]
+[ext_resource type="Texture2D" uid="uid://dxagldfgq7jq3" path="res://Assets/Menus/ultimate bar unfilled.png" id="63_h3kue"]
+[ext_resource type="Texture2D" uid="uid://c2sde3n43fc1h" path="res://Assets/Menus/ultimate bar filled.png" id="64_s3c71"]
+[ext_resource type="Texture2D" uid="uid://bpx4wcgvduh1n" path="res://Assets/Menus/health bar unfilled.png" id="66_ml8ds"]
+[ext_resource type="Texture2D" uid="uid://nclwirrwpv1e" path="res://Assets/Menus/health bar unfilled flip.png" id="69_cryrl"]
+[ext_resource type="Texture2D" uid="uid://batmt6qj06tn7" path="res://Assets/Menus/health bar filled flip.png" id="70_j0noi"]
+[ext_resource type="Texture2D" uid="uid://brr23ubln8id" path="res://Assets/Menus/special bar unfilled flip.png" id="71_o6rih"]
+[ext_resource type="Texture2D" uid="uid://b1ay81es0t8lr" path="res://Assets/Menus/special bar filled flip.png" id="72_mlhlf"]
+[ext_resource type="Texture2D" uid="uid://0mir470j768w" path="res://Assets/Menus/ultimate bar unfilled flip.png" id="73_1vhex"]
+[ext_resource type="Texture2D" uid="uid://xxuq8vs5h6no" path="res://Assets/Menus/ultimate bar filled flip.png" id="74_whai0"]
+[ext_resource type="Texture2D" uid="uid://c2l72g3m7tvof" path="res://Assets/Menus/B.png" id="80_mlhlf"]
+[ext_resource type="Texture2D" uid="uid://cvdk65n753s60" path="res://Assets/Menus/A.png" id="81_1vhex"]
+[ext_resource type="Texture2D" uid="uid://j8dafsydgwtd" path="res://Assets/Menus/steam deck controls.png" id="82_mlhlf"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tys6i"]
 animations = [{
@@ -227,10 +247,88 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="Animation" id="Animation_h3kue"]
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 3.36),
+"update": 0,
+"values": [Vector2(190, 170), Vector2(190, 200)]
+}
+
+[sub_resource type="Animation" id="Animation_5nfax"]
+resource_name = "idle"
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 3.36358),
+"update": 0,
+"values": [Vector2(923, 170), Vector2(923, 200)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_s3c71"]
+_data = {
+&"RESET": SubResource("Animation_h3kue"),
+&"idle": SubResource("Animation_5nfax")
+}
+
+[sub_resource type="Animation" id="Animation_s3c71"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(923, 170)]
+}
+
+[sub_resource type="Animation" id="Animation_ml8ds"]
+resource_name = "idle"
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 3.36),
+"update": 0,
+"values": [Vector2(250, 200), Vector2(250, 170)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cryrl"]
+_data = {
+&"RESET": SubResource("Animation_s3c71"),
+&"idle": SubResource("Animation_ml8ds")
+}
+
 [node name="FightScene" type="Node2D"]
 script = ExtResource("1_wqnb5")
+victory_sound = ExtResource("2_h3kue")
+combo_sounds = Array[AudioStream]([ExtResource("2_5nfax")])
+fight_music = ExtResource("2_71oq3")
 intro_lines = Array[AudioStream]([ExtResource("2_5n8pe"), ExtResource("3_1ar86"), ExtResource("4_lsme7")])
 fight_start_sound = ExtResource("5_qiae4")
+low_health_announcer_sounds = Array[AudioStream]([ExtResource("9_cryrl"), ExtResource("10_j0noi")])
 
 [node name="Background" type="AnimatedSprite2D" parent="."]
 position = Vector2(683, 384)
@@ -249,65 +347,120 @@ position = Vector2(1150, 725)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Player1HealthBar" type="ProgressBar" parent="UI"]
-offset_left = 50.0
-offset_top = 50.0
-offset_right = 450.0
-offset_bottom = 80.0
-show_percentage = false
+[node name="Player1HealthBar" type="TextureProgressBar" parent="UI"]
+self_modulate = Color(1, 1, 1, 0.768627)
+offset_left = 84.0
+offset_top = -20.0
+offset_right = 3751.0
+offset_bottom = 2380.0
+scale = Vector2(0.13, 0.13)
+texture_under = ExtResource("69_cryrl")
+texture_progress = ExtResource("70_j0noi")
+texture_progress_offset = Vector2(130, 0)
 
-[node name="Player1SpecialMeter" type="ProgressBar" parent="UI"]
-offset_left = 50.0
-offset_top = 90.0
-offset_right = 350.0
-offset_bottom = 117.0
-show_percentage = false
+[node name="Player1SpecialMeter" type="TextureProgressBar" parent="UI"]
+self_modulate = Color(1, 1, 1, 0.768627)
+offset_left = 89.0
+offset_top = -24.0
+offset_right = 3150.0
+offset_bottom = 2376.0
+scale = Vector2(0.13, 0.13)
+stretch_margin_left = 200
+stretch_margin_right = 200
+texture_under = ExtResource("71_o6rih")
+texture_progress = ExtResource("72_mlhlf")
+texture_progress_offset = Vector2(-10, 0)
 
-[node name="Player1UltimateMeter" type="ProgressBar" parent="UI"]
-offset_left = 50.0
-offset_top = 125.0
-offset_right = 350.0
-offset_bottom = 152.0
-show_percentage = false
+[node name="Player1UltimateMeter" type="TextureProgressBar" parent="UI"]
+self_modulate = Color(1, 1, 1, 0.768627)
+offset_left = 81.0
+offset_top = -27.0
+offset_right = 2150.0
+offset_bottom = 2373.0
+rotation = 0.0174533
+scale = Vector2(0.13, 0.13)
+stretch_margin_left = 1000
+stretch_margin_right = 1000
+texture_under = ExtResource("73_1vhex")
+texture_progress = ExtResource("74_whai0")
+texture_progress_offset = Vector2(90, 0)
 
-[node name="Player2HealthBar" type="ProgressBar" parent="UI"]
-offset_left = 900.0
-offset_top = 50.0
-offset_right = 1300.0
-offset_bottom = 80.0
-show_percentage = false
+[node name="Player2HealthBar" type="TextureProgressBar" parent="UI"]
+self_modulate = Color(1, 1, 1, 0.768627)
+offset_left = 804.0
+offset_top = -18.6318
+offset_right = 5073.0
+offset_bottom = 2381.37
+scale = Vector2(0.13, 0.13)
+fill_mode = 1
+stretch_margin_left = 1250
+stretch_margin_right = 1250
+texture_under = ExtResource("66_ml8ds")
+texture_progress = ExtResource("60_muw03")
+texture_progress_offset = Vector2(130, 0)
 
-[node name="Player2SpecialMeter" type="ProgressBar" parent="UI"]
-offset_left = 1000.0
-offset_top = 90.0
-offset_right = 1300.0
-offset_bottom = 117.0
-show_percentage = false
+[node name="Player2SpecialMeter" type="TextureProgressBar" parent="UI"]
+self_modulate = Color(1, 1, 1, 0.768627)
+offset_left = 923.0
+offset_top = -23.6318
+offset_right = 3984.0
+offset_bottom = 2376.37
+scale = Vector2(0.13, 0.13)
+fill_mode = 1
+stretch_margin_left = 200
+stretch_margin_right = 200
+texture_under = ExtResource("61_ml8ds")
+texture_progress = ExtResource("62_5nfax")
+texture_progress_offset = Vector2(30, 0)
 
-[node name="Player2UltimateMeter" type="ProgressBar" parent="UI"]
-offset_left = 1000.0
-offset_top = 125.0
-offset_right = 1300.0
-offset_bottom = 152.0
-show_percentage = false
+[node name="Player2UltimateMeter" type="TextureProgressBar" parent="UI"]
+self_modulate = Color(1, 1, 1, 0.768627)
+offset_left = 1025.0
+offset_top = -21.0
+offset_right = 3113.0
+offset_bottom = 2379.0
+rotation = -0.0349066
+scale = Vector2(0.13, 0.13)
+fill_mode = 1
+texture_under = ExtResource("63_h3kue")
+texture_progress = ExtResource("64_s3c71")
+texture_progress_offset = Vector2(15, 0)
 
 [node name="Player2ComboLabel" type="Label" parent="UI"]
-offset_left = 900.0
-offset_top = 186.0
-offset_right = 1112.0
-offset_bottom = 258.0
+offset_left = 190.0
+offset_top = 170.0
+offset_right = 656.0
+offset_bottom = 255.0
+rotation = 0.0820305
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("58_xsuk8")
+theme_override_font_sizes/font_size = 30
+text = "1 hit combo!"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/Player2ComboLabel"]
+libraries = {
+&"": SubResource("AnimationLibrary_s3c71")
+}
+autoplay = "idle"
 
 [node name="Player1ComboLabel" type="Label" parent="UI"]
-offset_left = 124.0
-offset_top = 186.0
-offset_right = 336.0
-offset_bottom = 258.0
+offset_left = 923.0
+offset_top = 170.0
+offset_right = 1389.0
+offset_bottom = 255.0
+rotation = -0.0820305
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("58_xsuk8")
+theme_override_font_sizes/font_size = 30
+text = "1 hit combo!"
 
-[node name="DebugLabel" type="Label" parent="UI"]
-offset_left = 397.0
-offset_top = 25.0
-offset_right = 723.0
-offset_bottom = 103.0
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/Player1ComboLabel"]
+libraries = {
+&"": SubResource("AnimationLibrary_cryrl")
+}
+autoplay = "idle"
 
 [node name="WinnerLabel" type="Label" parent="UI"]
 offset_left = 354.0
@@ -330,10 +483,10 @@ expand_mode = 4
 
 [node name="Rematch button" type="Button" parent="UI/WinnerLabel"]
 layout_mode = 0
-offset_left = 219.0
-offset_top = 185.0
-offset_right = 459.0
-offset_bottom = 258.0
+offset_left = 217.0
+offset_top = 142.0
+offset_right = 457.0
+offset_bottom = 215.0
 theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("58_xsuk8")
 theme_override_font_sizes/font_size = 30
@@ -345,10 +498,10 @@ text = "Rematch"
 
 [node name="Character select button" type="Button" parent="UI/WinnerLabel"]
 layout_mode = 0
-offset_left = 219.0
-offset_top = 281.0
-offset_right = 459.0
-offset_bottom = 354.0
+offset_left = 217.0
+offset_top = 238.0
+offset_right = 457.0
+offset_bottom = 311.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("58_xsuk8")
@@ -359,10 +512,68 @@ theme_override_styles/pressed = ExtResource("61_yp32m")
 theme_override_styles/normal = ExtResource("61_yp32m")
 text = "Character select"
 
+[node name="Back to title button" type="Button" parent="UI/WinnerLabel"]
+layout_mode = 0
+offset_left = 217.0
+offset_top = 332.0
+offset_right = 457.0
+offset_bottom = 405.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("58_xsuk8")
+theme_override_font_sizes/font_size = 23
+theme_override_styles/disabled = ExtResource("60_71oq3")
+theme_override_styles/hover = ExtResource("60_71oq3")
+theme_override_styles/pressed = ExtResource("61_yp32m")
+theme_override_styles/normal = ExtResource("61_yp32m")
+text = "Back to title"
+
+[node name="Player1SpecialPrompt" type="TextureRect" parent="UI"]
+offset_left = 423.0
+offset_top = 87.0
+offset_right = 467.0
+offset_bottom = 131.0
+texture = ExtResource("80_mlhlf")
+expand_mode = 2
+
+[node name="Player2SpecialPrompt" type="TextureRect" parent="UI"]
+offset_left = 899.0
+offset_top = 85.0
+offset_right = 943.0
+offset_bottom = 129.0
+texture = ExtResource("80_mlhlf")
+expand_mode = 2
+
+[node name="Player1UltPrompt" type="TextureRect" parent="UI"]
+offset_left = 349.0
+offset_top = 139.0
+offset_right = 389.0
+offset_bottom = 179.0
+texture = ExtResource("81_1vhex")
+expand_mode = 2
+
+[node name="Player2UltPrompt" type="TextureRect" parent="UI"]
+offset_left = 992.0
+offset_top = 140.0
+offset_right = 1032.0
+offset_bottom = 180.0
+texture = ExtResource("81_1vhex")
+expand_mode = 2
+
 [node name="AudioPlayers" type="Node" parent="."]
 
 [node name="AnnouncerAudio" type="AudioStreamPlayer" parent="AudioPlayers"]
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
+stream = ExtResource("2_71oq3")
+volume_db = -12.711
+autoplay = true
+parameters/looping = true
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
+
+[node name="Control scheme" type="TextureRect" parent="."]
+z_index = 20
+offset_right = 1366.0
+offset_bottom = 772.0
+texture = ExtResource("82_mlhlf")

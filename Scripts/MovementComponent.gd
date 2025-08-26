@@ -62,8 +62,30 @@ func stop_moving():
 		character.state_machine.change_state("Idle")
 
 func can_move() -> bool:
-	var current_state = character.state_machine.get_current_state_name()
-	return (current_state == "Idle" or current_state == "Moving") and current_state != "Hit"
+	# MOVEMENT FREEZE: Cannot move during special/ultimate attacks (either character)
+	var my_state = character.state_machine.get_current_state_name()
+	var opponent_state = ""
+	
+	if character.opponent:
+		opponent_state = character.opponent.state_machine.get_current_state_name()
+	
+	# Check if I'm in a special/ultimate state
+	if my_state in ["SpecialAttack", "UltimateAttack"]:
+		return false
+	
+	# Check if opponent is in a special/ultimate state  
+	if opponent_state in ["SpecialAttack", "UltimateAttack"]:
+		return false
+	
+	# NEW: Check if any character is playing a reaction
+	if character.reaction_component and character.reaction_component.current_reaction:
+		return false
+	
+	if character.opponent and character.opponent.reaction_component and character.opponent.reaction_component.current_reaction:
+		return false
+	
+	# Original movement checks
+	return (my_state == "Idle" or my_state == "Moving") and my_state != "Hit"
 
 func get_movement_animation() -> String:
 	if character.movement_direction == 0:

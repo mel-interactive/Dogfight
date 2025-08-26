@@ -340,17 +340,69 @@ func ultimate_attack():
 
 func can_attack():
 	var current_state_name = state_machine.get_current_state_name()
-	return (current_state_name == "Idle" or current_state_name == "Moving") and current_state_name != "Hit"
+	if (current_state_name != "Idle" and current_state_name != "Moving") or current_state_name == "Hit":
+		return false
+	
+	# NEW: REACTION PREVENTION: Check if any character is playing a reaction
+	if reaction_component and reaction_component.current_reaction:
+		print("Cannot attack - I am playing a reaction")
+		return false
+	
+	if opponent and opponent.reaction_component and opponent.reaction_component.current_reaction:
+		print("Cannot attack - opponent is playing a reaction")
+		return false
+	
+	return true
 
 func can_block():
 	var current_state_name = state_machine.get_current_state_name()
 	return (current_state_name == "Idle" or current_state_name == "Moving") and current_state_name != "Hit"
 
 func can_use_special():
-	return special_meter >= character_data.special_meter_max and can_attack()
+	# Check if we have enough meter and can attack
+	if special_meter < character_data.special_meter_max or not can_attack():
+		return false
+	
+	# SPECIAL/ULTIMATE INTERRUPT PREVENTION: Check if opponent is already using special/ultimate
+	if opponent:
+		var opponent_state = opponent.state_machine.get_current_state_name()
+		if opponent_state in ["SpecialAttack", "UltimateAttack"]:
+			print("Cannot use special - opponent is already using ", opponent_state)
+			return false
+	
+	# NEW: REACTION PREVENTION: Check if any character is playing a reaction
+	if reaction_component and reaction_component.current_reaction:
+		print("Cannot use special - I am playing a reaction")
+		return false
+	
+	if opponent and opponent.reaction_component and opponent.reaction_component.current_reaction:
+		print("Cannot use special - opponent is playing a reaction")
+		return false
+	
+	return true
 
 func can_use_ultimate():
-	return ultimate_meter >= character_data.ultimate_meter_max and can_attack()
+	# Check if we have enough meter and can attack
+	if ultimate_meter < character_data.ultimate_meter_max or not can_attack():
+		return false
+	
+	# SPECIAL/ULTIMATE INTERRUPT PREVENTION: Check if opponent is already using special/ultimate
+	if opponent:
+		var opponent_state = opponent.state_machine.get_current_state_name()
+		if opponent_state in ["SpecialAttack", "UltimateAttack"]:
+			print("Cannot use ultimate - opponent is already using ", opponent_state)
+			return false
+	
+	# NEW: REACTION PREVENTION: Check if any character is playing a reaction
+	if reaction_component and reaction_component.current_reaction:
+		print("Cannot use ultimate - I am playing a reaction")
+		return false
+	
+	if opponent and opponent.reaction_component and opponent.reaction_component.current_reaction:
+		print("Cannot use ultimate - opponent is playing a reaction")
+		return false
+	
+	return true
 
 func is_blocking():
 	return state_machine.get_current_state_name() == "Blocking"

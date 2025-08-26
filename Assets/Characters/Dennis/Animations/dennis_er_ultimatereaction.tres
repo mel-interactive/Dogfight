@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ReactionData" load_steps=3 format=3 uid="uid://b81v1mrpw4qoh"]
+
+[ext_resource type="SpriteFrames" uid="uid://dcocn18ur7klf" path="res://Assets/Characters/Dennis/Animations/dennis er_ultreaction.tres" id="1_dax7i"]
+[ext_resource type="Script" uid="uid://bwl4qpbfsgqd1" path="res://Scripts/ReactionData.gd" id="1_npig5"]
+
+[resource]
+script = ExtResource("1_npig5")
+target_character_id = "dennis"
+attacking_character_id = "erwin"
+attack_type = "ultimate_attack"
+reaction_animation = ExtResource("1_dax7i")
+reaction_scale = Vector2(1.3, 1.3)
+reaction_offset = Vector2(0, 0)
+flip_with_player = true
+additional_animations = Array[SpriteFrames]([])
+additional_animation_scales = Array[Vector2]([])
+additional_animation_offsets = Array[Vector2]([])
+additional_animation_flips = Array[bool]([])
+duration_override = 0.0
+metadata/_custom_type_script = "uid://bwl4qpbfsgqd1"
