@@ -36,6 +36,11 @@ var player2_character: CharacterData = null
 var player1_boxes := []
 var player2_boxes := []
 
+# NEW: Debounce timers for button 8
+var player1_button8_debounce: float = 0.0
+var player2_button8_debounce: float = 0.0
+var button_debounce_duration: float = 0.3  # 300ms debounce
+
 # NEW: AI variables
 var is_pve_mode: bool = false
 var ai_selection_timer: float = 0.0
@@ -46,6 +51,10 @@ func _ready():
 	# Check if we're in PVE mode
 	var gsm = get_node_or_null("/root/GameState_Manager")
 	is_pve_mode = gsm and gsm.game_mode == "PVE"
+	
+	# Initialize debounce timers to prevent immediate button presses
+	player1_button8_debounce = button_debounce_duration
+	player2_button8_debounce = button_debounce_duration
 	
 	setup_audio()
 	load_characters()
@@ -78,6 +87,12 @@ func _ready():
 	player1_ready_button.text = "SELECT FIRST"
 
 func _process(delta):
+	# Update debounce timers
+	if player1_button8_debounce > 0:
+		player1_button8_debounce -= delta
+	if player2_button8_debounce > 0:
+		player2_button8_debounce -= delta
+	
 	handle_input(1)
 	
 	if not is_pve_mode:
@@ -202,8 +217,14 @@ func setup_character_grid(grid: Control, player_id: int):
 		player1_boxes = boxes
 	else:
 		player2_boxes = boxes
+
 func handle_input(player_id: int):
 	if (player_id == 1 and player1_ready) or (player_id == 2 and player2_ready):
+		return
+	
+	# Check debounce timer for this player
+	var debounce_timer = player1_button8_debounce if player_id == 1 else player2_button8_debounce
+	if debounce_timer > 0:
 		return
 
 	var prefix = "p%d_" % player_id
@@ -223,6 +244,11 @@ func handle_input(player_id: int):
 		# Arcade button 8: Unselect character
 		if Input.is_joy_button_pressed(device_id, 8):
 			unselect_character(player_id)
+			# Reset debounce timer after unselecting
+			if player_id == 1:
+				player1_button8_debounce = button_debounce_duration
+			else:
+				player2_button8_debounce = button_debounce_duration
 		# Arcade button 9: Ready up (Start button)
 		elif Input.is_joy_button_pressed(device_id, 9):
 			if player_id == 1:
@@ -247,6 +273,11 @@ func handle_input(player_id: int):
 		# Only allow selection if character is available
 		if is_character_available_for_player(player_id, current):
 			select_character(player_id, current)
+			# Reset debounce timer after selecting
+			if player_id == 1:
+				player1_button8_debounce = button_debounce_duration
+			else:
+				player2_button8_debounce = button_debounce_duration
 
 	if new_index != current:
 		if player_id == 1:

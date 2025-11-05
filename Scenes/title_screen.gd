@@ -12,6 +12,10 @@ var current_button_index := 0
 var buttons := []
 var original_scales := {}
 
+# NEW: Debounce timer for button 8
+var button8_debounce: float = 0.0
+var button_debounce_duration: float = 0.3  # 300ms debounce
+
 # Background character animation system
 var available_characters: Array = []
 var background_characters: Array[AnimatedSprite2D] = []
@@ -56,10 +60,26 @@ func _input(event):
 		navigate_down()
 	elif Input.is_action_just_pressed("dpad_up") or Input.is_action_just_pressed("p1_light") or Input.is_action_just_pressed("p2_light"):
 		navigate_up()
-	# ARCADE BUTTON 8 - Confirms selection
-	elif Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate") or \
-		 Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8):
+	# ARCADE BUTTON 8 - Confirms selection (with debounce)
+	elif button8_debounce <= 0 and (Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate") or \
+		 Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8)):
 		press_current_button()
+		button8_debounce = button_debounce_duration  # Set debounce after press
+
+func _process(delta):
+	# Update debounce timer
+	if button8_debounce > 0:
+		button8_debounce -= delta
+	
+	spawn_timer += delta
+	
+	# Spawn new background characters periodically
+	if spawn_timer >= spawn_interval:
+		spawn_timer = 0.0
+		spawn_background_character()
+	
+	# Clean up characters that have walked off screen
+	cleanup_offscreen_characters()
 
 func navigate_down():
 	if current_button_index < buttons.size() - 1:
@@ -100,17 +120,6 @@ func update_button_selection():
 				pvp_button.modulate = Color.WHITE
 			elif i == 0:
 				pve_button.modulate = Color.WHITE
-
-func _process(delta):
-	spawn_timer += delta
-	
-	# Spawn new background characters periodically
-	if spawn_timer >= spawn_interval:
-		spawn_timer = 0.0
-		spawn_background_character()
-	
-	# Clean up characters that have walked off screen
-	cleanup_offscreen_characters()
 
 func load_characters_for_background():
 	var manager = get_node_or_null("/root/Character_Manager")
