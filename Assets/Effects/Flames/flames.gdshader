@@ -20,6 +20,7 @@
 4. Use 'flameCount' to control how many flames appear (more = bigger fire).
 5. Adjust 'flameSpacing' to control overlap (smaller = more overlap/bigger fire).
 6. Use 'arcCurvature' to arrange flames in an upside-down arc (0 = straight line).
+7. Enable 'enableOutline' and adjust 'outlineThickness' for a cartoony outlined look.
 */
 shader_type canvas_item;
 
@@ -94,6 +95,21 @@ uniform float flameVariation : hint_range(0.0, 1.0) = 0.3;
 uniform float flameTimeOffset : hint_range(0.0, 5.0) = 1.0;
 // Arc curvature (0 = straight line, positive = upside-down arc)
 uniform float arcCurvature : hint_range(0.0, 2.0) = 0.5;
+
+// =============================================================================
+// OUTLINE UNIFORMS
+// =============================================================================
+
+// Enable/disable the cartoon outline
+uniform bool enableOutline = true;
+// Thickness of the outline
+uniform float outlineThickness : hint_range(0.0, 0.1) = 0.01;
+// Color of the outline
+uniform vec3 outlineColor : source_color = vec3(0.0, 0.0, 0.0);
+// Outline alpha/opacity
+uniform float outlineAlpha : hint_range(0.0, 1.0) = 1.0;
+// Erosion amount - shrinks flames inward, removing soft edges
+uniform float erosion : hint_range(0.0, 0.5) = 0.5;
 
 // =============================================================================
 // ENVIRONMENT UNIFORMS
@@ -225,57 +241,37 @@ void fragment() {
     // 2. Pixelation effect
     vec2 pixelated_frag = floor(frag_coords / pixelSize) * pixelSize;
     
-    // 3. Accumulate colors from multiple flames
+    float base_time = TIME + 100.0;
+    
+    // 3. Calculate the main flame at this pixel
     vec3 total_fire_color = vec3(0.0);
     vec3 total_spark_color = vec3(0.0);
     
-    float base_time = TIME + 100.0;
-    
-    // Loop through each flame in the row
     for (float flameIdx = 0.0; flameIdx < flameCount; flameIdx++) {
-        // Generate unique seed for this flame
         float flameSeed = Hash1(flameIdx * 73.152);
-        
-        // Calculate horizontal offset for this flame
         float centerOffset = (flameIdx - (flameCount - 1.0) * 0.5) * flameSpacing;
-        
-        // Calculate arc position (upside-down semicircle)
-        // Normalize position to [-1, 1] range
         float normalizedPos = (flameIdx / (flameCount - 1.0)) * 2.0 - 1.0;
-        // Calculate Y offset using circle equation: y = -sqrt(1 - x^2)
-        // This creates the bottom half of a circle (upside-down arc)
         float arcYOffset = -sqrt(max(0.0, 1.0 - normalizedPos * normalizedPos)) * arcCurvature;
-        
-        // Add random variation to position and height
         float xVariation = flameSeed * flameVariation;
         float yVariation = Hash1(flameIdx * 91.234) * flameVariation * 0.3;
         
-        // Calculate this flame's coordinate space
         vec2 flame_coords = pixelated_frag;
         flame_coords.x -= centerOffset + xVariation;
-        flame_coords.y -= yVariation + arcYOffset; // Apply arc offset
+        flame_coords.y -= yVariation + arcYOffset;
         
-        // Give each flame a unique time offset for independent animation
         float time_variation = flameSeed * flameTimeOffset;
         float flame_time = base_time * speed + time_variation;
         
-        // Run simulations for this flame
-        vec3 flame_fire = Simulate(flame_coords, flame_time);
-        vec3 flame_sparks = SimulateSparks(flame_coords, base_time + time_variation);
-        
-        // Accumulate results (colors blend additively)
-        total_fire_color += flame_fire;
-        total_spark_color += flame_sparks;
+        total_fire_color += Simulate(flame_coords, flame_time);
+        total_spark_color += SimulateSparks(flame_coords, base_time + time_variation);
     }
     
     vec3 result_color = total_fire_color + total_spark_color;
     
     // 4. Hue & Saturation Control
     vec3 hsv = rgb_to_hsv(result_color);
-    
-    hsv.x = fract(hsv.x + hueShift); // Apply hue shift (wrap around)
-    hsv.y *= saturationFactor;       // Apply saturation factor
-    
+    hsv.x = fract(hsv.x + hueShift);
+    hsv.y *= saturationFactor;
     result_color = hsv_to_rgb(hsv);
     
     // 5. Apply Flicker
@@ -283,13 +279,73 @@ void fragment() {
     float intensity_mod = 1.0 + flicker; 
     vec3 final_color = result_color * intensity_mod;
 
-    // 6. Alpha Calculation
-    // Use the max color channel intensity to define alpha (transparency)
+    // 6. Alpha Calculation with erosion
     float intensity = max(max(result_color.r, result_color.g), result_color.b);
+    float alpha_threshold = 0.01 + erosion;
+    float alpha_smoothness = 0.5 - erosion * 0.5;
+    float final_alpha = smoothstep(alpha_threshold, alpha_threshold + alpha_smoothness, intensity) * alpha;
     
-    // Smoothstep ensures sharp cut-off on edges
-    float final_alpha = smoothstep(0.01, 0.5, intensity) * alpha;
+    // 7. Calculate outline (dilated version)
+    float outline_alpha = 0.0;
     
-    // Final output color
-    COLOR = vec4(final_color * alpha, final_alpha);
+    if (enableOutline) {
+        // Sample in multiple directions to create dilated shape
+        float max_outline_intensity = 0.0;
+        
+        for (int i = 0; i < 8; i++) {
+            float angle = float(i) * 0.785398;
+            vec2 offset = vec2(cos(angle), sin(angle)) * outlineThickness;
+            vec2 outline_sample_pos = pixelated_frag + offset;
+            
+            // Recalculate flames at offset position
+            vec3 outline_fire = vec3(0.0);
+            vec3 outline_spark = vec3(0.0);
+            
+            for (float flameIdx = 0.0; flameIdx < flameCount; flameIdx++) {
+                float flameSeed = Hash1(flameIdx * 73.152);
+                float centerOffset = (flameIdx - (flameCount - 1.0) * 0.5) * flameSpacing;
+                float normalizedPos = (flameIdx / (flameCount - 1.0)) * 2.0 - 1.0;
+                float arcYOffset = -sqrt(max(0.0, 1.0 - normalizedPos * normalizedPos)) * arcCurvature;
+                float xVariation = flameSeed * flameVariation;
+                float yVariation = Hash1(flameIdx * 91.234) * flameVariation * 0.3;
+                
+                vec2 flame_coords = outline_sample_pos;
+                flame_coords.x -= centerOffset + xVariation;
+                flame_coords.y -= yVariation + arcYOffset;
+                
+                float time_variation = flameSeed * flameTimeOffset;
+                float flame_time = base_time * speed + time_variation;
+                
+                outline_fire += Simulate(flame_coords, flame_time);
+                outline_spark += SimulateSparks(flame_coords, base_time + time_variation);
+            }
+            
+            vec3 outline_result = outline_fire + outline_spark;
+            float outline_intensity = max(max(outline_result.r, outline_result.g), outline_result.b);
+            max_outline_intensity = max(max_outline_intensity, outline_intensity);
+        }
+        
+        // Calculate outline alpha from the dilated samples
+        outline_alpha = smoothstep(alpha_threshold, alpha_threshold + alpha_smoothness, max_outline_intensity) * outlineAlpha;
+    }
+    
+    // 8. Composite: outline behind, flame on top
+    vec3 output_color;
+    float output_alpha;
+    
+    if (final_alpha > 0.01) {
+        // There's flame here - show the flame
+        output_color = final_color * alpha;
+        output_alpha = final_alpha;
+    } else if (outline_alpha > 0.01) {
+        // No flame, but there's outline - show outline
+        output_color = outlineColor * outline_alpha;
+        output_alpha = outline_alpha;
+    } else {
+        // Nothing here
+        output_color = vec3(0.0);
+        output_alpha = 0.0;
+    }
+    
+    COLOR = vec4(output_color, output_alpha);
 }
