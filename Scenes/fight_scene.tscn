@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://dwhncf7xhe0tc"]
+[gd_scene load_steps=93 format=3 uid="uid://dwhncf7xhe0tc"]
 
 [ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
 [ext_resource type="AudioStream" uid="uid://cn0njbhvj5tga" path="res://Assets/Announcer/Intro line/onlyonedogswalking.mp3" id="2_5n8pe"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://dxlm7mxclueey" path="res://Assets/Announcer/Low HP character/afightersontheirlastlegs.mp3" id="10_j0noi"]
 [ext_resource type="Texture2D" uid="uid://2k231l2rlhok" path="res://Assets/Backgrounds/Computer table/frame_08_delay-0.1s.png" id="10_xsuk8"]
 [ext_resource type="Texture2D" uid="uid://boxpha0cqttgq" path="res://Assets/Backgrounds/Computer table/frame_09_delay-0.1s.png" id="11_42uwl"]
+[ext_resource type="Script" uid="uid://c4k84dr7b4hmf" path="res://Scenes/camera_effects.gd" id="11_whai0"]
 [ext_resource type="Texture2D" uid="uid://btjtry1hbd85q" path="res://Assets/Backgrounds/Computer table/frame_10_delay-0.1s.png" id="12_71oq3"]
 [ext_resource type="Texture2D" uid="uid://bns4hwl4mcog1" path="res://Assets/Backgrounds/Computer table/frame_11_delay-0.1s.png" id="13_yp32m"]
 [ext_resource type="Texture2D" uid="uid://d3b6cc1be7pq5" path="res://Assets/Backgrounds/Computer table/frame_12_delay-0.1s.png" id="14_0k3gw"]
@@ -82,6 +83,7 @@
 [ext_resource type="Texture2D" uid="uid://c2l72g3m7tvof" path="res://Assets/Menus/B.png" id="80_mlhlf"]
 [ext_resource type="Texture2D" uid="uid://cvdk65n753s60" path="res://Assets/Menus/A.png" id="81_1vhex"]
 [ext_resource type="Texture2D" uid="uid://j8dafsydgwtd" path="res://Assets/Menus/steam deck controls.png" id="82_mlhlf"]
+[ext_resource type="Shader" uid="uid://saxshd54nuxa" path="res://Assets/Effects/Flames/flames.gdshader" id="83_1vhex"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tys6i"]
 animations = [{
@@ -321,6 +323,35 @@ _data = {
 &"idle": SubResource("Animation_ml8ds")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_whai0"]
+shader = ExtResource("83_1vhex")
+shader_parameter/speed = 0.226
+shader_parameter/pixelSize = 0.001
+shader_parameter/alpha = 1.0
+shader_parameter/flickerStrength = 0.0
+shader_parameter/toColor = Color(0.888106, 0.833351, 0.671426, 1)
+shader_parameter/fromColor = Color(1, 0.565278, 0.410848, 1)
+shader_parameter/hueShift = 0.0
+shader_parameter/saturationFactor = 1.664
+shader_parameter/particleCount = 49.684
+shader_parameter/brightness = 0.001
+shader_parameter/fireShift = 0.15
+shader_parameter/fireShiftFrequency = 5.0
+shader_parameter/size = Vector2(0.99, 0.75)
+shader_parameter/glow = Vector2(0.001, 0.04)
+shader_parameter/sparkCount = 18.0
+shader_parameter/sparkSize = 0.0005
+shader_parameter/sparkSpeed = 0.1
+shader_parameter/sparkColor = Color(1, 0.997, 0.99, 1)
+shader_parameter/flameCount = 16.5
+shader_parameter/flameSpacing = 0.15
+shader_parameter/flameVariation = 0.0
+shader_parameter/flameTimeOffset = 1.0
+shader_parameter/arcCurvature = 0.342
+shader_parameter/windForce = 0.0
+shader_parameter/aspectRatio = 0.956
+shader_parameter/posOffset = Vector2(0, -0.5)
+
 [node name="FightScene" type="Node2D"]
 script = ExtResource("1_wqnb5")
 victory_sound = ExtResource("2_h3kue")
@@ -330,22 +361,29 @@ intro_lines = Array[AudioStream]([ExtResource("2_5n8pe"), ExtResource("3_1ar86")
 fight_start_sound = ExtResource("5_qiae4")
 low_health_announcer_sounds = Array[AudioStream]([ExtResource("9_cryrl"), ExtResource("10_j0noi")])
 
-[node name="Background" type="AnimatedSprite2D" parent="."]
-position = Vector2(683, 384)
+[node name="CameraEffects" type="Node2D" parent="."]
+script = ExtResource("11_whai0")
+
+[node name="Background" type="AnimatedSprite2D" parent="CameraEffects"]
+position = Vector2(683.5, 391)
+scale = Vector2(1.04026, 1.07292)
 sprite_frames = SubResource("SpriteFrames_tys6i")
 animation = &"backgroundanim"
 autoplay = "backgroundanim"
 script = ExtResource("58_42uwl")
 
-[node name="Positions" type="Node2D" parent="."]
+[node name="Positions" type="Node2D" parent="CameraEffects"]
 
-[node name="Player1Position" type="Marker2D" parent="Positions"]
+[node name="Player1Position" type="Marker2D" parent="CameraEffects/Positions"]
 position = Vector2(250, 725)
 
-[node name="Player2Position" type="Marker2D" parent="Positions"]
+[node name="Player2Position" type="Marker2D" parent="CameraEffects/Positions"]
 position = Vector2(1150, 725)
 
 [node name="UI" type="CanvasLayer" parent="."]
+offset = Vector2(100, -10)
+scale = Vector2(0.85, 0.8)
+transform = Transform2D(0.85, 0, 0, 0.8, 100, -10)
 
 [node name="Player1HealthBar" type="TextureProgressBar" parent="UI"]
 self_modulate = Color(1, 1, 1, 0.768627)
@@ -573,7 +611,16 @@ parameters/looping = true
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
 
 [node name="Control scheme" type="TextureRect" parent="."]
-z_index = 20
+visible = false
+z_index = 500
 offset_right = 1366.0
 offset_bottom = 772.0
 texture = ExtResource("82_mlhlf")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = 400
+material = SubResource("ShaderMaterial_whai0")
+offset_left = -118.0
+offset_top = 194.0
+offset_right = 1477.0
+offset_bottom = 1088.0

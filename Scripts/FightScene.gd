@@ -10,6 +10,8 @@ var player2: BaseCharacter
 var player1_character: CharacterData
 var player2_character: CharacterData
 
+
+
 # UI elements
 @onready var player1_health_bar = $UI/Player1HealthBar
 @onready var player2_health_bar = $UI/Player2HealthBar
@@ -53,6 +55,7 @@ var fight_over = false  # Track if the fight is over
 @export_group("Fight Intro Sounds")
 @export var intro_lines: Array[AudioStream] = []  # Random intro lines
 @export var fight_start_sound: AudioStream  # "FIGHT!" sound
+@onready var camera_effects = $CameraEffects
 
 # NEW: Low health announcer sounds
 @export_group("Low Health Announcer")
@@ -455,7 +458,7 @@ func setup_fight():
 	print("Setting up fight scene")
 	
 	# Verify we have positions for players
-	if not has_node("Positions/Player1Position") or not has_node("Positions/Player2Position"):
+	if not has_node("CameraEffects/Positions/Player1Position") or not has_node("CameraEffects/Positions/Player2Position"):
 		push_error("Player position nodes not found!")
 		return
 	
@@ -467,12 +470,12 @@ func setup_fight():
 	player1 = PlayerCharacter.new()
 	player1.player_number = 1
 	player1.character_data = player1_character
-	player1.position = $Positions/Player1Position.position
+	player1.position = $CameraEffects/Positions/Player1Position.position
 	# IMPORTANT: Disable input until control scheme is dismissed
 	player1.set_process_unhandled_input(false)
 	player1.set_physics_process(false)  # Disable all character processing
 	player1.set_process(false)  # Also disable _process for good measure
-	add_child(player1)
+	camera_effects.add_child(player1)
 	print("Created Player 1")
 	
 	# Create player 2 (human or AI based on mode)
@@ -488,12 +491,12 @@ func setup_fight():
 	
 	player2.player_number = 2
 	player2.character_data = player2_character
-	player2.position = $Positions/Player2Position.position
+	player2.position = $CameraEffects/Positions/Player2Position.position
 	# IMPORTANT: Disable all processing until control scheme is dismissed
 	player2.set_process_unhandled_input(false)
 	player2.set_physics_process(false)  # This will stop AI logic in _physics_process
 	player2.set_process(false)  # Also disable _process for good measure
-	add_child(player2)
+	camera_effects.add_child(player2)
 	
 	# Connect players to each other
 	player1.opponent = player2
