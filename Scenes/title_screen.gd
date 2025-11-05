@@ -51,12 +51,14 @@ func setup_controller_navigation():
 	update_button_selection()
 
 func _input(event):
-	# Handle controller navigation using existing inputs + dpad up/down
+	# Handle controller navigation using existing inputs + dpad up/down + ARCADE BUTTON 8
 	if Input.is_action_just_pressed("dpad_down") or Input.is_action_just_pressed("p1_heavy") or Input.is_action_just_pressed("p2_heavy"):
 		navigate_down()
 	elif Input.is_action_just_pressed("dpad_up") or Input.is_action_just_pressed("p1_light") or Input.is_action_just_pressed("p2_light"):
 		navigate_up()
-	elif Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate"):
+	# ARCADE BUTTON 8 - Confirms selection
+	elif Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate") or \
+		 Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8):
 		press_current_button()
 
 func navigate_down():

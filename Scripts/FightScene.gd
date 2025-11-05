@@ -194,7 +194,9 @@ func setup_win_menu_navigation():
 func _input(event):
 	# Handle control scheme dismissal first
 	if control_scheme_active:
-		if Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate"):
+		# ARCADE BUTTON 8 - Also dismisses control scheme
+		if Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate") or \
+		   Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8):
 			dismiss_control_scheme()
 		return
 	
@@ -204,7 +206,9 @@ func _input(event):
 			navigate_win_menu_down()
 		elif Input.is_action_just_pressed("dpad_up"):
 			navigate_win_menu_up()
-		elif Input.is_action_just_pressed("p1_ultimate") or  Input.is_action_just_pressed("p2_ultimate"):
+		# ARCADE BUTTON 8 - Also confirms selection in win menu
+		elif Input.is_action_just_pressed("p1_ultimate") or  Input.is_action_just_pressed("p2_ultimate") or \
+			 Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8):
 			press_current_win_button()
 
 func dismiss_control_scheme():

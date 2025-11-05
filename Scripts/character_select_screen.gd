@@ -210,21 +210,22 @@ func handle_input(player_id: int):
 	var prefix = "p%d_" % player_id
 	var columns = 3
 	var total = available_characters.size()
+	var device_id = 1 if player_id == 1 else 2
 
 	var current = player1_hovered_index if player_id == 1 else player2_hovered_index
 	var selected = player1_selected_index if player_id == 1 else player2_selected_index
 
-	# NEW: Check for back to title input when nothing is selected
-	if selected == -1 and Input.is_action_just_pressed(prefix + "special"):
+	# Arcade button 10: Back to title (when nothing is selected)
+	if selected == -1 and (Input.is_action_just_pressed(prefix + "special") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_BACK)):
 		go_back_to_title()
 		return
 
 	if selected != -1:
-		# Changed to use existing ultimate input for unselect (X button)
-		if Input.is_action_just_pressed(prefix + "special"):
+		# Arcade button 8: Unselect character
+		if Input.is_action_just_pressed(prefix + "special") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_LEFT_SHOULDER):
 			unselect_character(player_id)
-		# Use existing heavy input for ready up (Triangle button)
-		elif Input.is_action_just_pressed(prefix + "heavy"):
+		# Arcade button 9: Ready up (Start button)
+		elif Input.is_action_just_pressed(prefix + "heavy") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_START):
 			if player_id == 1:
 				_on_player1_ready()
 			elif player_id == 2:
@@ -242,8 +243,8 @@ func handle_input(player_id: int):
 		new_index = get_next_available_index(player_id, current, "up", columns, total)
 	elif Input.is_action_just_pressed(prefix + "heavy"):
 		new_index = get_next_available_index(player_id, current, "down", columns, total)
-	# Use existing special input for character selection (Circle button)
-	elif Input.is_action_just_pressed(prefix + "ultimate"):
+	# Arcade button 8 OR existing ultimate input: Select character
+	elif Input.is_action_just_pressed(prefix + "ultimate") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_LEFT_SHOULDER):
 		# Only allow selection if character is available
 		if is_character_available_for_player(player_id, current):
 			select_character(player_id, current)
@@ -349,7 +350,7 @@ func select_character(player_id: int, index: int):
 	if player_id == 1:
 		player1_character = character
 		player1_selected_index = index
-		button.text = "READY UP"
+		button.text = "START"
 		
 		# If AI had selected the same character, make them unselect
 		if is_pve_mode and player2_selected_index == index:
@@ -362,7 +363,7 @@ func select_character(player_id: int, index: int):
 		if is_pve_mode:
 			button.text = "AI THINKING..."
 		else:
-			button.text = "READY UP"
+			button.text = "START"
 	
 	# NEW: Update unavailable states for both grids
 	update_character_availability()
