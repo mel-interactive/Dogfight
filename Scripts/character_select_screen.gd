@@ -202,7 +202,6 @@ func setup_character_grid(grid: Control, player_id: int):
 		player1_boxes = boxes
 	else:
 		player2_boxes = boxes
-
 func handle_input(player_id: int):
 	if (player_id == 1 and player1_ready) or (player_id == 2 and player2_ready):
 		return
@@ -216,16 +215,16 @@ func handle_input(player_id: int):
 	var selected = player1_selected_index if player_id == 1 else player2_selected_index
 
 	# Arcade button 10: Back to title (when nothing is selected)
-	if selected == -1 and (Input.is_action_just_pressed(prefix + "special") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_BACK)):
+	if selected == -1 and Input.is_joy_button_pressed(device_id, 10):
 		go_back_to_title()
 		return
 
 	if selected != -1:
 		# Arcade button 8: Unselect character
-		if Input.is_action_just_pressed(prefix + "special") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_LEFT_SHOULDER):
+		if Input.is_joy_button_pressed(device_id, 8):
 			unselect_character(player_id)
 		# Arcade button 9: Ready up (Start button)
-		elif Input.is_action_just_pressed(prefix + "heavy") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_START):
+		elif Input.is_joy_button_pressed(device_id, 9):
 			if player_id == 1:
 				_on_player1_ready()
 			elif player_id == 2:
@@ -243,8 +242,8 @@ func handle_input(player_id: int):
 		new_index = get_next_available_index(player_id, current, "up", columns, total)
 	elif Input.is_action_just_pressed(prefix + "heavy"):
 		new_index = get_next_available_index(player_id, current, "down", columns, total)
-	# Arcade button 8 OR existing ultimate input: Select character
-	elif Input.is_action_just_pressed(prefix + "ultimate") or Input.is_joy_button_pressed(device_id, JOY_BUTTON_LEFT_SHOULDER):
+	# Arcade button 8: Select character
+	elif Input.is_joy_button_pressed(device_id, 8):
 		# Only allow selection if character is available
 		if is_character_available_for_player(player_id, current):
 			select_character(player_id, current)
