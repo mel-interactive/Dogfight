@@ -242,7 +242,7 @@ func handle_input(player_id: int):
 
 	if selected != -1:
 		# Arcade button 8: Unselect character
-		if Input.is_joy_button_pressed(device_id, 8):
+		if Input.is_joy_button_pressed(device_id, 8): 
 			unselect_character(player_id)
 			# Reset debounce timer after unselecting
 			if player_id == 1:

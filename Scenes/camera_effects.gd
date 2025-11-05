@@ -96,3 +96,12 @@ func add_shake_burst(intensity: float, duration: float = 0.2):
 	# Return to normal after duration
 	await get_tree().create_timer(duration).timeout
 	current_shake_intensity = original_intensity
+
+
+# NEW: Trigger a small shake when damage is taken
+func add_damage_shake(damage_amount: float = 10.0):
+	"""Add a small shake burst based on damage taken"""
+	# Scale shake intensity based on damage (more damage = more shake)
+	# Typical damage range might be 5-50, so we scale it down
+	var shake_intensity = clamp(damage_amount * 0.1, 0.5, 5.0)
+	add_shake_burst(shake_intensity, 0.15)

@@ -191,9 +191,19 @@ func setup_collision():
 	if not has_node("CollisionShape2D"):
 		var collision = CollisionShape2D.new()
 		var shape = RectangleShape2D.new()
-		shape.size = Vector2(50, 100)
+		shape.size = Vector2(150, 100)
 		collision.shape = shape
+		
+		if player_number == 1:
+			collision.position.x = 100
+		else:
+			collision.position.x = -100
+		collision.debug_color = Color(1,0,0,1)
 		add_child(collision)
+	
+	# Set character to be on layer 1, detect layer 1 (for other characters/walls)
+	collision_layer = 1
+	collision_mask = 1
 
 func setup_attack_area():
 	if not has_node("AttackArea"):
@@ -202,14 +212,18 @@ func setup_attack_area():
 		
 		var attack_collision = CollisionShape2D.new()
 		var attack_shape = RectangleShape2D.new()
-		attack_shape.size = Vector2(70, 100)
+		attack_shape.size = Vector2(150, 100)
 		attack_collision.shape = attack_shape
-		attack_collision.position.x = 60
+		
+		if player_number == 1:
+			attack_collision.position.x = 100
+		else:
+			attack_collision.position.x = -100
 		
 		attack_area.add_child(attack_collision)
 		attack_area.monitoring = false
+		
 		add_child(attack_area)
-
 func setup_audio():
 	if not has_node("AudioPlayer"):
 		audio_player = AudioStreamPlayer2D.new()

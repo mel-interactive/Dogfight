@@ -20,6 +20,16 @@ var recent_hits_taken: int = 0
 var last_hit_time: float = 0.0
 var hit_reset_timer: float = 2.0  # Reset hit counter after 2 seconds
 
+# NEW: Personal space tracking
+var time_too_close: float = 0.0
+var too_close_threshold: float = 1.0  # Back up if too close for 1 second
+
+# NEW: Falling item dodge tracking
+var is_dodging_item: bool = false
+var dodge_direction: int = 1 # -1 = left, 1 = right
+var dodge_timer: float = 0.0
+var dodge_duration: float = 1.2  # How long to keep dodging
+
 func _ready():
 	super._ready()
 	# Player number is set by FightScene, no need to hardcode it here
@@ -60,6 +70,7 @@ func handle_ai_logic(delta):
 	# NEW: Stop movement if frozen, but continue with other AI decisions
 	if not can_move():
 		velocity.x = 0  # Stop any ongoing movement
+		is_dodging_item = false  # Cancel dodge if frozen
 		# Don't return here - AI can still make other decisions like stopping blocking
 	
 	ai_timer += delta
@@ -67,12 +78,90 @@ func handle_ai_logic(delta):
 	# NEW: Update hit tracking
 	update_hit_tracking(delta)
 	
+	# NEW: Handle active dodge
+	if is_dodging_item:
+		dodge_timer -= delta
+		if dodge_timer <= 0.0:
+			is_dodging_item = false
+			stop_moving()
+			print("AI: Finished dodging")
+		else:
+			# Keep moving in dodge direction
+			if dodge_direction < 0:
+				move_left()
+			else:
+				move_right()
+			return  # Skip other AI logic while dodging
+	
+	# NEW: PRIORITY CHECK - Check for falling items and dodge!
+	check_and_dodge_falling_items()
+	if is_dodging_item:
+		return  # Exit early if we started dodging
+	
 	# Wait for reaction time before making decisions
 	if ai_timer < next_action_time:
 		return
 	
 	# Make AI decision
 	make_ai_decision()
+
+# NEW: Simplified and more reliable falling item detection and dodge
+func check_and_dodge_falling_items():
+	# Get all nodes in the scene
+	var fight_scene = get_tree().current_scene
+	if not fight_scene:
+		return
+	
+	# Look for FallingItem nodes
+	var camera_effects = fight_scene.get_node_or_null("CameraEffects")
+	if not camera_effects:
+		return
+	
+	var my_x = global_position.x
+	var my_y = global_position.y
+	var danger_threshold_x = 400.0  # Increased from 100 - wider detection
+	var danger_threshold_y = 450.0  # Increased from 400 - detect earlier
+	
+	for child in camera_effects.get_children():
+		# Check if this is a falling item
+		if child.has_method("initialize") and child.get("is_falling") == true:
+			var item_x = child.global_position.x
+			var item_y = child.global_position.y
+			
+			var x_distance = abs(item_x - my_x)
+			var y_distance = my_y - item_y  # Positive if item is above us
+			
+			# Check if item is above us and getting close
+			if y_distance > 0 and y_distance < danger_threshold_y and x_distance < danger_threshold_x:
+				# Check AI difficulty for dodge success
+				var dodge_success_chance = 0.4 + (ai_difficulty * 0.4)  # 40% base + up to 60% bonus
+				
+				if randf() > dodge_success_chance:
+					continue
+				
+				if not can_move():
+					continue
+				
+				# Start dodging!
+				is_dodging_item = true
+				dodge_timer = dodge_duration
+				
+				# DEFAULT: Dodge right (away from player who is on the left)
+				# Only dodge left if we're at the right edge of the screen
+				var viewport_size = get_viewport_rect().size
+				var screen_right_edge = viewport_size.x - 150.0  # 150px margin from edge
+				
+				if my_x >= screen_right_edge:
+					# Too close to right edge, dodge left instead
+					dodge_direction = -1
+					move_left()
+				else:
+					# Safe to dodge right
+					dodge_direction = 1
+					move_right()
+				
+				return  # Only dodge one item at a time
+
 
 func make_ai_decision():
 	if not opponent or not character_data:
@@ -89,11 +178,15 @@ func make_ai_decision():
 	
 	# Calculate dynamic ranges based on character's attacks
 	var max_attack_range = max(light_range, max(heavy_range, max(special_range, ultimate_range)))
-	var preferred_range = light_range * 0.9  # Stay just within light attack range
-	var min_range = 50.0  # Minimum personal space
+	var preferred_range = light_range * 0.9  # Back to original
+	var min_range = 150
+	var too_close_distance = 200
 	
-	print("AI: Distance: ", distance_to_opponent, " Light range: ", light_range, " Preferred: ", preferred_range)
-	print("AI: Recent hits taken: ", recent_hits_taken)
+	# NEW: Track how long we've been too close
+	if distance_to_opponent < too_close_distance:
+		time_too_close += ai_timer - next_action_time + 0.1  # Approximate delta
+	else:
+		time_too_close = 0.0  # Reset if we have space
 	
 	# NEW: Calculate spam defense modifier based on recent hits
 	var spam_defense_modifier = 1.0 + (recent_hits_taken * 0.3)  # +30% per recent hit
@@ -102,14 +195,12 @@ func make_ai_decision():
 	# 1. Try special/ultimate if available and in range
 	if can_use_ultimate() and distance_to_opponent <= ultimate_range and distance_to_opponent >= min_range:
 		if randf() < 0.3 * ai_difficulty:
-			print("AI: Using ultimate attack")
 			ultimate_attack()
 			set_next_action_delay(1.5)
 			return
 	
 	if can_use_special() and distance_to_opponent <= special_range and distance_to_opponent >= min_range:
 		if randf() < 0.4 * ai_difficulty:
-			print("AI: Using special attack")
 			special_attack()
 			set_next_action_delay(1.0)
 			return
@@ -119,20 +210,31 @@ func make_ai_decision():
 		var block_chance = 0.7 * ai_difficulty * spam_defense_modifier
 		block_chance = min(block_chance, 0.95)  # Cap at 95%
 		if randf() < block_chance:
-			print("AI: Blocking incoming attack (spam defense: ", spam_defense_modifier, ")")
 			block()
 			set_next_action_delay(0.4)
 			return
 	elif is_blocking():
-		print("AI: Stopping block")
 		stop_blocking()
 	
-	# 3. ENHANCED: Back up if too close (much more likely if being spammed)
+	# 3. NEW: Back up if we've been too close for too long
+	if time_too_close >= too_close_threshold:
+		if can_move():
+			# Definitely back up - we've been crowding too long
+			if opponent.global_position.x > global_position.x:
+				move_left()
+			else:
+				move_right()
+			set_next_action_delay(0.3)
+			return
+		else:
+			set_next_action_delay(0.2)
+			return
+	
+	# 4. ENHANCED: Back up if WAY too close (immediate retreat)
 	if distance_to_opponent < min_range or (is_being_spammed and distance_to_opponent < preferred_range):
 		if can_move():
-			var retreat_chance = 0.6 + (recent_hits_taken * 0.2)  # Base 60% + 20% per hit
+			var retreat_chance = 0.7 + (recent_hits_taken * 0.2)  # Base 70% + 20% per hit
 			if randf() < retreat_chance:
-				print("AI: Backing up (spam defense, hits: ", recent_hits_taken, ")")
 				if opponent.global_position.x > global_position.x:
 					move_left()
 				else:
@@ -140,11 +242,10 @@ func make_ai_decision():
 				set_next_action_delay(0.15)
 				return
 		else:
-			print("AI: Want to back up but movement frozen")
 			set_next_action_delay(0.2)
 			return
 	
-	# 4. MODIFIED: Attack if in range (less likely if being spammed)
+	# 5. Attack if in range (normal aggression restored)
 	if distance_to_opponent >= min_range and distance_to_opponent <= heavy_range:
 		if opponent_state in ["Idle", "Moving"]:
 			# Reduce aggression if being spammed
@@ -155,22 +256,17 @@ func make_ai_decision():
 			if randf() < attack_chance:
 				var attack_choice = randf()
 				if distance_to_opponent <= light_range and attack_choice < 0.7:
-					print("AI: Light attack (in range)")
 					light_attack()
 					set_next_action_delay(0.5)
 					return
 				elif distance_to_opponent <= heavy_range:
-					print("AI: Heavy attack (in range)")
 					heavy_attack()
 					set_next_action_delay(0.7)
 					return
-			else:
-				print("AI: Skipping attack due to spam defense")
 	
-	# 5. Move closer if too far for any attack (less aggressive if being spammed)
+	# 6. Move closer if too far for any attack (less aggressive if being spammed)
 	if distance_to_opponent > preferred_range and not is_being_spammed:
 		if can_move():
-			print("AI: Moving closer (current: ", distance_to_opponent, " target: ", preferred_range, ")")
 			if opponent.global_position.x > global_position.x:
 				move_right()
 			else:
@@ -178,17 +274,15 @@ func make_ai_decision():
 			set_next_action_delay(0.1)
 			return
 		else:
-			print("AI: Want to move closer but movement frozen")
 			set_next_action_delay(0.2)
 			return
 	
-	# 6. Good position - wait and see
+	# 7. Good position - wait and see
 	if can_move():
-		print("AI: Good position, waiting")
 		stop_moving()
-	else:
-		print("AI: Good position but movement frozen, just waiting")
 	set_next_action_delay(0.3)
+
+
 
 # NEW: Track when AI takes damage to detect spam
 func _on_ai_health_changed(new_health):

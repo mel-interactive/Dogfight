@@ -1,4 +1,4 @@
-# FightScene.gd - Complete version with enhanced win/lose slide system
+# FightScene.gd - Complete version with FIXED falling item system
 extends Node2D
 class_name FightScene
 
@@ -10,6 +10,16 @@ var player2: BaseCharacter
 var player1_character: CharacterData
 var player2_character: CharacterData
 
+
+# Variables for falling item system
+@export var falling_item_scene: PackedScene  # Assign your FallingItem scene (should be the .tscn file)
+@export var min_spawn_interval: float = 3.0
+@export var max_spawn_interval: float = 6.0
+var spawn_timer: float = 0.0
+var next_spawn_time: float = 0.0
+
+# NOTE: falling_item_scene should point to the FallingItem.tscn FILE (not an instance in the scene)
+# We instantiate NEW copies of it dynamically during gameplay
 
 
 # UI elements
@@ -138,7 +148,16 @@ func _ready():
 		control_scheme_active = true
 		hide_ui_bars()
 	
-	# IMPORTANT: Don't start entrance sequence until control scheme is dismissed
+	# Initialize spawn timer
+	next_spawn_time = randf_range(min_spawn_interval, max_spawn_interval)
+	print("FightScene: Next spawn time initialized to: ", next_spawn_time)
+	
+	# VERIFY falling item scene is assigned
+	if falling_item_scene:
+		print("FightScene: Falling item scene is assigned: ", falling_item_scene.resource_path)
+	else:
+		push_warning("FightScene: WARNING - falling_item_scene is NOT assigned in the inspector!")
+	
 	print("FightScene: Ready function completed - waiting for control scheme dismissal")
 
 func hide_ui_bars():
@@ -334,6 +353,19 @@ func _process(_delta):
 	
 	# NEW: Update special/ultimate meter pulsing
 	update_special_ultimate_pulsing(_delta)
+	
+	# FIXED: Handle falling item spawning
+	if fight_active and not fight_over:
+		spawn_timer += _delta
+		
+		if spawn_timer >= next_spawn_time:
+			print("====== SPAWNING FALLING ITEM ======")
+			print("Spawn timer: ", spawn_timer, " / Next spawn: ", next_spawn_time)
+			spawn_falling_item()
+			spawn_timer = 0.0
+			next_spawn_time = randf_range(min_spawn_interval, max_spawn_interval)
+			print("Next spawn time set to: ", next_spawn_time)
+			print("===================================")
 
 # Function called when rematch button is pressed
 func _on_rematch_button_pressed():
@@ -462,7 +494,7 @@ func setup_fight():
 	print("Setting up fight scene")
 	
 	# Verify we have positions for players
-	if not has_node("CameraEffects/Positions/Player1Position") or not has_node("CameraEffects/Positions/Player2Position"):
+	if not has_node("Positions/Player1Position") or not has_node("Positions/Player2Position"):
 		push_error("Player position nodes not found!")
 		return
 	
@@ -474,7 +506,7 @@ func setup_fight():
 	player1 = PlayerCharacter.new()
 	player1.player_number = 1
 	player1.character_data = player1_character
-	player1.position = $CameraEffects/Positions/Player1Position.position
+	player1.position = $Positions/Player1Position.position
 	# IMPORTANT: Disable input until control scheme is dismissed
 	player1.set_process_unhandled_input(false)
 	player1.set_physics_process(false)  # Disable all character processing
@@ -495,7 +527,7 @@ func setup_fight():
 	
 	player2.player_number = 2
 	player2.character_data = player2_character
-	player2.position = $CameraEffects/Positions/Player2Position.position
+	player2.position = $Positions/Player2Position.position
 	# IMPORTANT: Disable all processing until control scheme is dismissed
 	player2.set_process_unhandled_input(false)
 	player2.set_physics_process(false)  # This will stop AI logic in _physics_process
@@ -735,6 +767,11 @@ func _on_player1_health_changed(new_health):
 		# Shake health bar if health decreased (took damage)
 		if new_health < old_health:
 			shake_health_bar(player1_health_bar, player1_health_bar_original_pos)
+			
+			# NEW: Add camera shake based on damage taken
+			var damage_taken = old_health - new_health
+			if camera_effects:
+				camera_effects.add_damage_shake(damage_taken)
 		
 		# Check for low health announcer (25% of max health)
 		check_low_health_announcer(player1, new_health)
@@ -750,6 +787,11 @@ func _on_player2_health_changed(new_health):
 		# Shake health bar if health decreased (took damage)
 		if new_health < old_health:
 			shake_health_bar(player2_health_bar, player2_health_bar_original_pos)
+			
+			# NEW: Add camera shake based on damage taken
+			var damage_taken = old_health - new_health
+			if camera_effects:
+				camera_effects.add_damage_shake(damage_taken)
 		
 		# Check for low health announcer (25% of max health)
 		check_low_health_announcer(player2, new_health)
@@ -1005,3 +1047,99 @@ func start_fight_intro_sequence():
 	
 	# Play random intro line
 	play_random_intro_line()
+	
+	
+	
+	
+	# FIXED: spawn_falling_item with better error handling and debugging
+# 70% spawn between characters, 30% spawn above a player
+# Avoid spawning too close to edges to prevent punishing cornered players
+func spawn_falling_item():
+	# CRITICAL: Check if falling_item_scene is assigned
+	if not falling_item_scene:
+		push_error("falling_item_scene is not assigned! Please assign it in the inspector.")
+		return
+	
+	# Check if players exist
+	if not player1:
+		return
+	
+	if not player2:
+		push_warning("Player2 not initialized yet, skipping spawn")
+		return
+	
+	# Get viewport bounds for safe spawning
+	var viewport_size = get_viewport_rect().size
+	var safe_margin = 200.0  # Don't spawn within 200px of edges (leaves room for 150px collider + 50px margin)
+	var min_x = safe_margin
+	var max_x = viewport_size.x - safe_margin
+	
+	var target_position = Vector2()
+	
+	# 70% chance to spawn between characters, 30% chance to spawn above a player
+	if randf() < 0.7:
+		# Spawn between the two characters
+		var player1_x = player1.global_position.x
+		var player2_x = player2.global_position.x
+		
+		# Calculate midpoint between players
+		var midpoint_x = (player1_x + player2_x) / 2.0
+		
+		# Add some randomness around the midpoint (±100 pixels for variety)
+		target_position.x = midpoint_x + randf_range(-100, 100)
+		
+		# Clamp to safe boundaries
+		target_position.x = clamp(target_position.x, min_x, max_x)
+	else:
+		# Spawn above a player (30% of the time)
+		# SMART TARGETING: Try to hit the player who is NOT cornered
+		var player1_x = player1.global_position.x
+		var player2_x = player2.global_position.x
+		
+		# Determine who is closer to the edges (more cornered)
+		var player1_distance_to_left = player1_x - min_x
+		var player1_distance_to_right = max_x - player1_x
+		var player2_distance_to_left = player2_x - min_x
+		var player2_distance_to_right = max_x - player2_x
+		
+		# Find minimum distance to any edge for each player
+		var player1_min_edge_distance = min(player1_distance_to_left, player1_distance_to_right)
+		var player2_min_edge_distance = min(player2_distance_to_left, player2_distance_to_right)
+		
+		var target_player: BaseCharacter
+		
+		# If one player is significantly more cornered, target the OTHER player
+		var corner_threshold = 250.0  # Consider "cornered" if within 250px of edge
+		if player1_min_edge_distance < corner_threshold and player2_min_edge_distance >= corner_threshold:
+			# Player 1 is cornered, target player 2 (the cornering player)
+			target_player = player2
+		elif player2_min_edge_distance < corner_threshold and player1_min_edge_distance >= corner_threshold:
+			# Player 2 is cornered, target player 1 (the cornering player)
+			target_player = player1
+		else:
+			# Neither is cornered or both are cornered, pick randomly
+			target_player = player1 if randf() > 0.5 else player2
+		
+		target_position.x = target_player.global_position.x
+		
+		# Add some randomness so it's not exactly on the player
+		target_position.x += randf_range(-50, 50)
+		
+		# Clamp to safe boundaries
+		target_position.x = clamp(target_position.x, min_x, max_x)
+	
+	# Set Y position to spawn from top
+	target_position.y = 0
+	
+	var item = falling_item_scene.instantiate()
+	if not item:
+		push_error("Failed to instantiate falling_item_scene!")
+		return
+	
+	# IMPORTANT: Add to the correct parent node
+	# Try camera_effects first, fallback to self
+	var parent_node = camera_effects if camera_effects else self
+	parent_node.add_child(item)
+	
+	# Initialize the item
+	item.initialize(target_position)

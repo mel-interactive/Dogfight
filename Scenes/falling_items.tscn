@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://l4oo4hhjyxdw"]
+
+[ext_resource type="Texture2D" uid="uid://bu8afa8fjvda2" path="res://Assets/Falling items/exclamation mark.png" id="1_hbfyh"]
+[ext_resource type="Script" uid="uid://bdim8qghki8ge" path="res://Scripts/falling_items.gd" id="1_iasiy"]
+[ext_resource type="AudioStream" uid="uid://dgc84nhejm1p3" path="res://Assets/Sound/warning beeps.mp3" id="2_c36m5"]
+[ext_resource type="Texture2D" uid="uid://coeobtxtt26sp" path="res://Assets/Falling items/mick.png" id="2_ku4gk"]
+[ext_resource type="AudioStream" uid="uid://bg2b7dfqgj5n6" path="res://Assets/Sound/poof-of-smoke-87381.mp3" id="3_or533"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c36m5"]
+size = Vector2(81.5, 75)
+
+[node name="Falling Items" type="Node2D"]
+script = ExtResource("1_iasiy")
+warning_sound = ExtResource("2_c36m5")
+impact_sound = ExtResource("3_or533")
+
+[node name="Warning" type="TextureRect" parent="."]
+offset_left = -124.0
+offset_top = 355.0
+offset_right = 126.0
+offset_bottom = 491.0
+texture = ExtResource("1_hbfyh")
+expand_mode = 1
+
+[node name="falling item" type="TextureRect" parent="."]
+offset_left = -124.0
+offset_top = -171.0
+offset_right = 145.0
+offset_bottom = 7.0
+texture = ExtResource("2_ku4gk")
+expand_mode = 1
+
+[node name="Area2D" type="Area2D" parent="falling item"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="falling item/Area2D"]
+position = Vector2(130.25, 107.5)
+shape = SubResource("RectangleShape2D_c36m5")

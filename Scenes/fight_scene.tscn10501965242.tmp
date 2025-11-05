@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=3 uid="uid://dwhncf7xhe0tc"]
+[gd_scene load_steps=93 format=3 uid="uid://dwhncf7xhe0tc"]
 
 [ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
 [ext_resource type="AudioStream" uid="uid://cn0njbhvj5tga" path="res://Assets/Announcer/Intro line/onlyonedogswalking.mp3" id="2_5n8pe"]
@@ -20,7 +20,6 @@
 [ext_resource type="AudioStream" uid="uid://dxlm7mxclueey" path="res://Assets/Announcer/Low HP character/afightersontheirlastlegs.mp3" id="10_j0noi"]
 [ext_resource type="Texture2D" uid="uid://2k231l2rlhok" path="res://Assets/Backgrounds/Computer table/frame_08_delay-0.1s.png" id="10_xsuk8"]
 [ext_resource type="Texture2D" uid="uid://boxpha0cqttgq" path="res://Assets/Backgrounds/Computer table/frame_09_delay-0.1s.png" id="11_42uwl"]
-[ext_resource type="PackedScene" uid="uid://l4oo4hhjyxdw" path="res://Scenes/falling_items.tscn" id="11_ldygs"]
 [ext_resource type="Script" uid="uid://c4k84dr7b4hmf" path="res://Scenes/camera_effects.gd" id="11_whai0"]
 [ext_resource type="Texture2D" uid="uid://btjtry1hbd85q" path="res://Assets/Backgrounds/Computer table/frame_10_delay-0.1s.png" id="12_71oq3"]
 [ext_resource type="Texture2D" uid="uid://bns4hwl4mcog1" path="res://Assets/Backgrounds/Computer table/frame_11_delay-0.1s.png" id="13_yp32m"]
@@ -83,8 +82,8 @@
 [ext_resource type="Texture2D" uid="uid://xxuq8vs5h6no" path="res://Assets/Menus/ultimate bar filled flip.png" id="74_whai0"]
 [ext_resource type="Texture2D" uid="uid://c2l72g3m7tvof" path="res://Assets/Menus/B.png" id="80_mlhlf"]
 [ext_resource type="Texture2D" uid="uid://cvdk65n753s60" path="res://Assets/Menus/A.png" id="81_1vhex"]
+[ext_resource type="Texture2D" uid="uid://j8dafsydgwtd" path="res://Assets/Menus/steam deck controls.png" id="82_mlhlf"]
 [ext_resource type="Shader" uid="uid://saxshd54nuxa" path="res://Assets/Effects/Flames/flames.gdshader" id="83_1vhex"]
-[ext_resource type="Texture2D" uid="uid://dpfipf1q0euij" path="res://Assets/Menus/arcade controls.png" id="84_ldygs"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tys6i"]
 animations = [{
@@ -360,7 +359,6 @@ shader_parameter/posOffset = Vector2(0, -0.5)
 
 [node name="FightScene" type="Node2D"]
 script = ExtResource("1_wqnb5")
-falling_item_scene = ExtResource("11_ldygs")
 victory_sound = ExtResource("2_h3kue")
 combo_sounds = Array[AudioStream]([ExtResource("2_5nfax")])
 fight_music = ExtResource("2_71oq3")
@@ -379,15 +377,14 @@ animation = &"backgroundanim"
 autoplay = "backgroundanim"
 script = ExtResource("58_42uwl")
 
-[node name="Positions" type="Node2D" parent="."]
+[node name="Positions" type="Node2D" parent="CameraEffects"]
+position = Vector2(0, -100)
 
-[node name="Player1Position" type="Marker2D" parent="Positions"]
+[node name="Player1Position" type="Marker2D" parent="CameraEffects/Positions"]
 position = Vector2(250, 725)
 
-[node name="Player2Position" type="Marker2D" parent="Positions"]
+[node name="Player2Position" type="Marker2D" parent="CameraEffects/Positions"]
 position = Vector2(1150, 725)
-
-[node name="Falling Items" parent="." instance=ExtResource("11_ldygs")]
 
 [node name="UI" type="CanvasLayer" parent="."]
 offset = Vector2(100, -10)
@@ -620,10 +617,11 @@ parameters/looping = true
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="AudioPlayers"]
 
 [node name="Control scheme" type="TextureRect" parent="."]
+visible = false
 z_index = 500
 offset_right = 1366.0
 offset_bottom = 772.0
-texture = ExtResource("84_ldygs")
+texture = ExtResource("82_mlhlf")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = 400
