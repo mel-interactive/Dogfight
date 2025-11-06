@@ -327,7 +327,6 @@ func connect_buttons():
 	
 	if back_to_title_button and not back_to_title_button.is_connected("pressed", _on_back_to_title_button_pressed):
 		back_to_title_button.pressed.connect(_on_back_to_title_button_pressed)
-
 func _process(_delta):
 	# Restart fight with R key
 	if Input.is_action_just_pressed("restart"):
@@ -354,23 +353,39 @@ func _process(_delta):
 	# NEW: Update special/ultimate meter pulsing
 	update_special_ultimate_pulsing(_delta)
 	
-	# FIXED: Handle falling item spawning
-	if fight_active and not fight_over:
-		spawn_timer += _delta
+	# FIXED: Handle falling item spawning - pause during specials/ultimates/defeat
+	if fight_active and not fight_over and not control_scheme_active:
+		# Check if either player is using special, ultimate, or is defeated
+		var player1_state = player1.state_machine.get_current_state_name() if player1 else ""
+		var player2_state = player2.state_machine.get_current_state_name() if player2 else ""
+		var special_or_ultimate_active = (player1_state in ["SpecialAttack", "UltimateAttack", "Defeat"]) or (player2_state in ["SpecialAttack", "UltimateAttack", "Defeat"])
 		
-		if spawn_timer >= next_spawn_time:
-			print("====== SPAWNING FALLING ITEM ======")
-			print("Spawn timer: ", spawn_timer, " / Next spawn: ", next_spawn_time)
-			spawn_falling_item()
-			spawn_timer = 0.0
-			next_spawn_time = randf_range(min_spawn_interval, max_spawn_interval)
-			print("Next spawn time set to: ", next_spawn_time)
-			print("===================================")
-
+		# Despawn any existing falling items if special/ultimate/defeat is active
+		if special_or_ultimate_active:
+			despawn_all_falling_items()
+		
+		if not special_or_ultimate_active:
+			spawn_timer += _delta
+			
+			if spawn_timer >= next_spawn_time:
+				spawn_falling_item()
+				spawn_timer = 0.0
+				next_spawn_time = randf_range(min_spawn_interval, max_spawn_interval)
 # Function called when rematch button is pressed
 func _on_rematch_button_pressed():
 	print("Rematch button pressed!")
 	get_tree().reload_current_scene()
+
+
+# NEW: Despawn all active falling items
+func despawn_all_falling_items():
+	if not camera_effects:
+		return
+	
+	# Find and remove all falling items
+	for child in camera_effects.get_children():
+		if child.has_method("initialize"):  # This identifies falling items
+			child.queue_free()
 
 # Function called when character select button is pressed
 func _on_charselect_button_pressed():
