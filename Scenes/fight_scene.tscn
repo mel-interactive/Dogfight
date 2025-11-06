@@ -626,6 +626,7 @@ offset_bottom = 772.0
 texture = ExtResource("84_ldygs")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 z_index = 400
 material = SubResource("ShaderMaterial_whai0")
 offset_left = -103.0
