@@ -1,4 +1,4 @@
-# PlayerCharacter.gd - Enhanced with win/lose state input blocking
+# PlayerCharacter.gd - Simplified to just queue commands
 extends BaseCharacter
 class_name PlayerCharacter
 
@@ -24,84 +24,56 @@ func _ready():
 		else:
 			character_data.color = Color.RED
 	
-	# Update debug sprite with character color if we created it
-	if has_node("DebugSprite") and not character_data.sprite_texture:
-		var img = Image.create(50, 100, false, Image.FORMAT_RGBA8)
-		img.fill(character_data.color)
-		var tex = ImageTexture.create_from_image(img)
-		$DebugSprite.texture = tex
-	
 	# Set up input prefix based on player ID
 	input_prefix = "p" + str(player_id) + "_"
 	print("PlayerCharacter: Player ", player_id, " using input prefix: ", input_prefix)
 
 func _physics_process(delta):
-	# Handle player input
-	handle_input()
+	# Convert input to commands
+	read_input_to_commands()
 	
-	# Call parent physics process
+	# Parent handles the rest (command processing + physics)
 	super._physics_process(delta)
 
-func handle_input():
-	# Skip input handling during intro sequence
-	var fight_scene = get_tree().current_scene as FightScene
-	if fight_scene and fight_scene.intro_sequence_active:
-		return
-	
-	# NEW: Skip input if block stunned
-	if get("is_block_stunned") == true:
-		return
-	
-	# Skip input handling if defeated, victorious, or during hit
-	var current_state_name = state_machine.get_current_state_name()
-	if current_state_name in ["Defeat", "Victory", "Hit"]:
-		return
-	
-	# ATTACK PRIORITY SYSTEM - Prevent interruption of ongoing attacks
-	# If currently attacking, BLOCK ALL INPUT to prevent interruption
-	if current_state_name in ["LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack"]:
-		return  # No input processing during attacks - first attacker has priority
-	
-	# Attacks (check these FIRST to stop movement)
+func read_input_to_commands():
+	# Attacks first (they stop movement)
 	if Input.is_action_just_pressed(input_prefix + "light"):
-		velocity.x = 0  # Stop movement immediately
-		light_attack()
-		return  # Don't process movement this frame
+		command_queue.append("light_attack")
+		return
 	
 	if Input.is_action_just_pressed(input_prefix + "heavy"):
-		velocity.x = 0  # Stop movement immediately
-		heavy_attack()
-		return  # Don't process movement this frame
+		command_queue.append("heavy_attack")
+		return
 	
-	# Special attack
-	if Input.is_action_just_pressed(input_prefix + "special") and can_use_special():
-		velocity.x = 0  # Stop movement immediately
-		special_attack()
-		return  # Don't process movement this frame
+	if Input.is_action_just_pressed(input_prefix + "special"):
+		command_queue.append("special_attack")
+		return
 	
-	# Ultimate attack
-	if Input.is_action_just_pressed(input_prefix + "ultimate") and can_use_ultimate():
-		velocity.x = 0  # Stop movement immediately
-		ultimate_attack()
-		return  # Don't process movement this frame
+	if Input.is_action_just_pressed(input_prefix + "ultimate"):
+		command_queue.append("ultimate_attack")
+		return
 	
-	# Movement (left/right) - only processed if no attacks happened
+	# Block - FIXED: Only queue commands on state changes
+	var is_block_pressed = Input.is_action_pressed(input_prefix + "block")
+	var currently_blocking = is_blocking()
+	
+	if is_block_pressed and not currently_blocking:
+		# Just started blocking
+		command_queue.append("block")
+	elif not is_block_pressed and currently_blocking:
+		# Just stopped blocking
+		command_queue.append("stop_block")
+	
+	# Movement (only if no attacks)
 	var move_dir = 0
 	if Input.is_action_pressed(input_prefix + "left"):
 		move_dir -= 1
 	if Input.is_action_pressed(input_prefix + "right"):
 		move_dir += 1
 	
-	if move_dir != 0 and can_move():
-		velocity.x = move_dir * character_data.move_speed
-		current_state = CharacterState.MOVING
+	if move_dir < 0:
+		command_queue.append("move_left")
+	elif move_dir > 0:
+		command_queue.append("move_right")
 	else:
-		velocity.x = 0
-		if current_state == CharacterState.MOVING:
-			current_state = CharacterState.IDLE
-	
-	# Block (hold action)
-	if Input.is_action_pressed(input_prefix + "block"):
-		block()
-	elif current_state == CharacterState.BLOCKING:
-		stop_blocking()
+		command_queue.append("stop_move")

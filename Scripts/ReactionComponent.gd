@@ -1,4 +1,4 @@
-# ReactionComponent.gd - Component for handling character-specific reactions
+# ReactionComponent.gd - FIXED to use VisualComponent
 extends Node
 class_name ReactionComponent
 
@@ -159,9 +159,9 @@ func play_reaction_animation(reaction: ReactionData):
 	
 	var anim_name = available_animations[0]
 	
-	# HIDE THE MAIN SPRITE while reaction plays to avoid doubling
-	if character.sprite:
-		character.sprite.visible = false
+	# FIXED: HIDE THE MAIN SPRITE while reaction plays to avoid doubling
+	if character.visual_component:
+		character.visual_component.set_sprite_visible(false)
 	
 	# Play the reaction animation
 	reaction_sprite.play(anim_name)
@@ -219,33 +219,29 @@ func play_additional_animations(reaction: ReactionData):
 		custom_sprite.visible = true
 
 func position_additional_animation(custom_sprite: AnimatedSprite2D, reaction: ReactionData, index: int):
-	# Position relative to character
-	custom_sprite.global_position = character.global_position
+	# Get the additional animation custom data if available
+	var custom_anim = null
+	if index < reaction.additional_animations.size():
+		custom_anim = reaction.additional_animations[index]
 	
-	# Reset offset to center the sprite first
-	custom_sprite.offset = Vector2.ZERO
+	if not custom_anim:
+		return
 	
-	# Apply offset (use provided offset or default to 0,0)
-	var offset_to_use = Vector2(0.0, 0.0)
-	if index < reaction.additional_animation_offsets.size():
-		offset_to_use = reaction.additional_animation_offsets[index]
+	# Check if this animation should be anchored to player or screen center
+	var anchored_to_player = true
+	if "anchored_to_player" in custom_anim:
+		anchored_to_player = custom_anim.anchored_to_player
 	
-	# ALWAYS flip X offset for player 1 (regardless of sprite flip setting)
-	if character.player_number == 1:
-		offset_to_use.x = -offset_to_use.x
-	
-	custom_sprite.global_position += offset_to_use
-
-func position_reaction_custom_animation(custom_sprite: AnimatedSprite2D, custom_anim: CustomAnimation):
-	if custom_anim.anchored_to_player:
-		# Position relative to the character
+	if anchored_to_player:
+		# Position relative to character
 		custom_sprite.global_position = character.global_position
-		
-		# Reset offset to center the sprite first
 		custom_sprite.offset = Vector2.ZERO
 		
-		# Add offset - flip X for player 1
-		var offset_to_use = custom_anim.position_offset
+		# Apply offset (flip X for player 1)
+		var offset_to_use = Vector2.ZERO
+		if "position_offset" in custom_anim:
+			offset_to_use = custom_anim.position_offset
+		
 		if character.player_number == 1:
 			offset_to_use.x = -offset_to_use.x
 		
@@ -256,16 +252,17 @@ func position_reaction_custom_animation(custom_sprite: AnimatedSprite2D, custom_
 		custom_sprite.global_position = Vector2(viewport_size.x / 2.0, viewport_size.y / 2.0)
 		
 		custom_sprite.offset = Vector2.ZERO
-		custom_sprite.global_position += custom_anim.position_offset
+		if "position_offset" in custom_anim:
+			custom_sprite.global_position += custom_anim.position_offset
 
 func stop_reaction():
 	if reaction_sprite:
 		reaction_sprite.visible = false
 		reaction_sprite.stop()
 	
-	# RESTORE THE MAIN SPRITE visibility
-	if character.sprite:
-		character.sprite.visible = true
+	# FIXED: RESTORE THE MAIN SPRITE visibility
+	if character.visual_component:
+		character.visual_component.set_sprite_visible(true)
 	
 	# Hide custom animations
 	for sprite in reaction_custom_sprites:

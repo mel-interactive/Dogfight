@@ -1,4 +1,4 @@
-# FightScene.gd - Complete version with FIXED falling item system
+# FightScene.gd - FIXED to work with refactored BaseCharacter
 extends Node2D
 class_name FightScene
 
@@ -193,10 +193,13 @@ func show_ui_bars():
 		player1_ultimate_meter.visible = true
 	if player2_ultimate_meter:
 		player2_ultimate_meter.visible = true
+	# FIXED: Combo labels start hidden (empty) - they'll show when combo > 1
 	if player1_combo_label:
 		player1_combo_label.visible = true
+		player1_combo_label.text = ""  # Start empty
 	if player2_combo_label:
 		player2_combo_label.visible = true
+		player2_combo_label.text = ""  # Start empty
 
 func setup_win_menu_navigation():
 	# Add buttons to navigation array in order (vertical layout)
@@ -214,8 +217,10 @@ func _input(event):
 	# Handle control scheme dismissal first
 	if control_scheme_active:
 		# ARCADE BUTTON 8 - Also dismisses control scheme
+		# KEYBOARD - SPACE, ENTER, or ESC also dismiss
 		if Input.is_action_just_pressed("p1_ultimate") or Input.is_action_just_pressed("p2_ultimate") or \
-		   Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8):
+		   Input.is_joy_button_pressed(1, 8) or Input.is_joy_button_pressed(2, 8) or \
+		   Input.is_key_pressed(KEY_SPACE) or Input.is_key_pressed(KEY_ENTER) or Input.is_key_pressed(KEY_ESCAPE):
 			dismiss_control_scheme()
 		return
 	
@@ -231,117 +236,73 @@ func _input(event):
 			press_current_win_button()
 
 func dismiss_control_scheme():
-	print("Control scheme dismissed - starting fight intro sequence")
+	control_scheme_active = false
 	if control_scheme:
 		control_scheme.visible = false
-	control_scheme_active = false
 	
-	# Show UI bars now that control scheme is dismissed
+	# Show UI bars now
 	show_ui_bars()
 	
-	# IMPORTANT: Enable character processing now
-	if player1:
-		player1.set_process_unhandled_input(true)
-		player1.set_physics_process(true)  # Re-enable character processing
-		player1.set_process(true)  # Re-enable _process
-	if player2:
-		player2.set_process_unhandled_input(true)
-		player2.set_physics_process(true)  # Re-enable character processing (including AI)
-		player2.set_process(true)  # Re-enable _process
-		# IMPORTANT: Activate AI now (check if it's an AI character)
-		if player2.get_script() and player2.get_script().get_path().ends_with("AICharacter.gd"):
-			player2.ai_active = true
-			print("AI activated after control scheme dismissed")
-	
-	# NOW start the entrance sequence
+	# Start the actual fight intro sequence
 	start_fight_intro_sequence()
 
 func navigate_win_menu_down():
-	if current_win_button_index < win_buttons.size() - 1:
-		current_win_button_index += 1
-		update_win_button_selection()
+	# Reset current button scale
+	if win_buttons[current_win_button_index]:
+		win_buttons[current_win_button_index].scale = original_win_scales[win_buttons[current_win_button_index]]
+	
+	# Move to next button
+	current_win_button_index = (current_win_button_index + 1) % win_buttons.size()
+	
+	# Highlight new button
+	if win_buttons[current_win_button_index]:
+		win_buttons[current_win_button_index].scale = original_win_scales[win_buttons[current_win_button_index]] * 1.1
 
 func navigate_win_menu_up():
-	if current_win_button_index > 0:
-		current_win_button_index -= 1
-		update_win_button_selection()
+	# Reset current button scale
+	if win_buttons[current_win_button_index]:
+		win_buttons[current_win_button_index].scale = original_win_scales[win_buttons[current_win_button_index]]
+	
+	# Move to previous button
+	current_win_button_index = (current_win_button_index - 1 + win_buttons.size()) % win_buttons.size()
+	
+	# Highlight new button
+	if win_buttons[current_win_button_index]:
+		win_buttons[current_win_button_index].scale = original_win_scales[win_buttons[current_win_button_index]] * 1.1
 
 func press_current_win_button():
-	if current_win_button_index >= 0 and current_win_button_index < win_buttons.size():
-		var button = win_buttons[current_win_button_index]
-		if button and not button.disabled:
-			button.emit_signal("pressed")
+	var button = win_buttons[current_win_button_index]
+	if button:
+		button.pressed.emit()
 
-func update_win_button_selection():
-	# Reset all buttons to normal scale
-	for i in range(win_buttons.size()):
-		var button = win_buttons[i]
-		if not button:
-			continue
-			
-		var original_scale = original_win_scales[button]
-		
-		if i == current_win_button_index:
-			# Scale up selected button
-			button.scale = original_scale * 1.1
-		else:
-			# Reset to original scale
-			button.scale = original_scale
-
-# Add this helper method to hide winner UI:
-func hide_winner_ui():
-	if winner_label:
-		winner_label.visible = false
-	if rematch_button:
-		rematch_button.visible = false
-	if charselect_button:
-		charselect_button.visible = false
-	if back_to_title_button:
-		back_to_title_button.visible = false
-	
-	# Disable win menu navigation
-	win_menu_active = false
-
-func show_winner_ui():
-	if winner_label:
-		winner_label.visible = true
-	if rematch_button:
-		rematch_button.visible = true
-	if charselect_button:
-		charselect_button.visible = true
-	if back_to_title_button:
-		back_to_title_button.visible = true
-	
-	# Enable win menu navigation and set initial selection
-	win_menu_active = true
-	current_win_button_index = 0
-	update_win_button_selection()
-
-# Add this helper method to connect buttons:
-func connect_buttons():
-	if rematch_button and not rematch_button.is_connected("pressed", _on_rematch_button_pressed):
-		rematch_button.pressed.connect(_on_rematch_button_pressed)
-	
-	if charselect_button and not charselect_button.is_connected("pressed", _on_charselect_button_pressed):
-		charselect_button.pressed.connect(_on_charselect_button_pressed)
-	
-	if back_to_title_button and not back_to_title_button.is_connected("pressed", _on_back_to_title_button_pressed):
-		back_to_title_button.pressed.connect(_on_back_to_title_button_pressed)
 func _process(_delta):
-	# Restart fight with R key
-	if Input.is_action_just_pressed("restart"):
+	# ===== KEYBOARD DEBUG CONTROLS =====
+	# R - Restart fight
+	if Input.is_key_pressed(KEY_R):
 		get_tree().reload_current_scene()
-	
-	# IMPORTANT: Don't process anything if control scheme is active
-	if control_scheme_active:
 		return
-		
-	# Check for defeat states
+	
+	# ESC - Back to character select
+	if Input.is_key_pressed(KEY_ESCAPE):
+		var gsm = get_node_or_null("/root/GameState_Manager")
+		if gsm:
+			gsm.return_to_character_select()
+		else:
+			get_tree().change_scene_to_file("res://Scenes/character_select_screen.tscn")
+		return
+	
+	# T - Back to title
+	if Input.is_key_pressed(KEY_T):
+		get_tree().change_scene_to_file("res://Scenes/title_screen.tscn")
+		return
+	
+	# Check for defeat states - FIXED: Use state_machine instead of enum
 	if player1 and player2 and fight_active and not fight_over:
-		if player1.current_state == BaseCharacter.CharacterState.DEFEAT:
+		# FIXED: Check state machine instead of old enum
+		if player1.state_machine.get_current_state_name() == "Defeat":
 			end_fight(2)
 			
-		if player2.current_state == BaseCharacter.CharacterState.DEFEAT:
+		if player2.state_machine.get_current_state_name() == "Defeat":
 			end_fight(1)
 			
 	# Check for new combo milestones
@@ -363,82 +324,30 @@ func _process(_delta):
 		# Despawn any existing falling items if special/ultimate/defeat is active
 		if special_or_ultimate_active:
 			despawn_all_falling_items()
-		
-		if not special_or_ultimate_active:
+			# Reset spawn timer so we don't immediately spawn when they finish
+			spawn_timer = 0.0
+		else:
+			# Normal falling item spawn handling
 			spawn_timer += _delta
-			
 			if spawn_timer >= next_spawn_time:
 				spawn_falling_item()
 				spawn_timer = 0.0
 				next_spawn_time = randf_range(min_spawn_interval, max_spawn_interval)
-# Function called when rematch button is pressed
-func _on_rematch_button_pressed():
-	print("Rematch button pressed!")
-	get_tree().reload_current_scene()
 
-
-# NEW: Despawn all active falling items
+# NEW: Helper function to despawn all falling items
 func despawn_all_falling_items():
 	if not camera_effects:
 		return
 	
-	# Find and remove all falling items
+	# Find and remove all FallingItem instances
 	for child in camera_effects.get_children():
-		if child.has_method("initialize"):  # This identifies falling items
+		if child.has_method("initialize"):  # This is our way of identifying FallingItem nodes
 			child.queue_free()
 
-# Function called when character select button is pressed
-func _on_charselect_button_pressed():
-	print("Character select button pressed!")
-	
-	var game_state_manager = get_node_or_null("/root/GameState_Manager")
-	if game_state_manager:
-		game_state_manager.return_to_character_select()
-	else:
-		get_tree().change_scene_to_file("res://Scenes/character_select_screen.tscn")
-
-# Function called when back to title button is pressed
-func _on_back_to_title_button_pressed():
-	print("Back to title button pressed!")
-	get_tree().change_scene_to_file("res://Scenes/title_screen.tscn")
-
 func setup_audio_players():
-	print("Setting up audio players")
-	
-	# Create audio players if they don't exist
-	if not has_node("AudioPlayers"):
-		var audio_players = Node.new()
-		audio_players.name = "AudioPlayers"
-		add_child(audio_players)
-		
-		# Announcer audio (for "FIGHT!", "KO!", etc.)
-		var announcer = AudioStreamPlayer.new()
-		announcer.name = "AnnouncerAudio"
-		announcer.bus = "Announcer" # You can set up a separate audio bus for this
-		announcer.volume_db = 2.0 # Slightly louder than other sounds
-		audio_players.add_child(announcer)
-		
-		# Music player
-		var music = AudioStreamPlayer.new()
-		music.name = "MusicPlayer"
-		music.bus = "Music"
-		music.volume_db = -5.0 # Lower volume for background music
-		audio_players.add_child(music)
-		
-		# SFX player for UI and general sounds
-		var sfx = AudioStreamPlayer.new()
-		sfx.name = "SFXPlayer"
-		sfx.bus = "SFX"
-		sfx.volume_db = 0.0
-		audio_players.add_child(sfx)
-		
-	# Assign references
-	if has_node("AudioPlayers/AnnouncerAudio"):
-		announcer_audio = $AudioPlayers/AnnouncerAudio
-	if has_node("AudioPlayers/MusicPlayer"):
-		music_player = $AudioPlayers/MusicPlayer
-	if has_node("AudioPlayers/SFXPlayer"):
-		sfx_player = $AudioPlayers/SFXPlayer
+	if announcer_audio and fight_music:
+		music_player.stream = fight_music
+		music_player.play()
 
 func load_character_data():
 	print("Loading character data")
@@ -508,77 +417,78 @@ func create_default_characters():
 func setup_fight():
 	print("Setting up fight scene")
 	
-	# Verify we have positions for players
-	if not has_node("Positions/Player1Position") or not has_node("Positions/Player2Position"):
-		push_error("Player position nodes not found!")
-		return
-	
-	# Get game mode from GameState_Manager
+	# Check game mode to determine if player 2 should be AI or human
 	var game_state_manager = get_node_or_null("/root/GameState_Manager")
 	var is_pve_mode = game_state_manager and game_state_manager.game_mode == "PVE"
 	
-	# Create player 1 (always human)
-	player1 = PlayerCharacter.new()
+	# Create player 1
+	var player1_scene_path = "res://Characters/PlayerCharacter.tscn"
+	if ResourceLoader.exists(player1_scene_path):
+		var player1_scene = load(player1_scene_path)
+		player1 = player1_scene.instantiate()
+	else:
+		player1 = PlayerCharacter.new()
+	
+	player1.name = "Player1"
 	player1.player_number = 1
 	player1.character_data = player1_character
-	player1.position = $Positions/Player1Position.position
-	# IMPORTANT: Disable input until control scheme is dismissed
-	player1.set_process_unhandled_input(false)
-	player1.set_physics_process(false)  # Disable all character processing
-	player1.set_process(false)  # Also disable _process for good measure
-	camera_effects.add_child(player1)
-	print("Created Player 1")
+	add_child(player1)
 	
-	# Create player 2 (human or AI based on mode)
-	if is_pve_mode:
-		var ai_script = load("res://Scripts/AICharacter.gd")
-		player2 = ai_script.new()
-		# IMPORTANT: Set AI to inactive until control scheme is dismissed
-		player2.ai_active = false
-		print("Created AI Player 2")
+	# Position player 1
+	if has_node("Positions/Player1Position"):
+		player1.global_position = $Positions/Player1Position.global_position
 	else:
-		player2 = PlayerCharacter.new()
-		print("Created Human Player 2")
+		var viewport_size = get_viewport().get_visible_rect().size
+		player1.global_position = Vector2(viewport_size.x * 0.25, viewport_size.y * 0.75)
 	
+	# Create player 2 - FIXED: Check game mode!
+	if is_pve_mode:
+		# PVE mode - create AI character
+		print("Creating AI character for Player 2 (PVE mode)")
+		var player2_scene_path = "res://Characters/AICharacter.tscn"
+		if ResourceLoader.exists(player2_scene_path):
+			var player2_scene = load(player2_scene_path)
+			player2 = player2_scene.instantiate()
+		else:
+			player2 = AICharacter.new()
+	else:
+		# PVP mode - create human player character
+		print("Creating PlayerCharacter for Player 2 (PVP mode)")
+		var player2_scene_path = "res://Characters/PlayerCharacter.tscn"
+		if ResourceLoader.exists(player2_scene_path):
+			var player2_scene = load(player2_scene_path)
+			player2 = player2_scene.instantiate()
+		else:
+			player2 = PlayerCharacter.new()
+	
+	player2.name = "Player2"
 	player2.player_number = 2
 	player2.character_data = player2_character
-	player2.position = $Positions/Player2Position.position
-	# IMPORTANT: Disable all processing until control scheme is dismissed
-	player2.set_process_unhandled_input(false)
-	player2.set_physics_process(false)  # This will stop AI logic in _physics_process
-	player2.set_process(false)  # Also disable _process for good measure
-	camera_effects.add_child(player2)
+	add_child(player2)
 	
-	# Connect players to each other
+	# Position player 2
+	if has_node("Positions/Player2Position"):
+		player2.global_position = $Positions/Player2Position.global_position
+	else:
+		var viewport_size = get_viewport().get_visible_rect().size
+		player2.global_position = Vector2(viewport_size.x * 0.75, viewport_size.y * 0.75)
+	
+	# Set opponents
 	player1.opponent = player2
 	player2.opponent = player1
 	
-	# Connect signals - using safe connection with is_connected check
-	if player1.has_signal("health_changed") and not player1.is_connected("health_changed", _on_player1_health_changed):
-		player1.connect("health_changed", _on_player1_health_changed)
+	# Connect player signals
+	player1.connect("health_changed", _on_player1_health_changed)
+	player1.connect("special_meter_changed", _on_player1_special_changed)
+	player1.connect("ultimate_meter_changed", _on_player1_ultimate_changed)
+	player1.connect("combo_changed", _on_player1_combo_changed)
 	
-	if player2.has_signal("health_changed") and not player2.is_connected("health_changed", _on_player2_health_changed):
-		player2.connect("health_changed", _on_player2_health_changed)
+	player2.connect("health_changed", _on_player2_health_changed)
+	player2.connect("special_meter_changed", _on_player2_special_changed)
+	player2.connect("ultimate_meter_changed", _on_player2_ultimate_changed)
+	player2.connect("combo_changed", _on_player2_combo_changed)
 	
-	if player1.has_signal("special_meter_changed") and not player1.is_connected("special_meter_changed", _on_player1_special_changed):
-		player1.connect("special_meter_changed", _on_player1_special_changed)
-	
-	if player2.has_signal("special_meter_changed") and not player2.is_connected("special_meter_changed", _on_player2_special_changed):
-		player2.connect("special_meter_changed", _on_player2_special_changed)
-	
-	if player1.has_signal("ultimate_meter_changed") and not player1.is_connected("ultimate_meter_changed", _on_player1_ultimate_changed):
-		player1.connect("ultimate_meter_changed", _on_player1_ultimate_changed)
-	
-	if player2.has_signal("ultimate_meter_changed") and not player2.is_connected("ultimate_meter_changed", _on_player2_ultimate_changed):
-		player2.connect("ultimate_meter_changed", _on_player2_ultimate_changed)
-	
-	if player1.has_signal("combo_changed") and not player1.is_connected("combo_changed", _on_player1_combo_changed):
-		player1.connect("combo_changed", _on_player1_combo_changed)
-	
-	if player2.has_signal("combo_changed") and not player2.is_connected("combo_changed", _on_player2_combo_changed):
-		player2.connect("combo_changed", _on_player2_combo_changed)
-	
-	# Initialize UI with character data if UI elements exist
+	# Initialize UI
 	if player1_health_bar:
 		player1_health_bar.max_value = player1_character.max_health
 		player1_health_bar.value = player1_character.max_health
@@ -603,107 +513,39 @@ func setup_fight():
 		player2_ultimate_meter.max_value = player2_character.ultimate_meter_max
 		player2_ultimate_meter.value = 0
 	
-	if player1_combo_label:
-		player1_combo_label.text = ""
-	
-	if player2_combo_label:
-		player2_combo_label.text = ""
-	
-	# Show character names in the UI (optional)
-	if has_node("UI/Player1Name"):
-		$UI/Player1Name.text = player1_character.character_name
-	
-	if has_node("UI/Player2Name"):
-		$UI/Player2Name.text = player2_character.character_name
-	
-	print("Fight setup complete")
+	print("FightScene: Players created and positioned")
 
-func start_fight_sequence():
-	print("Starting fight sequence")
-	
-	# Show "READY" text
-	if has_node("UI/ReadyLabel"):
-		$UI/ReadyLabel.visible = true
-	
-	# Play start sound
-	if round_start_sound and announcer_audio:
-		announcer_audio.stream = round_start_sound
-		announcer_audio.play()
-	
-	# Wait a moment
-	await get_tree().create_timer(1.5).timeout
-	
-	# Show "FIGHT!" text
-	if has_node("UI/ReadyLabel"):
-		$UI/ReadyLabel.visible = false
-	if has_node("UI/FightLabel"):
-		$UI/FightLabel.visible = true
-		await get_tree().create_timer(1.0).timeout
-		$UI/FightLabel.visible = false
-	
-	# Activate the fight
-	fight_active = true
-	fight_over = false
-	print("Fight started")
+func connect_buttons():
+	if rematch_button:
+		rematch_button.pressed.connect(_on_rematch_pressed)
+	if charselect_button:
+		charselect_button.pressed.connect(_on_charselect_pressed)
+	if back_to_title_button:
+		back_to_title_button.pressed.connect(_on_back_to_title_pressed)
 
-# ENHANCED END_FIGHT METHOD - Wait for winner's attack to finish before victory
-func end_fight(winner_id):
-	print("Ending fight, winner: Player " + str(winner_id))
-	
-	# Prevent multiple calls
+func end_fight(winner_number: int):
 	if fight_over:
 		return
-		
-	fight_active = false
+	
 	fight_over = true
+	fight_active = false
 	
-	# Get winner and loser
-	var winner = player1 if winner_id == 1 else player2
-	var loser = player1 if winner_id == 2 else player2
+	print("Fight ended! Winner: Player ", winner_number)
 	
-	# Play victory sound
-	if victory_sound and announcer_audio:
-		announcer_audio.stream = victory_sound
-		announcer_audio.play()
-	
-	# Start loser's defeat immediately
-	if loser:
-		loser.state_machine.change_state("Defeat")
-	
-	# Wait for winner's current attack animation to finish before victory
-	if winner:
-		await wait_for_current_animation_to_finish(winner)
-		winner.state_machine.change_state("Victory")
-	
-	# Show winner message after both animations are set up
-	await get_tree().create_timer(1.5).timeout  # Extra time for victory slide/animation
-	
-	var winner_name = player1_character.character_name if winner_id == 1 else player2_character.character_name
-	
-	# Show winner label and buttons
-	if winner_label:
-		winner_label.text = winner_name + " Wins!"
-		print("Winner label displayed: " + winner_label.text)
-	
-	show_winner_ui()
-	
-	# Show "K.O." label if it exists
-	if has_node("UI/KOLabel"):
-		$UI/KOLabel.visible = true
-	
-	# Notify the GameState_Manager
-	var game_state_manager = get_node_or_null("/root/GameState_Manager")
-	if game_state_manager:
-		print("GameState_Manager found, updating winner info")
-		game_state_manager.current_winner = winner_id
+	# Set winner to victory state and loser to defeat state (if not already)
+	if winner_number == 1:
+		await wait_for_current_animation_to_finish(player1)
+		player1.state_machine.change_state("Victory")
+		if player2.state_machine.get_current_state_name() != "Defeat":
+			player2.state_machine.change_state("Defeat")
 	else:
-		print("GameState_Manager not found, staying in fight scene")
-		
-	# Play end round sound
-	if round_end_sound and sfx_player:
-		await get_tree().create_timer(1.0).timeout
-		sfx_player.stream = round_end_sound
-		sfx_player.play()
+		await wait_for_current_animation_to_finish(player2)
+		player2.state_machine.change_state("Victory")
+		if player1.state_machine.get_current_state_name() != "Defeat":
+			player1.state_machine.change_state("Defeat")
+	
+	# Show winner announcement
+	await show_winner_announcement(winner_number)
 
 # NEW HELPER METHOD: Wait for current animation to complete
 func wait_for_current_animation_to_finish(character: BaseCharacter):
@@ -718,17 +560,59 @@ func wait_for_current_animation_to_finish(character: BaseCharacter):
 		
 		print("Attack animation finished for player ", character.player_number)
 	else:
-		print("Player ", character.player_number, " not in attack state, proceeding immediately")
+		print("Character not in attack state, proceeding immediately")
 
-# NEW METHOD FOR HANDLING CHARACTER DEFEAT
-func on_character_defeated(defeated_character: BaseCharacter):
-	print("Character defeated: Player ", defeated_character.player_number)
+func show_winner_announcement(winner_number: int):
+	if winner_label:
+		winner_label.visible = true
+		
+		# Get the winning character's name
+		var winner_character_name = ""
+		if winner_number == 1 and player1 and player1.character_data:
+			winner_character_name = player1.character_data.character_name
+		elif winner_number == 2 and player2 and player2.character_data:
+			winner_character_name = player2.character_data.character_name
+		
+		# Display character name instead of "Player X"
+		if winner_character_name != "":
+			winner_label.text = winner_character_name.to_upper() + " WINS!"
+		else:
+			# Fallback if character name not available
+			winner_label.text = "PLAYER " + str(winner_number) + " WINS!"
 	
-	# Determine winner
-	var winner_id = 1 if defeated_character.player_number == 2 else 2
+	# Show buttons after a delay
+	await get_tree().create_timer(1.0).timeout
 	
-	# End the fight
-	end_fight(winner_id)
+	if rematch_button:
+		rematch_button.visible = true
+	if charselect_button:
+		charselect_button.visible = true
+	if back_to_title_button:
+		back_to_title_button.visible = true
+	
+	# Enable win menu navigation
+	win_menu_active = true
+	if win_buttons[current_win_button_index]:
+		win_buttons[current_win_button_index].scale = original_win_scales[win_buttons[current_win_button_index]] * 1.1
+
+func hide_winner_ui():
+	if winner_label:
+		winner_label.visible = false
+	if rematch_button:
+		rematch_button.visible = false
+	if charselect_button:
+		charselect_button.visible = false
+	if back_to_title_button:
+		back_to_title_button.visible = false
+
+func _on_rematch_pressed():
+	get_tree().reload_current_scene()
+
+func _on_charselect_pressed():
+	get_tree().change_scene_to_file("res://Scenes/character_select_screen.tscn")
+
+func _on_back_to_title_pressed():
+	get_tree().change_scene_to_file("res://Scenes/title_screen.tscn")
 
 func check_combo_milestones():
 	# Check player 1 combo
@@ -743,191 +627,137 @@ func check_combo_milestones():
 		highest_combo_player = 2
 		play_combo_sound(max_combo_reached)
 
-func play_combo_sound(combo_count):
-	if combo_sounds and combo_sounds.size() > 0 and sfx_player:
-		# Only play sounds for combos of 3 or higher
-		if combo_count >= 3:
-			# Calculate which sound to use
-			var sound_index = min(combo_count - 3, combo_sounds.size() - 1)
-			
-			# Play the appropriate combo sound
-			sfx_player.stream = combo_sounds[sound_index]
-			sfx_player.play()
-			
-			# Flash the combo text for visual feedback
-			flash_combo_text(highest_combo_player)
-
-func flash_combo_text(player_id):
-	var combo_label = player1_combo_label if player_id == 1 else player2_combo_label
+func on_character_defeated(defeated_character: BaseCharacter):
+	print("Character defeated: Player ", defeated_character.player_number)
 	
-	if not combo_label:
+	# Determine winner
+	var winner_id = 1 if defeated_character.player_number == 2 else 2
+	
+	# End the fight
+	end_fight(winner_id)
+
+func play_combo_sound(combo: int):
+	if combo_sounds.size() == 0 or not sfx_player:
 		return
 	
-	# Store original color
-	var original_color = combo_label.get_theme_color("font_color", "Label")
-	
-	# Flash effect using a tween
-	var tween = create_tween()
-	tween.tween_property(combo_label, "modulate", Color(1, 1, 0, 1), 0.1)
-	tween.tween_property(combo_label, "modulate", Color(1, 0, 0, 1), 0.1)
-	tween.tween_property(combo_label, "modulate", Color(1, 1, 0, 1), 0.1)
-	tween.tween_property(combo_label, "modulate", Color(1, 1, 1, 1), 0.1)
+	var sound_index = min(combo - 3, combo_sounds.size() - 1)
+	if sound_index >= 0:
+		sfx_player.stream = combo_sounds[sound_index]
+		sfx_player.play()
 
-# Signal handlers - UPDATED with health bar shake effect and low health announcer
-func _on_player1_health_changed(new_health):
-	if player1_health_bar:
-		var old_health = player1_health_bar.value
-		player1_health_bar.value = new_health
-		
-		# Shake health bar if health decreased (took damage)
-		if new_health < old_health:
-			shake_health_bar(player1_health_bar, player1_health_bar_original_pos)
-			
-			# NEW: Add camera shake based on damage taken
-			var damage_taken = old_health - new_health
-			if camera_effects:
-				camera_effects.add_damage_shake(damage_taken)
-		
-		# Check for low health announcer (25% of max health)
-		check_low_health_announcer(player1, new_health)
-		
-		# Check for low health pulsing
-		update_low_health_pulsing_state(player1, new_health, 1)
-
-func _on_player2_health_changed(new_health):
-	if player2_health_bar:
-		var old_health = player2_health_bar.value
-		player2_health_bar.value = new_health
-		
-		# Shake health bar if health decreased (took damage)
-		if new_health < old_health:
-			shake_health_bar(player2_health_bar, player2_health_bar_original_pos)
-			
-			# NEW: Add camera shake based on damage taken
-			var damage_taken = old_health - new_health
-			if camera_effects:
-				camera_effects.add_damage_shake(damage_taken)
-		
-		# Check for low health announcer (25% of max health)
-		check_low_health_announcer(player2, new_health)
-		
-		# Check for low health pulsing
-		update_low_health_pulsing_state(player2, new_health, 2)
-
-# NEW: Update special/ultimate meter pulsing
-func update_special_ultimate_pulsing(delta: float):
-	# Create a sine wave for smooth pulsing (1.5 second cycle for faster pulse)
-	var pulse_strength = (sin(pulse_timer * 4.18879) + 1.0) / 2.0  # 0.0 to 1.0
-	
-	# Calculate pulse color: normal white to bright white
-	var meter_pulse_color = Color(1.0 + pulse_strength * 0.5, 1.0 + pulse_strength * 0.5, 1.0 + pulse_strength * 0.5, 1.0)
-	
-	# Apply pulsing to player 1 special meter
-	if player1_special_full and player1_special_meter:
-		player1_special_meter.modulate = meter_pulse_color
-	elif player1_special_meter:
-		player1_special_meter.modulate = Color(1.0, 1.0, 1.0, 1.0)  # Normal white
-	
-	# Apply pulsing to player 1 ultimate meter
-	if player1_ultimate_full and player1_ultimate_meter:
-		player1_ultimate_meter.modulate = meter_pulse_color
-	elif player1_ultimate_meter:
-		player1_ultimate_meter.modulate = Color(1.0, 1.0, 1.0, 1.0)  # Normal white
-	
-	# Apply pulsing to player 2 special meter
-	if player2_special_full and player2_special_meter:
-		player2_special_meter.modulate = meter_pulse_color
-	elif player2_special_meter:
-		player2_special_meter.modulate = Color(1.0, 1.0, 1.0, 1.0)  # Normal white
-	
-	# Apply pulsing to player 2 ultimate meter
-	if player2_ultimate_full and player2_ultimate_meter:
-		player2_ultimate_meter.modulate = meter_pulse_color
-	elif player2_ultimate_meter:
-		player2_ultimate_meter.modulate = Color(1.0, 1.0, 1.0, 1.0)  # Normal white
-
-# NEW: Update special/ultimate prompt visibility
-func update_special_prompt_visibility(player_id: int, meter_type: String, is_full: bool):
-	# Check if we're in PVE mode and hide AI prompts
-	var game_state_manager = get_node_or_null("/root/GameState_Manager")
-	var is_pve_mode = game_state_manager and game_state_manager.game_mode == "PVE"
-	
-	# Don't show prompts for AI (player 2 in PVE mode)
-	if is_pve_mode and player_id == 2:
-		return
-	
+# NEW: Update UI prompts for special/ultimate availability
+func update_special_prompt_visibility(player_num: int, prompt_type: String, is_full: bool):
 	var prompt_node: Control = null
 	
-	# Get the appropriate prompt node
-	if player_id == 1 and meter_type == "special":
-		prompt_node = player1_special_prompt
-	elif player_id == 1 and meter_type == "ultimate":
-		prompt_node = player1_ult_prompt
-	elif player_id == 2 and meter_type == "special":
-		prompt_node = player2_special_prompt
-	elif player_id == 2 and meter_type == "ultimate":
-		prompt_node = player2_ult_prompt
+	if player_num == 1:
+		if prompt_type == "special":
+			prompt_node = player1_special_prompt
+		else:
+			prompt_node = player1_ult_prompt
+	else:
+		if prompt_type == "special":
+			prompt_node = player2_special_prompt
+		else:
+			prompt_node = player2_ult_prompt
 	
 	if prompt_node:
 		prompt_node.visible = is_full
-		print("Player ", player_id, " ", meter_type, " prompt visibility: ", is_full)
 
-# NEW: Update low health pulsing state for a player
-func update_low_health_pulsing_state(character: BaseCharacter, current_health: int, player_num: int):
-	var low_health_threshold = character.character_data.max_health * 0.25
-	var is_low_health = current_health <= low_health_threshold
-	
-	if player_num == 1:
-		player1_low_health_pulsing = is_low_health
-	else:
-		player2_low_health_pulsing = is_low_health
-
-# NEW: Update pulsing effect every frame
+# NEW: Low health pulsing effect for health bars
 func update_low_health_pulsing(delta: float):
 	pulse_timer += delta
 	
-	# Create a sine wave for smooth pulsing (2 second cycle)
-	var pulse_strength = (sin(pulse_timer * 3.14159) + 1.0) / 2.0  # 0.0 to 1.0
+	# Check player 1 low health
+	if player1 and player1.current_health <= player1.character_data.max_health * 0.25:
+		if not player1_low_health_pulsing:
+			player1_low_health_pulsing = true
+		
+		# Pulse effect
+		var pulse_alpha = (sin(pulse_timer * 5.0) + 1.0) / 2.0  # Oscillates between 0 and 1
+		var pulse_color = Color(1.0, 0.0, 0.0, 0.3 + pulse_alpha * 0.7)  # Red with pulsing alpha
+		
+		if player1_health_bar and player1_health_bar is TextureProgressBar:
+			player1_health_bar.tint_progress = pulse_color
+	else:
+		if player1_low_health_pulsing:
+			player1_low_health_pulsing = false
+			if player1_health_bar and player1_health_bar is TextureProgressBar:
+				player1_health_bar.tint_progress = Color.WHITE
 	
-	# Apply pulsing to player 1 health bar
-	if player1_low_health_pulsing and player1_health_bar and player1_health_bar is TextureProgressBar:
-		var health_pulse_color = Color.WHITE.lerp(Color.RED, pulse_strength * 0.7)  # 70% max intensity
-		player1_health_bar.tint_progress = health_pulse_color
-	elif player1_health_bar and player1_health_bar is TextureProgressBar:
-		# Reset to white when not low health
-		player1_health_bar.tint_progress = Color.WHITE
-	
-	# Apply pulsing to player 2 health bar
-	if player2_low_health_pulsing and player2_health_bar and player2_health_bar is TextureProgressBar:
-		var health_pulse_color = Color.WHITE.lerp(Color.RED, pulse_strength * 0.7)  # 70% max intensity
-		player2_health_bar.tint_progress = health_pulse_color
-	elif player2_health_bar and player2_health_bar is TextureProgressBar:
-		# Reset to white when not low health
-		player2_health_bar.tint_progress = Color.WHITE
+	# Check player 2 low health
+	if player2 and player2.current_health <= player2.character_data.max_health * 0.25:
+		if not player2_low_health_pulsing:
+			player2_low_health_pulsing = true
+		
+		# Pulse effect
+		var pulse_alpha = (sin(pulse_timer * 5.0) + 1.0) / 2.0
+		var pulse_color = Color(1.0, 0.0, 0.0, 0.3 + pulse_alpha * 0.7)
+		
+		if player2_health_bar and player2_health_bar is TextureProgressBar:
+			player2_health_bar.tint_progress = pulse_color
+	else:
+		if player2_low_health_pulsing:
+			player2_low_health_pulsing = false
+			if player2_health_bar and player2_health_bar is TextureProgressBar:
+				player2_health_bar.tint_progress = Color.WHITE
 
-# NEW: Check for low health announcer (only triggers once per fight)
-func check_low_health_announcer(character: BaseCharacter, current_health: int):
-	# Only trigger once per fight for the FIRST character to hit low health
-	if low_health_announced or not fight_active:
-		return
+# NEW: Special/Ultimate meter pulsing when full
+func update_special_ultimate_pulsing(delta: float):
+	var pulse_alpha = (sin(pulse_timer * 3.0) + 1.0) / 2.0
 	
-	# Calculate 25% of max health
-	var low_health_threshold = character.character_data.max_health * 0.25
+	# Player 1 special
+	if player1_special_full and player1_special_meter and player1_special_meter is TextureProgressBar:
+		var pulse_color = Color(1.0, 1.0, 0.0, 0.5 + pulse_alpha * 0.5)  # Yellow pulse
+		player1_special_meter.tint_progress = pulse_color
 	
-	# Check if character is below 25% health
-	if current_health <= low_health_threshold:
-		# Get a random low health sound from the FightScene's announcer sounds
-		if low_health_announcer_sounds.size() > 0 and announcer_audio:
-			var random_sound = low_health_announcer_sounds[randi() % low_health_announcer_sounds.size()]
-			
-			# Play the announcer line
-			announcer_audio.stream = random_sound
-			announcer_audio.play()
-			
-			# Mark that we've announced low health (prevent future announcements)
-			low_health_announced = true
-			
-			print("Low health announcer triggered for: ", character.character_data.character_name)
+	# Player 1 ultimate
+	if player1_ultimate_full and player1_ultimate_meter and player1_ultimate_meter is TextureProgressBar:
+		var pulse_color = Color(1.0, 0.0, 1.0, 0.5 + pulse_alpha * 0.5)  # Purple pulse
+		player1_ultimate_meter.tint_progress = pulse_color
+	
+	# Player 2 special
+	if player2_special_full and player2_special_meter and player2_special_meter is TextureProgressBar:
+		var pulse_color = Color(1.0, 1.0, 0.0, 0.5 + pulse_alpha * 0.5)
+		player2_special_meter.tint_progress = pulse_color
+	
+	# Player 2 ultimate
+	if player2_ultimate_full and player2_ultimate_meter and player2_ultimate_meter is TextureProgressBar:
+		var pulse_color = Color(1.0, 0.0, 1.0, 0.5 + pulse_alpha * 0.5)
+		player2_ultimate_meter.tint_progress = pulse_color
+
+func _on_player1_health_changed(new_health):
+	if player1_health_bar:
+		player1_health_bar.value = new_health
+		
+		# NEW: Shake effect when taking damage
+		if new_health < player1.current_health:
+			shake_health_bar(player1_health_bar, player1_health_bar_original_pos)
+	
+	# NEW: Low health announcer (play ONCE when health drops below 25%)
+	if new_health <= player1_character.max_health * 0.25 and not low_health_announced:
+		play_low_health_announcer(player1)
+
+func _on_player2_health_changed(new_health):
+	if player2_health_bar:
+		player2_health_bar.value = new_health
+		
+		# NEW: Shake effect when taking damage
+		if new_health < player2.current_health:
+			shake_health_bar(player2_health_bar, player2_health_bar_original_pos)
+	
+	# NEW: Low health announcer
+	if new_health <= player2_character.max_health * 0.25 and not low_health_announced:
+		play_low_health_announcer(player2)
+
+# NEW: Play low health announcer sound once per fight
+func play_low_health_announcer(character: BaseCharacter):
+	if low_health_announcer_sounds.size() > 0 and announcer_audio and not low_health_announced:
+		var random_sound = low_health_announcer_sounds[randi() % low_health_announcer_sounds.size()]
+		announcer_audio.stream = random_sound
+		announcer_audio.play()
+		low_health_announced = true
+		
+		print("Low health announcer triggered for: ", character.character_data.character_name)
 
 # NEW: Health bar shake effect with red tint
 func shake_health_bar(health_bar: Control, original_position: Vector2):

@@ -1,11 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://dcr48etfhif0q"]
+[gd_scene load_steps=11 format=3 uid="uid://dcr48etfhif0q"]
 
 [ext_resource type="Script" uid="uid://bpa2wcad3impo" path="res://Scripts/character_select_screen.gd" id="1_g8xl4"]
 [ext_resource type="FontFile" uid="uid://cso1ldes3iag0" path="res://Assets/Fonts/Jekteam.ttf" id="2_3nlio"]
 [ext_resource type="Texture2D" uid="uid://crdnxm3c7f31" path="res://Assets/Menus/charaselectbg.png" id="2_7qt8n"]
-[ext_resource type="AudioStream" uid="uid://dqj7e06tg1yet" path="res://Assets/Sound/hover.mp3" id="2_51856"]
 [ext_resource type="StyleBox" uid="uid://cbmjaagebbypn" path="res://Assets/Menus/hoverbox.tres" id="3_5j2ph"]
-[ext_resource type="AudioStream" uid="uid://ws3ipytjd74q" path="res://Assets/Sound/select.mp3" id="3_kp4oj"]
 [ext_resource type="StyleBox" uid="uid://bfw74w8a6nn2f" path="res://Assets/Menus/stylebox.tres" id="3_xv7hb"]
 [ext_resource type="AudioStream" uid="uid://bxc7ygkk3h2pb" path="res://Assets/Sound/12-afro-bars-loop-383693.mp3" id="4_581ws"]
 [ext_resource type="Texture2D" uid="uid://ddlqhkh3fnirm" path="res://Assets/Menus/steam deck charselect.png" id="9_kp4oj"]
@@ -49,10 +47,6 @@ _data = {
 
 [node name="CharacterSelectScreen" type="Node2D"]
 script = ExtResource("1_g8xl4")
-navigation_audio = ExtResource("2_51856")
-select_audio = ExtResource("3_kp4oj")
-ready_audio = ExtResource("3_kp4oj")
-background_music = ExtResource("4_581ws")
 
 [node name="Background" type="TextureRect" parent="."]
 offset_left = 2.0

@@ -87,6 +87,51 @@ func _ready():
 	player1_ready_button.text = "SELECT FIRST"
 
 func _process(delta):
+	# ===== KEYBOARD DEBUG CONTROLS =====
+	# ESC - Back to title
+	if Input.is_key_pressed(KEY_ESCAPE):
+		go_back_to_title()
+		return
+	
+	# WASD - Player 1 navigation
+	if Input.is_key_pressed(KEY_A):
+		handle_keyboard_navigation(1, "left")
+	elif Input.is_key_pressed(KEY_D):
+		handle_keyboard_navigation(1, "right")
+	elif Input.is_key_pressed(KEY_W):
+		handle_keyboard_navigation(1, "up")
+	elif Input.is_key_pressed(KEY_S):
+		handle_keyboard_navigation(1, "down")
+	
+	# SPACE - Player 1 select/ready
+	if Input.is_key_pressed(KEY_SPACE):
+		handle_keyboard_select_ready(1)
+	
+	# BACKSPACE - Player 1 unselect
+	if Input.is_key_pressed(KEY_BACKSPACE) and player1_selected_index != -1:
+		unselect_character(1)
+		await get_tree().create_timer(0.2).timeout  # Debounce
+	
+	# Arrow keys - Player 2 navigation (if not PVE mode)
+	if not is_pve_mode:
+		if Input.is_key_pressed(KEY_LEFT):
+			handle_keyboard_navigation(2, "left")
+		elif Input.is_key_pressed(KEY_RIGHT):
+			handle_keyboard_navigation(2, "right")
+		elif Input.is_key_pressed(KEY_UP):
+			handle_keyboard_navigation(2, "up")
+		elif Input.is_key_pressed(KEY_DOWN):
+			handle_keyboard_navigation(2, "down")
+		
+		# ENTER - Player 2 select/ready
+		if Input.is_key_pressed(KEY_ENTER):
+			handle_keyboard_select_ready(2)
+		
+		# DELETE - Player 2 unselect
+		if Input.is_key_pressed(KEY_DELETE) and player2_selected_index != -1:
+			unselect_character(2)
+			await get_tree().create_timer(0.2).timeout  # Debounce
+	
 	# Update debounce timers
 	if player1_button8_debounce > 0:
 		player1_button8_debounce -= delta
@@ -102,6 +147,50 @@ func _process(delta):
 
 	if player1_ready and player2_ready:
 		start_match()
+
+# NEW: Keyboard navigation helper
+func handle_keyboard_navigation(player_id: int, direction: String):
+	if (player_id == 1 and player1_ready) or (player_id == 2 and player2_ready):
+		return
+	
+	if (player_id == 1 and player1_selected_index != -1) or (player_id == 2 and player2_selected_index != -1):
+		return  # Can't navigate after selection
+	
+	var columns = 3
+	var total = available_characters.size()
+	var current = player1_hovered_index if player_id == 1 else player2_hovered_index
+	
+	var new_index = get_next_available_index(player_id, current, direction, columns, total)
+	
+	if new_index != current:
+		if player_id == 1:
+			player1_hovered_index = new_index
+		else:
+			player2_hovered_index = new_index
+		update_hover(player_id, new_index)
+		navigation_sound.play()
+		await get_tree().create_timer(0.15).timeout  # Debounce navigation
+
+# NEW: Keyboard select/ready helper
+func handle_keyboard_select_ready(player_id: int):
+	if (player_id == 1 and player1_ready) or (player_id == 2 and player2_ready):
+		return
+	
+	var current = player1_hovered_index if player_id == 1 else player2_hovered_index
+	var selected = player1_selected_index if player_id == 1 else player2_selected_index
+	
+	if selected == -1:
+		# Not selected yet - select character
+		if is_character_available_for_player(player_id, current):
+			select_character(player_id, current)
+			await get_tree().create_timer(0.2).timeout  # Debounce
+	else:
+		# Already selected - ready up
+		if player_id == 1:
+			_on_player1_ready()
+		else:
+			_on_player2_ready()
+		await get_tree().create_timer(0.2).timeout  # Debounce
 
 func handle_ai_selection(delta):
 	ai_selection_timer += delta

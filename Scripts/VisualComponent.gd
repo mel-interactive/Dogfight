@@ -1,4 +1,4 @@
-# VisualComponent.gd - Complete version with animation offsets
+# VisualComponent.gd - Clean version without exposing internal sprite reference
 extends Node
 class_name VisualComponent
 
@@ -76,6 +76,49 @@ func update_speed_lines_direction(movement_direction: Vector2):
 			speed_lines_sprite.flip_h = false  # Moving right, lines go left
 			speed_lines_sprite.global_position.x -= 250 
 
+# NEW: Getter methods to access sprite information without exposing the sprite
+func get_current_animation() -> String:
+	if sprite:
+		return sprite.animation
+	return ""
+
+func is_sprite_flipped() -> bool:
+	if sprite:
+		return sprite.flip_h
+	return false
+
+# NEW: Get sprite width for movement constraints
+func get_sprite_width() -> float:
+	if not sprite or not sprite.sprite_frames or sprite.animation == "":
+		return 50.0  # Default width
+	
+	var current_frame = sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
+	if current_frame:
+		return current_frame.get_width() * sprite.scale.x
+	
+	return 50.0
+
+# NEW: Check if animation exists
+func has_animation(animation_name: String) -> bool:
+	if not sprite or not sprite.sprite_frames:
+		return false
+	return sprite.sprite_frames.has_animation(animation_name)
+
+# NEW: Stop current animation
+func stop_animation():
+	if sprite:
+		sprite.stop()
+
+# NEW: Show/hide sprite
+func set_sprite_visible(visible: bool):
+	if sprite:
+		sprite.visible = visible
+
+# NEW: Set sprite z_index (for attack states)
+func set_sprite_z_index(z: int):
+	if sprite:
+		sprite.z_index = z
+
 func setup_visuals():
 	# Clean up existing sprites
 	if character.has_node("DebugSprite"):
@@ -95,9 +138,6 @@ func setup_visuals():
 	sprite.z_index = 0
 	character.add_child(sprite)
 	sprite.connect("animation_finished", _on_animation_finished)
-	
-	# Store reference in character
-	character.sprite = sprite
 	
 	# Setup base animations
 	setup_base_animations()

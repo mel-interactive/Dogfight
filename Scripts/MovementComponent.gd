@@ -1,4 +1,4 @@
-# MovementComponent.gd
+# MovementComponent.gd - FIXED to use VisualComponent instead of direct sprite access
 extends Node
 class_name MovementComponent
 
@@ -9,12 +9,11 @@ func _ready():
 
 func apply_movement_constraints():
 	var viewport_size = character.get_viewport().get_visible_rect().size
-	var sprite_width = 50  # Default width, or get from sprite if available
+	var sprite_width = 50  # Default width
 	
-	if character.sprite and character.sprite.sprite_frames and character.sprite.animation != "":
-		var current_frame = character.sprite.sprite_frames.get_frame_texture(character.sprite.animation, character.sprite.frame)
-		if current_frame:
-			sprite_width = current_frame.get_width() * character.sprite.scale.x
+	# FIXED: Get sprite info through visual_component instead of direct access
+	if character.visual_component:
+		sprite_width = character.visual_component.get_sprite_width()
 	
 	# Screen boundaries (allow sprites to go halfway offscreen)
 	var left_boundary = -(sprite_width * 0.5)
@@ -69,6 +68,10 @@ func can_move() -> bool:
 	if character.opponent:
 		opponent_state = character.opponent.state_machine.get_current_state_name()
 	
+	# FIXED: Can't move while blocking
+	if my_state == "Blocking":
+		return false
+	
 	# Check if I'm in a special/ultimate state
 	if my_state in ["SpecialAttack", "UltimateAttack"]:
 		return false
@@ -77,7 +80,7 @@ func can_move() -> bool:
 	if opponent_state in ["SpecialAttack", "UltimateAttack"]:
 		return false
 	
-	# NEW: Check if any character is playing a reaction
+	# Check if any character is playing a reaction
 	if character.reaction_component and character.reaction_component.current_reaction:
 		return false
 	
@@ -97,7 +100,8 @@ func get_movement_animation() -> String:
 	else:
 		is_moving_forward = (character.movement_direction < 0)
 	
+	# FIXED: Check animation availability through visual_component
 	if is_moving_forward:
-		return "run_forward" if character.sprite.sprite_frames.has_animation("run_forward") else "idle"
+		return "run_forward" if character.visual_component.has_animation("run_forward") else "idle"
 	else:
-		return "run_backward" if character.sprite.sprite_frames.has_animation("run_backward") else "idle"
+		return "run_backward" if character.visual_component.has_animation("run_backward") else "idle"

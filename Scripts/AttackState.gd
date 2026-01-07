@@ -1,4 +1,4 @@
-# AttackState.gd
+# AttackState.gd - FIXED to use VisualComponent
 extends State
 class_name AttackState
 
@@ -11,12 +11,12 @@ func enter():
 	attack_hit_applied = false
 	character.velocity.x = 0
 	
-	# Set higher z_index when attacking
-	if character.sprite:
-		character.sprite.z_index = 5
+	# Set higher z_index when attacking - FIXED
+	if character.visual_component:
+		character.visual_component.set_sprite_z_index(5)
 	
 	var animation_name = get_animation_name()
-	if character.sprite and character.sprite.sprite_frames and character.sprite.sprite_frames.has_animation(animation_name):
+	if character.visual_component and character.visual_component.has_animation(animation_name):
 		character.play_animation(animation_name)
 	else:
 		# If animation doesn't exist, go back to idle immediately
@@ -50,9 +50,9 @@ func _on_animation_finished(animation_name: String):
 
 func exit():
 	print("Exiting attack state: ", attack_type)
-	# Reset z_index when attack finishes
-	if character.sprite:
-		character.sprite.z_index = 0
+	# Reset z_index when attack finishes - FIXED
+	if character.visual_component:
+		character.visual_component.set_sprite_z_index(0)
 	
 	var attack_area = character.get_node("AttackArea")
 	attack_area.monitoring = false

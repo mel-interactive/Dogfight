@@ -1,4 +1,3 @@
-
 # HeavyAttackState.gd  
 extends AttackState
 class_name HeavyAttackState

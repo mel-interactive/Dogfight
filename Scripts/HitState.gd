@@ -1,4 +1,4 @@
-# HitState.gd
+# HitState.gd - FIXED to use VisualComponent
 extends State
 class_name HitState
 
@@ -9,7 +9,8 @@ func enter():
 	character.velocity.x = 0
 	character.movement_direction = 0.0
 	
-	if character.sprite and character.sprite.sprite_frames and character.sprite.sprite_frames.has_animation("hit"):
+	# FIXED: Use visual_component
+	if character.visual_component and character.visual_component.has_animation("hit"):
 		character.play_animation("hit")
 
 func update(delta):

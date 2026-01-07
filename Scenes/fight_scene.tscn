@@ -1,23 +1,15 @@
-[gd_scene load_steps=94 format=3 uid="uid://dwhncf7xhe0tc"]
+[gd_scene load_steps=86 format=3 uid="uid://dwhncf7xhe0tc"]
 
 [ext_resource type="Script" uid="uid://d2wpkgcv7ac2p" path="res://Scripts/FightScene.gd" id="1_wqnb5"]
-[ext_resource type="AudioStream" uid="uid://cn0njbhvj5tga" path="res://Assets/Announcer/Intro line/onlyonedogswalking.mp3" id="2_5n8pe"]
-[ext_resource type="AudioStream" uid="uid://ds286xq3p5hys" path="res://Assets/Sound/combo cute ping.mp3" id="2_5nfax"]
 [ext_resource type="AudioStream" uid="uid://dio1bx4csof8p" path="res://Assets/Sound/fight music.mp3" id="2_71oq3"]
-[ext_resource type="AudioStream" uid="uid://bxc2fylgeo7ny" path="res://Assets/Sound/crowd-cheering-383111.mp3" id="2_h3kue"]
 [ext_resource type="Texture2D" uid="uid://cj3ony6iwrux2" path="res://Assets/Backgrounds/Computer table/frame_00_delay-0.1s.png" id="2_vjorg"]
-[ext_resource type="AudioStream" uid="uid://cjxhh01yjout3" path="res://Assets/Announcer/Intro line/thereseemstobeanopinion.mp3" id="3_1ar86"]
 [ext_resource type="Texture2D" uid="uid://cqbl22kxglxaa" path="res://Assets/Backgrounds/Computer table/frame_01_delay-0.1s.png" id="3_nq1sn"]
 [ext_resource type="Texture2D" uid="uid://lbqhupmiv3ss" path="res://Assets/Backgrounds/Computer table/frame_02_delay-0.1s.png" id="4_7mdle"]
-[ext_resource type="AudioStream" uid="uid://dbux5d674dg0x" path="res://Assets/Announcer/Intro line/thesedogsaremorebite.mp3" id="4_lsme7"]
 [ext_resource type="Texture2D" uid="uid://b3yo8ktvthjry" path="res://Assets/Backgrounds/Computer table/frame_03_delay-0.1s.png" id="5_k8y2o"]
-[ext_resource type="AudioStream" uid="uid://uu6lw2k2cqtv" path="res://Assets/Announcer/Fight!/fight.mp3" id="5_qiae4"]
 [ext_resource type="Texture2D" uid="uid://dtsxwndwwwnhc" path="res://Assets/Backgrounds/Computer table/frame_04_delay-0.1s.png" id="6_5n8pe"]
 [ext_resource type="Texture2D" uid="uid://bma43hb4m861k" path="res://Assets/Backgrounds/Computer table/frame_05_delay-0.1s.png" id="7_1ar86"]
 [ext_resource type="Texture2D" uid="uid://c6vd2humxstxu" path="res://Assets/Backgrounds/Computer table/frame_06_delay-0.1s.png" id="8_lsme7"]
-[ext_resource type="AudioStream" uid="uid://cyuv0dten0c6j" path="res://Assets/Announcer/Low HP character/someonesintrouble.mp3" id="9_cryrl"]
 [ext_resource type="Texture2D" uid="uid://jrorqbuymotv" path="res://Assets/Backgrounds/Computer table/frame_07_delay-0.1s.png" id="9_qiae4"]
-[ext_resource type="AudioStream" uid="uid://dxlm7mxclueey" path="res://Assets/Announcer/Low HP character/afightersontheirlastlegs.mp3" id="10_j0noi"]
 [ext_resource type="Texture2D" uid="uid://2k231l2rlhok" path="res://Assets/Backgrounds/Computer table/frame_08_delay-0.1s.png" id="10_xsuk8"]
 [ext_resource type="Texture2D" uid="uid://boxpha0cqttgq" path="res://Assets/Backgrounds/Computer table/frame_09_delay-0.1s.png" id="11_42uwl"]
 [ext_resource type="PackedScene" uid="uid://l4oo4hhjyxdw" path="res://Scenes/falling_items.tscn" id="11_ldygs"]
@@ -361,12 +353,6 @@ shader_parameter/posOffset = Vector2(0, -0.5)
 [node name="FightScene" type="Node2D"]
 script = ExtResource("1_wqnb5")
 falling_item_scene = ExtResource("11_ldygs")
-victory_sound = ExtResource("2_h3kue")
-combo_sounds = Array[AudioStream]([ExtResource("2_5nfax")])
-fight_music = ExtResource("2_71oq3")
-intro_lines = Array[AudioStream]([ExtResource("2_5n8pe"), ExtResource("3_1ar86"), ExtResource("4_lsme7")])
-fight_start_sound = ExtResource("5_qiae4")
-low_health_announcer_sounds = Array[AudioStream]([ExtResource("9_cryrl"), ExtResource("10_j0noi")])
 
 [node name="CameraEffects" type="Node2D" parent="."]
 script = ExtResource("11_whai0")
@@ -474,6 +460,7 @@ texture_progress = ExtResource("64_s3c71")
 texture_progress_offset = Vector2(15, 0)
 
 [node name="Player2ComboLabel" type="Label" parent="UI"]
+visible = false
 offset_left = 190.0
 offset_top = 170.0
 offset_right = 656.0
@@ -492,6 +479,7 @@ libraries = {
 autoplay = "idle"
 
 [node name="Player1ComboLabel" type="Label" parent="UI"]
+visible = false
 offset_left = 923.0
 offset_top = 170.0
 offset_right = 1389.0

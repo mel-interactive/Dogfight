@@ -1,4 +1,4 @@
-# BaseCharacter.gd - Enhanced with reaction system
+# BaseCharacter.gd - Refactored with command system
 extends CharacterBody2D
 class_name BaseCharacter
 
@@ -9,27 +9,21 @@ class_name BaseCharacter
 # Movement direction tracking
 var movement_direction: float = 0.0
 
-# Current state (kept for compatibility)
+# Current state
 var current_health: int = 100
 
-# Combat meters (kept for compatibility)
+# Combat meters
 var special_meter: float = 0.0
 var ultimate_meter: float = 0.0
 
-# Combo system (kept for compatibility)
+# Combo system
 var combo_count: int = 0
 var combo_timer: float = 0.0
-
-# Legacy state enum (kept for compatibility)
-enum CharacterState {IDLE, MOVING, ATTACKING_LIGHT, ATTACKING_HEAVY, BLOCKING, SPECIAL_ATTACK, ULTIMATE_ATTACK, HIT, DEFEAT}
-var current_state = CharacterState.IDLE
 
 # Reference to opponent
 var opponent: BaseCharacter = null
 
-# Animation and visual nodes (kept for compatibility)
-var sprite: AnimatedSprite2D
-var custom_animation_sprites: Array[AnimatedSprite2D] = []
+# Audio player
 var audio_player: AudioStreamPlayer2D
 
 # Components
@@ -37,9 +31,12 @@ var state_machine: StateMachine
 var visual_component: VisualComponent
 var combat_component: CombatComponent
 var movement_component: MovementComponent
-var reaction_component: ReactionComponent  # NEW: Reaction component
+var reaction_component: ReactionComponent
 
-# Signals (kept for compatibility)
+# NEW: Command queue system
+var command_queue: Array[String] = []
+
+# Signals
 signal health_changed(new_health)
 signal special_meter_changed(new_value)
 signal ultimate_meter_changed(new_value)
@@ -61,9 +58,6 @@ func _ready():
 	setup_audio()
 	setup_collision()
 	setup_attack_area()
-	
-	# Connect state machine to update legacy current_state
-	state_machine.connect("state_changed", _on_state_changed)
 
 func setup_components():
 	# Create other components first
@@ -79,7 +73,6 @@ func setup_components():
 	movement_component.name = "MovementComponent"
 	add_child(movement_component)
 	
-	# NEW: Create reaction component
 	reaction_component = ReactionComponent.new()
 	reaction_component.name = "ReactionComponent"
 	add_child(reaction_component)
@@ -144,32 +137,6 @@ func setup_components():
 	# Start in IDLE state initially
 	state_machine.start("Idle")
 
-# Updated _on_state_changed method (keeping existing functionality)
-func _on_state_changed(old_state: String, new_state: String):
-	match new_state:
-		"Idle":
-			current_state = CharacterState.IDLE
-		"Moving":
-			current_state = CharacterState.MOVING
-		"LightAttack":
-			current_state = CharacterState.ATTACKING_LIGHT
-		"HeavyAttack":
-			current_state = CharacterState.ATTACKING_HEAVY
-		"SpecialAttack":
-			current_state = CharacterState.SPECIAL_ATTACK
-		"UltimateAttack":
-			current_state = CharacterState.ULTIMATE_ATTACK
-		"Blocking":
-			current_state = CharacterState.BLOCKING
-		"Hit":
-			current_state = CharacterState.HIT
-		"Defeat":
-			current_state = CharacterState.DEFEAT
-		"Entrance":
-			current_state = CharacterState.IDLE
-		"Victory":
-			current_state = CharacterState.IDLE
-
 # NEW: Method to trigger character-specific reaction using reaction component
 func play_reaction_to_attack(attacking_character: BaseCharacter, attack_type: String) -> bool:
 	if reaction_component:
@@ -224,6 +191,7 @@ func setup_attack_area():
 		attack_area.monitoring = false
 		
 		add_child(attack_area)
+
 func setup_audio():
 	if not has_node("AudioPlayer"):
 		audio_player = AudioStreamPlayer2D.new()
@@ -246,11 +214,6 @@ func auto_detect_player_number():
 	
 	if player_number == 0:
 		player_number = 1
-	
-	if sprite:
-		sprite.flip_h = (player_number == 1)
-	if has_node("DebugSprite"):
-		$DebugSprite.flip_h = (player_number == 1)
 
 # ===== SLIDING SYSTEM FOR SPECIAL/ULTIMATE ATTACKS =====
 
@@ -293,7 +256,20 @@ func get_spawn_position() -> Vector2:
 	else:
 		return Vector2(viewport_size.x * 0.75, global_position.y)
 
+# ===== NEW: COMMAND SYSTEM =====
+
 func _physics_process(delta):
+	# Process commands BEFORE physics
+	process_commands()
+	
+	# Update combo timer
+	if combo_count > 0:
+		combo_timer -= delta
+		if combo_timer <= 0:
+			# Combo expired, reset
+			combo_count = 0
+			emit_signal("combo_changed", 0)
+	
 	# Handle sliding to spawn position
 	if is_sliding_to_spawn:
 		slide_time += delta
@@ -303,7 +279,7 @@ func _physics_process(delta):
 		var eased_progress = 1.0 - pow(1.0 - slide_progress, 3.0)
 		eased_progress = clamp(eased_progress, 0.0, 1.0)
 		
-		# Calculate slide direction for speed lines (renamed to avoid shadowing)
+		# Calculate slide direction for speed lines
 		var slide_direction = (slide_target_pos - slide_start_pos).normalized()
 		visual_component.update_speed_lines_direction(slide_direction)
 		
@@ -323,6 +299,75 @@ func _physics_process(delta):
 		movement_component.apply_movement_constraints()
 	
 	move_and_slide()
+
+# NEW: Single location for ALL combat rules
+func process_commands():
+	if not can_process_commands():
+		command_queue.clear()
+		return
+	
+	# FIXED: Process ALL commands in queue each frame (not just one)
+	# This prevents input lag when pressing buttons quickly
+	while not command_queue.is_empty():
+		var command = command_queue.pop_front()
+		execute_command(command)
+		
+		# Stop processing if we entered an attack state (attacks take priority)
+		var current_state = state_machine.get_current_state_name()
+		if current_state in ["LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack", "Blocking"]:
+			command_queue.clear()  # Clear remaining commands
+			break
+
+# NEW: All the shared checks in ONE place
+func can_process_commands() -> bool:
+	var fight_scene = get_tree().current_scene as FightScene
+	if fight_scene and fight_scene.intro_sequence_active:
+		return false
+	
+	if get("is_block_stunned") == true:
+		return false
+	
+	var state = state_machine.get_current_state_name()
+	if state in ["Defeat", "Victory", "Hit"]:
+		return false
+	
+	# Attack priority - can't interrupt attacks
+	if state in ["LightAttack", "HeavyAttack", "SpecialAttack", "UltimateAttack"]:
+		return false
+	
+	return true
+
+# NEW: Execute a command (only called if can_process_commands passed)
+func execute_command(command: String):
+	match command:
+		"light_attack":
+			velocity.x = 0
+			light_attack()
+		"heavy_attack":
+			velocity.x = 0
+			heavy_attack()
+		"special_attack":
+			if can_use_special():
+				velocity.x = 0
+				special_attack()
+		"ultimate_attack":
+			if can_use_ultimate():
+				velocity.x = 0
+				ultimate_attack()
+		"block":
+			# FIXED: Stop movement when blocking
+			velocity.x = 0
+			block()
+		"stop_block":
+			stop_blocking()
+		"move_left":
+			if can_move():
+				velocity.x = -character_data.move_speed
+		"move_right":
+			if can_move():
+				velocity.x = character_data.move_speed
+		"stop_move":
+			velocity.x = 0
 
 # ===== ATTACK FUNCTIONS (simplified - delegate to state machine) =====
 
@@ -357,13 +402,11 @@ func can_attack():
 	if (current_state_name != "Idle" and current_state_name != "Moving") or current_state_name == "Hit":
 		return false
 	
-	# NEW: REACTION PREVENTION: Check if any character is playing a reaction
+	# REACTION PREVENTION: Check if any character is playing a reaction
 	if reaction_component and reaction_component.current_reaction:
-		print("Cannot attack - I am playing a reaction")
 		return false
 	
 	if opponent and opponent.reaction_component and opponent.reaction_component.current_reaction:
-		print("Cannot attack - opponent is playing a reaction")
 		return false
 	
 	return true
@@ -381,16 +424,13 @@ func can_use_special():
 	if opponent:
 		var opponent_state = opponent.state_machine.get_current_state_name()
 		if opponent_state in ["SpecialAttack", "UltimateAttack"]:
-			print("Cannot use special - opponent is already using ", opponent_state)
 			return false
 	
-	# NEW: REACTION PREVENTION: Check if any character is playing a reaction
+	# REACTION PREVENTION: Check if any character is playing a reaction
 	if reaction_component and reaction_component.current_reaction:
-		print("Cannot use special - I am playing a reaction")
 		return false
 	
 	if opponent and opponent.reaction_component and opponent.reaction_component.current_reaction:
-		print("Cannot use special - opponent is playing a reaction")
 		return false
 	
 	return true
@@ -404,16 +444,13 @@ func can_use_ultimate():
 	if opponent:
 		var opponent_state = opponent.state_machine.get_current_state_name()
 		if opponent_state in ["SpecialAttack", "UltimateAttack"]:
-			print("Cannot use ultimate - opponent is already using ", opponent_state)
 			return false
 	
-	# NEW: REACTION PREVENTION: Check if any character is playing a reaction
+	# REACTION PREVENTION: Check if any character is playing a reaction
 	if reaction_component and reaction_component.current_reaction:
-		print("Cannot use ultimate - I am playing a reaction")
 		return false
 	
 	if opponent and opponent.reaction_component and opponent.reaction_component.current_reaction:
-		print("Cannot use ultimate - opponent is playing a reaction")
 		return false
 	
 	return true
@@ -475,11 +512,7 @@ func is_opponent_in_range():
 # ===== ANIMATION HANDLING =====
 
 func _on_animation_finished():
-	var anim_name: String
-	if sprite:
-		anim_name = sprite.animation
-	else:
-		anim_name = ""
+	var anim_name = visual_component.get_current_animation()
 	
 	# Forward to the current state if it's an attack state
 	var state_name = state_machine.get_current_state_name()
@@ -501,9 +534,3 @@ func play_sound(sound: AudioStream):
 	if sound and audio_player:
 		audio_player.stream = sound
 		audio_player.play()
-
-# ===== LEGACY COMPATIBILITY =====
-
-# Keep handle_input as empty method for PlayerCharacter to override
-func handle_input():
-	pass
